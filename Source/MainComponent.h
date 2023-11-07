@@ -1,0 +1,36 @@
+#pragma once
+
+#include <JuceHeader.h>
+#include "Display.h"
+//==============================================================================
+/*
+    This component lives inside our window, and this is where you should put all
+    your controls and content.
+*/
+class MainComponent  : public juce::AudioAppComponent, juce::Component::MouseListener, juce::KeyListener
+{
+public:
+    //==============================================================================
+    MainComponent();
+    ~MainComponent() override;
+
+    //==============================================================================
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+    void releaseResources() override;
+
+    //==============================================================================
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+
+    void mouseDown(const juce::MouseEvent &event) override;
+
+    bool keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) override;
+private:
+    //==============================================================================
+    // Your private member variables go here...
+    float phase = 0.0f;
+    Display display;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};

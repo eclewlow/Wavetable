@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="HCOO4i" name="Wavetable" projectType="guiapp" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginFormats="buildAUv3,buildStandalone" pluginCharacteristicsValue="pluginIsSynth"
+              defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
+  <MAINGROUP id="QXUmXo" name="Wavetable">
+    <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
+      <FILE id="wB7POi" name="fnt05x05.cpp" compile="1" resource="0" file="Source/fnt05x05.cpp"/>
+      <FILE id="RnN6wF" name="fnt05x05.h" compile="0" resource="0" file="Source/fnt05x05.h"/>
+      <FILE id="pt7O3K" name="fnt08x08.cpp" compile="1" resource="0" file="Source/fnt08x08.cpp"/>
+      <FILE id="eiGYzT" name="fnt08x08.h" compile="0" resource="0" file="Source/fnt08x08.h"/>
+      <FILE id="Ar7qiJ" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="Js6MCa" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="w30ZL2" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="h2cJ1Y" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Wavetable"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Wavetable"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE-develop/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE-develop/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
