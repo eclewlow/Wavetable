@@ -1,5 +1,8 @@
+#include <JuceHeader.h>
 #include "MainComponent.h"
-#include "JuceHeader.h"
+#include "Display.h"
+#include "Globals.h"
+
 //==============================================================================
 MainComponent::MainComponent()
 {
@@ -19,6 +22,9 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
     }
+    
+    context.setState(&mainMenu);
+    startTimer(100);
     
     setWantsKeyboardFocus(true);
     getTopLevelComponent()->addKeyListener(this);
@@ -96,22 +102,24 @@ void MainComponent::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
     g.drawRect(getWidth()/2.0f, getHeight()/2.0f, 10.0f, 10.0f);
     // You can add your drawing code here!
-    display.paint(g);
+//    display.paint(g);
+    context.paint(g);
+    Display::paint(g);
 }
+
+void MainComponent::timerCallback()
+{
+    repaint();
+};
 
 void MainComponent::mouseDown(const juce::MouseEvent &event) {
     //    DBG("print"+event.getMouseDownScreenX());
-    printf("%d\n", event.getMouseDownX());
+    printf("x=%d, y=%d\n", event.getMouseDownX(), event.getMouseDownY());
     
 }
 
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
-    if(key.getKeyCode() == juce::KeyPress::leftKey) {
-    }
-    if(key.getKeyCode() == juce::KeyPress::rightKey) {
-    }
-    return false;
-    
+    return context.handleKeyPress(key);
 }
 
 void MainComponent::resized()

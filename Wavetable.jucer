@@ -6,6 +6,19 @@
               defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
   <MAINGROUP id="QXUmXo" name="Wavetable">
     <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
+      <FILE id="K2JGe1" name="Globals.cpp" compile="1" resource="0" file="Source/Globals.cpp"/>
+      <FILE id="kxXnUi" name="Globals.h" compile="0" resource="0" file="Source/Globals.h"/>
+      <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="Menu">
+        <FILE id="KQ3d6h" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
+        <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
+        <FILE id="KvOzub" name="ModeMenu.cpp" compile="1" resource="0" file="Source/ModeMenu.cpp"/>
+        <FILE id="o26SOG" name="ModeMenu.h" compile="0" resource="0" file="Source/ModeMenu.h"/>
+      </GROUP>
+      <FILE id="bEvxIp" name="Context.cpp" compile="1" resource="0" file="Source/Context.cpp"/>
+      <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>
+      <FILE id="Ve7Pwn" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
+      <FILE id="ZLIk1q" name="State.h" compile="0" resource="0" file="Source/State.h"/>
+      <FILE id="A9RZky" name="graphics.h" compile="0" resource="0" file="Source/graphics.h"/>
       <FILE id="wB7POi" name="fnt05x05.cpp" compile="1" resource="0" file="Source/fnt05x05.cpp"/>
       <FILE id="RnN6wF" name="fnt05x05.h" compile="0" resource="0" file="Source/fnt05x05.h"/>
       <FILE id="pt7O3K" name="fnt08x08.cpp" compile="1" resource="0" file="Source/fnt08x08.cpp"/>
@@ -14,6 +27,7 @@
       <FILE id="Js6MCa" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="w30ZL2" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="ZFf5kN" name="Display.cpp" compile="1" resource="0" file="Source/Display.cpp"/>
       <FILE id="h2cJ1Y" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
     </GROUP>
   </MAINGROUP>

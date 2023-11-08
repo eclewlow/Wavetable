@@ -1,0 +1,370 @@
+/*
+  ==============================================================================
+
+    Display.cpp
+    Created: 7 Nov 2023 2:29:42pm
+    Author:  Eugene Clewlow
+
+  ==============================================================================
+*/
+
+#include "Display.h"
+
+uint8_t Display::framebuffer[8][128];
+
+Display::Display() {
+    
+}
+
+Display::~Display() {
+    
+}
+
+void Display::paint(juce::Graphics& g)
+{
+    g.setColour(juce::Colour(0xFF, 0xFF, 0xFF));
+    g.fillRect(0, 0, 128, 64);
+    
+    for(int page=0;page<8;page++)
+    {
+        for(int column=0;column<128;column++)
+        {
+            for (int row = 0; row < 8; row++) {
+                bool is_set = (Display::framebuffer[page][column] >> row) & 0x1;
+                if(is_set) {
+                    //                    g.setColour(Colour newColour)
+                    g.setColour(juce::Colour(0x00, 0x00, 0x00));
+                    g.drawRect(column, page * 8 + row, 1, 1);
+                }
+            }
+        }
+    }
+}
+
+void Display::clear_screen() {
+    memset(framebuffer, 0, 128*8);
+}
+
+void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
+    //2.48uS ~ 4.70uS
+    if(0 != set)
+    {
+        //Setting the bit
+        Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+    }
+    else
+    {
+        //Clearing the bit
+        Display::framebuffer[y>>3][x]&=~(0x01 << (y&0x07));
+    }
+}
+void Display::LCD_Line(uint8_t x0, uint8_t y0,
+              uint8_t x1, uint8_t y1,
+              uint8_t set) {
+    int8_t
+    dx;
+    int8_t
+    sx;
+    int8_t
+    dy;
+    int8_t
+    sy;
+    int8_t
+    err;
+    int8_t
+    e2;
+    dx = abs((int16_t )x1 - (int16_t )x0);
+    sx = x0 < x1 ? 1 : -1;
+    dy = abs((int16_t )y1 - (int16_t )y0);
+    sy = y0 < y1 ? 1 : -1;
+    err = (dx > dy ? dx : -dy) / 2;
+    
+    for (;;)
+    {
+        Display::Put_Pixel(x0, y0, set);
+        if ((x0 == x1) && (y0 == y1))
+            break;
+        e2 = err;
+        if (e2 > -dx)
+        {
+            err -= dy;
+            x0 = (uint16_t)((int16_t) x0 + sx);
+        }
+        if (e2 < dy)
+        {
+            err += dx;
+            y0 = (uint16_t)((int16_t) y0 + sy);
+        }
+    }
+    
+}
+
+void Display::put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input)
+{
+    uint8_t
+    Terminator_Found;
+    uint8_t
+    Characters_Placed;
+    uint8_t
+    this_character;
+    uint8_t
+    *LCD_Memory;
+    uint8_t
+    column;
+    uint8_t
+    row;
+    WORD_UNION
+    Clearing_Mask;
+    WORD_UNION
+    Pixel_Data;
+    
+    //Get the first row of the display character.
+    row=y>>3;
+    //Calculate the address of the first uint8_t in display in LCD_Memory
+    LCD_Memory=&Display::framebuffer[row][x];
+    
+    //Calculate Clearing_Mask, the vertical mask that we will and with
+    //LCD_Memory to clear the space before we or in the data from the
+    //font. It is 9 pixels.
+    Clearing_Mask.as_word=~(0x01FF<<(y&0x07));
+    
+    //Clear the first col to the left of the string.
+    LCD_Memory[0]&=Clearing_Mask.as_bytes[0];
+    if(row<7)
+        LCD_Memory[128]&=Clearing_Mask.as_bytes[1];
+    LCD_Memory++;
+    
+    //Initialize Terminator_Found.
+    Terminator_Found=0;
+    //Move across the field. We will either put the character or a blank
+    //in every position of Field_Width.
+    for(Characters_Placed=0;Characters_Placed<Field_Width;Characters_Placed++)
+    {
+        //If we have not passed the terminator, then get the next
+        //character in the string. If we find the terminator,
+        //remember that we are out of characters.
+        if(!Terminator_Found)
+        {
+            this_character=*input++;
+            if(!this_character)
+            {
+                Terminator_Found=1;
+                this_character=' ';
+            }
+        }
+        else
+            this_character=' ';
+        //Get a pointer into the font information for this
+        //character.
+        
+        //Write the eight columns of this character.
+        for(column=0;column<=7;column++)
+        {
+            //Clear the correct bits in this row and the next row down.
+            LCD_Memory[0]&=Clearing_Mask.as_bytes[0];
+            if(row<7)
+            {
+                LCD_Memory[128]&=Clearing_Mask.as_bytes[1];
+            }
+            //Get the font data, convert it to a word and shift it down. Leave
+            //one blank row of pixels above as a spacer.
+            Pixel_Data.as_word=((uint16_t)Font_08x08[(this_character-FONT_08X08_BASE)][column])<<((y&0x07));
+            
+            //Set the correct bits in this row and the next row down.
+            LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+            if(row<7)
+            {
+                LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+            }
+            LCD_Memory++;
+        }
+        printf("\n");
+    }
+}
+
+void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false)
+{
+    uint8_t
+    Terminator_Found;
+    uint8_t
+    Characters_Placed;
+    uint8_t
+    this_character;
+    uint8_t
+    *LCD_Memory;
+    uint8_t
+    column;
+    uint8_t
+    row;
+    WORD_UNION
+    Clearing_Mask;
+    WORD_UNION
+    Pixel_Data;
+    
+    //Get the first row of the display character.
+    row=y>>3;
+    //Calculate the address of the first uint8_t in display in LCD_Memory
+    LCD_Memory=&Display::framebuffer[row][x];
+    
+//        //Calculate Clearing_Mask, the vertical mask that we will and with
+//        //LCD_Memory to clear the space before we or in the data from the
+//        //font. It is 9 pixels.
+//        Clearing_Mask.as_word=~(0x01FF<<(y&0x07));
+//
+//        //Clear the first col to the left of the string.
+//        LCD_Memory[0]&=Clearing_Mask.as_bytes[0];
+//        if(row<7)
+//            LCD_Memory[128]&=Clearing_Mask.as_bytes[1];
+//        LCD_Memory++;
+    
+    //Initialize Terminator_Found.
+    Terminator_Found=0;
+    //Move across the field. We will either put the character or a blank
+    //in every position of Field_Width.
+    for(Characters_Placed=0;Characters_Placed<Field_Width;Characters_Placed++)
+    {
+        //If we have not passed the terminator, then get the next
+        //character in the string. If we find the terminator,
+        //remember that we are out of characters.
+        if(!Terminator_Found)
+        {
+            this_character=*input++;
+            if(!this_character)
+            {
+                Terminator_Found=1;
+                this_character=' ';
+            }
+        }
+        else
+            this_character=' ';
+        //Get a pointer into the font information for this
+        //character.
+        
+        //Write the eight columns of this character.
+        for(column=0;column<=6;column++)
+        {
+            //Clear the correct bits in this row and the next row down.
+//                LCD_Memory[0]&=Clearing_Mask.as_bytes[0];
+//                if(row<7)
+//                {
+//                    LCD_Memory[128]&=Clearing_Mask.as_bytes[1];
+//                }
+            //Get the font data, convert it to a word and shift it down. Leave
+            //one blank row of pixels above as a spacer.
+            if(inverted)
+                Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07)^0x3F80;
+            else
+                Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
+                            
+            //Set the correct bits in this row and the next row down.
+            LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+            if(row<7)
+            {
+                LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+            }
+            LCD_Memory++;
+        }
+//            LCD_Memory++;
+        printf("\n");
+    }
+}
+
+void Display::put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23])
+{
+    uint8_t* LCD_Memory;
+    DBLWORD_UNION Pixel_Data;
+    
+    int row = y >> 3;
+    int col = x;
+
+    LCD_Memory=&Display::framebuffer[row][x];
+
+//        LCD_Memory++;
+    for(uint8_t column = 0; column<23; column++)
+    {
+        Pixel_Data.as_word=(((uint32_t)image[2][column])<<16) & 0xFF0000;
+        Pixel_Data.as_word|=(((uint32_t)image[1][column])<<8) & 0xFF00;
+        Pixel_Data.as_word|=((uint32_t)image[0][column]) & 0xFF;
+        
+        Pixel_Data.as_word <<= (y & 0x07);
+        
+        LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+        LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+        LCD_Memory[128*2]|=Pixel_Data.as_bytes[2];
+        LCD_Memory++;
+    }
+}
+
+void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
+  {
+  uint8_t
+    *LCD_Memory;
+  uint8_t
+    *LCD_Memory_1;
+  uint8_t
+    *LCD_Memory_2;
+  uint8_t
+    mask;
+  uint8_t
+    column;
+
+    uint8_t x1 = x;
+    uint8_t y1 = y;
+
+    uint8_t x2 = x+width-1;
+    uint8_t y2 = y+height;
+  //Draw the last pixel too.
+//      y2++;
+  //Bail for bogus parametrers.
+  if((x2<x1)||
+     (y2<y1)||
+     (127<x1)||
+     (127<x2)||
+     (63<y1)||
+     (63<y2))
+    return;
+  //Calculate the address of the first ubyte in display in LCD_Memory
+  LCD_Memory_1=&Display::framebuffer[y1>>3][x1];
+  //Calculate the address of the last ubyte in display in LCD_Memory
+  LCD_Memory_2=&Display::framebuffer[y2>>3][x1];
+  //If they are the same, then this is a special case.
+  if(LCD_Memory_1==LCD_Memory_2)
+    {
+    //The rectangle fits in one row.
+    mask=((0xFF<<(y1&0x07))&(~(0xFF<<(y2&0x07))));
+    for(column=x1;column<=x2;column++)
+      {
+      *LCD_Memory_1 ^= mask;
+      LCD_Memory_1++;
+      }
+    }
+  else
+    {
+    //This is the case where we need to loop over multiple
+    //(possibly 0) lines rows. Do the top ubyte.
+    mask=(0xFF<<(y1&0x07));
+    LCD_Memory=LCD_Memory_1;
+    for(column=x1;column<=x2;column++)
+      {
+      *LCD_Memory ^= mask;
+      LCD_Memory++;
+      }
+    //Do the bytes in the middle.
+    for(LCD_Memory_1+=128;LCD_Memory_1!=LCD_Memory_2;LCD_Memory_1+=128)
+      {
+      LCD_Memory=LCD_Memory_1;
+      for(column=x1;column<=x2;column++)
+        {
+        *LCD_Memory ^= 0xFF;
+        LCD_Memory++;
+        }
+      }
+    //Do the bottom ubyte.
+    mask=~(0xFF<<(y2&0x07));
+    for(column=x1;column<=x2;column++)
+      {
+      *LCD_Memory_2 ^= mask;
+      LCD_Memory_2++;
+      }
+    }
+  }
