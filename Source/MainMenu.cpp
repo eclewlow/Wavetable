@@ -127,7 +127,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 void MainMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
 
-    int y_offset = 1;
+    int y_offset = 4;
     int x_offset = 64 - (23+2) * 2;
     int row = 0;
     int col = 0;
@@ -163,6 +163,34 @@ void MainMenu::paint(juce::Graphics& g) {
     }
     
 //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
+//    Display::put_string_9x9(0 + 1 + 1,
+//                               0 + 1 + 1,
+//                               8,
+//                               "ABCDEFGH");
+//    Display::put_string_9x9(0 + 1 + 1,
+//                               10 + 1 + 1,
+//                               8,
+//                               "IJKLMNOP");
+//    Display::put_string_9x9(0 + 1 + 1,
+//                               20 + 1 + 1,
+//                               8,
+//                               "QRSTUVWX");
+//    Display::put_string_9x9(0 + 1 + 1,
+//                               30 + 1 + 1,
+//                               8,
+//                               "YZ012345");
+//    Display::put_string_9x9(0 + 1 + 1,
+//                               40 + 1 + 1,
+//                               6,
+//                               "6789_-");
+    
+//    Display::put_image_16bit(100, 2, Graphic_icon_arrow_9x9, 9);
+//
+//    Display::put_image_16bit(100, 13, Graphic_icon_wave_hump, 15);
+//    Display::put_image_16bit(100, 30, Graphic_icon_wave_square, 15);
+//    Display::put_image_16bit(100, 47, Graphic_icon_delete_15x15, 15);
+//    return;
+//
     Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
 
 //    Display::put_string_5x5(0,0,1,"A");

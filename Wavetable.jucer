@@ -18,6 +18,7 @@
       <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>
       <FILE id="Ve7Pwn" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
       <FILE id="ZLIk1q" name="State.h" compile="0" resource="0" file="Source/State.h"/>
+      <FILE id="bZ3tiD" name="wavetables.h" compile="0" resource="0" file="Source/wavetables.h"/>
       <FILE id="A9RZky" name="graphics.h" compile="0" resource="0" file="Source/graphics.h"/>
       <FILE id="XJtos9" name="fnt09x09.cpp" compile="1" resource="0" file="Source/fnt09x09.cpp"/>
       <FILE id="fvXvTG" name="fnt09x09.h" compile="0" resource="0" file="Source/fnt09x09.h"/>

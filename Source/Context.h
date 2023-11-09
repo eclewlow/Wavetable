@@ -18,7 +18,7 @@ public:
     Context();
     ~Context();
     
-    inline void setState(State* newState) { _state = newState; }
+    inline void setState(State* newState) { _state = newState; _state->triggerUpdate(); }
     inline State* getState() { return _state; }
     
     bool handleKeyPress(const juce::KeyPress &key);

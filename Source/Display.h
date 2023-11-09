@@ -84,6 +84,7 @@ public:
         as_word;
       }DBLWORD_UNION;
     
+    static void put_image_16bit(uint8_t x, uint8_t y, const uint8_t image[][2], uint8_t width);
     static void put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23]);
     static void invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
 

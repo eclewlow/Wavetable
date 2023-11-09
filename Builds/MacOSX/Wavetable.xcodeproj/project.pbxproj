@@ -94,6 +94,7 @@
 		9D1376B3612E1A0055B2AB2C /* MainComponent.h */ /* MainComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainComponent.h; path = ../../Source/MainComponent.h; sourceTree = SOURCE_ROOT; };
 		9E465C30443F900DA9D8E9C4 /* CoreAudio.framework */ /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		A28C1B2F9CA8CDA48EAB49E6 /* juce_dsp */ /* juce_dsp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_dsp; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_dsp"; sourceTree = "<absolute>"; };
+		A7FA6FB14FDF2F5BA7565495 /* wavetables.h */ /* wavetables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavetables.h; path = ../../Source/wavetables.h; sourceTree = SOURCE_ROOT; };
 		A869BD09C5768C8CD3BC5147 /* QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BAD69672F943AE131BDFBB3E /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
 		BCFDBAD52A4D7EE4BC335D59 /* include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
@@ -202,6 +203,7 @@
 				E50EC1842C1ADDB660EA7E1E,
 				F35C35DA1F2E1A08FFDD862C,
 				175441F8112C12B445931D92,
+				A7FA6FB14FDF2F5BA7565495,
 				5CA7FF03816180D973D8FA99,
 				7C06D4B69B431FB84B7CC3A7,
 				23F8A190B5F67FA74BEB2611,

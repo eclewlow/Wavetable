@@ -292,17 +292,9 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         }
         else
             this_character=' ';
-        //Get a pointer into the font information for this
-        //character.
-        
-        //Write the eight columns of this character.
         
         for(uint8_t column = 0; column<9; column++)
         {
-//            Pixel_Data.as_word=(((uint32_t)image[2][column])<<16) & 0xFF0000;
-//            Pixel_Data.as_word|=(((uint32_t)image[1][column])<<8) & 0xFF00;
-//            Pixel_Data.as_word|=((uint32_t)image[0][column]) & 0xFF;
-            
             Pixel_Data.as_word=((uint16_t)Font_09x09[(this_character-FONT_09X09_BASE)][column]);
             
             Pixel_Data.as_word <<= (y & 0x07);
@@ -312,28 +304,33 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
                 LCD_Memory[128]|=Pixel_Data.as_bytes[1];
             LCD_Memory++;
         }
+        LCD_Memory++;
+    }
+}
+
+void Display::put_image_16bit(uint8_t x, uint8_t y, const uint8_t image[][2], uint8_t width)
+{
+    uint8_t* LCD_Memory;
+    DBLWORD_UNION Pixel_Data;
+    
+    int row = y >> 3;
+
+    LCD_Memory=&Display::framebuffer[row][x];
+
+//    printf("%d %d %d\n", sizeof(image), sizeof(image[0]), sizeof(image[0][0]));
+    for(uint8_t column = 0; column < width; column++)
+    {
+        Pixel_Data.as_word=(((uint32_t)image[column][1])<<8) & 0xFF00;
+        Pixel_Data.as_word|=((uint32_t)image[column][0]) & 0xFF;
         
+        Pixel_Data.as_word <<= (y & 0x07);
         
-//        for(column=0;column<5;column++)
-//        {
-//            //Get the font data, convert it to a word and shift it down. Leave
-//            //one blank row of pixels above as a spacer.
-//            if(inverted)
-//                Pixel_Data.as_word=((uint16_t)Font_09x09[(this_character-FONT_05X05_BASE)][column])<<(y&0x07)^0x3F80;
-//            else {
-//                Pixel_Data.as_word=((uint16_t)Font_09x09[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
-//                Pixel_Data.as_word >>= 3;
-//            }
-//
-//            //Set the correct bits in this row and the next row down.
-//            LCD_Memory[0]|=Pixel_Data.as_bytes[0];
-//            if(row<7)
-//            {
-//                LCD_Memory[128]|=Pixel_Data.as_bytes[1];
-//            }
-//            LCD_Memory++;
-//        }
-            LCD_Memory++;
+        LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+        if (row < 7)
+            LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+        if (row < 6)
+            LCD_Memory[128*2]|=Pixel_Data.as_bytes[2];
+        LCD_Memory++;
     }
 }
 
