@@ -13,7 +13,7 @@
 #include "Globals.h"
 
 MainMenu::MainMenu() {
-    setState(MainMenu::lastState);
+    setState(MAIN_WAVE_DESIGN);
 }
 
 MainMenu::~MainMenu() {
@@ -127,70 +127,107 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 void MainMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
 
+    int y_offset = 1;
+    int x_offset = 64 - (23+2) * 2;
     int row = 0;
     int col = 0;
+    char *caption;
     
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    switch(currentState) {
+        case MAIN_WAVE_DESIGN:
+            caption = (char*)"AB WAVE";
+            break;
+        case MODE_SELECT:
+            caption = (char*)"MODE";
+            break;
+        case FX_MANAGEMENT:
+            caption = (char*)"FX";
+            break;
+        case SUBOSCILLATOR_CONFIG:
+            caption = (char*)"SUB";
+            break;
+        case PLAYBACK_MONITORING:
+            caption = (char*)"SCOPE";
+            break;
+        case SNAPSHOTS_LIST:
+            caption = (char*)"SNAPSHOT";
+            break;
+        case WAVETABLE_MANAGEMENT:
+            caption = (char*)"MANAGE";
+            break;
+        case MODULE_SETUP_CONFIG:
+            caption = (char*)"CONFIG";
+            break;
+        default:
+            break;
+    }
+    
+//    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
+    Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
+
+//    Display::put_string_5x5(0,0,1,"A");
+//    Display::put_string_5x5(10,0,1,"B");
+//    Display::put_string_5x5(20,0,1,"CZ");
+
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_ab);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_mode);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_fx);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_sub);
 
     
     row++;
     col=0;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_oscilloscope);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_snapshots);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_wave_management);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_setup);
     
     switch(currentState) {
         case MAIN_WAVE_DESIGN:
             col = 0; row = 0;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case MODE_SELECT:
             col = 1; row = 0;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case FX_MANAGEMENT:
             col = 2; row = 0;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case SUBOSCILLATOR_CONFIG:
             col = 3; row = 0;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case PLAYBACK_MONITORING:
             col = 0; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case SNAPSHOTS_LIST:
             col = 1; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case WAVETABLE_MANAGEMENT:
             col = 2; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         case MODULE_SETUP_CONFIG:
             col = 3; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
+            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
             break;
         default:
             break;
     }
 }
-
-MainMenu::MainMenuState MainMenu::lastState = MAIN_WAVE_DESIGN;

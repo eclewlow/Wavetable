@@ -19,6 +19,8 @@
       <FILE id="Ve7Pwn" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
       <FILE id="ZLIk1q" name="State.h" compile="0" resource="0" file="Source/State.h"/>
       <FILE id="A9RZky" name="graphics.h" compile="0" resource="0" file="Source/graphics.h"/>
+      <FILE id="XJtos9" name="fnt09x09.cpp" compile="1" resource="0" file="Source/fnt09x09.cpp"/>
+      <FILE id="fvXvTG" name="fnt09x09.h" compile="0" resource="0" file="Source/fnt09x09.h"/>
       <FILE id="wB7POi" name="fnt05x05.cpp" compile="1" resource="0" file="Source/fnt05x05.cpp"/>
       <FILE id="RnN6wF" name="fnt05x05.h" compile="0" resource="0" file="Source/fnt05x05.h"/>
       <FILE id="pt7O3K" name="fnt08x08.cpp" compile="1" resource="0" file="Source/fnt08x08.cpp"/>

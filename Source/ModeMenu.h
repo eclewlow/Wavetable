@@ -19,22 +19,17 @@ class ModeMenu: public State
 {
 public:
     enum ModeMenuState {
-        MAIN_WAVE_DESIGN,
-        MODE_SELECT,
-        FX_MANAGEMENT,
-        SUBOSCILLATOR_CONFIG,
-        PLAYBACK_MONITORING,
-        SNAPSHOTS_LIST,
-        WAVETABLE_MANAGEMENT,
-        MODULE_SETUP_CONFIG
+        MODE_AB,
+        MODE_WAVETABLE,
+        MODE_MATRIX,
+        MODE_DRUM,
     };
     ModeMenu();
     ~ModeMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    inline void setState(ModeMenuState newState) { currentState = newState; lastState = newState; }
-    
-    static ModeMenuState lastState;
+    inline void setState(ModeMenuState newState) { currentState = newState; }
+
 private:
     
     ModeMenuState currentState;

@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "fnt08x08.h"
+#include "fnt09x09.h"
 #include "fnt05x05.h"
 #include "graphics.h"
 //==============================================================================
@@ -72,7 +73,8 @@ public:
       }WORD_UNION;
     
     static void put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
-    static void put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted);
+    static void put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
+    static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
 
     typedef union
       {

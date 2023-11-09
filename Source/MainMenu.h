@@ -32,9 +32,8 @@ public:
     ~MainMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    inline void setState(MainMenuState newState) { currentState = newState; lastState = newState; }
-    
-    static MainMenuState lastState;
+    inline void setState(MainMenuState newState) { currentState = newState; }
+
 private:
     
     MainMenuState currentState;

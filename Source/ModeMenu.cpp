@@ -13,7 +13,7 @@
 #include "Globals.h"
 
 ModeMenu::ModeMenu() {
-    setState(ModeMenu::lastState);
+    setState(MODE_AB);
 }
 
 ModeMenu::~ModeMenu() {
@@ -21,39 +21,23 @@ ModeMenu::~ModeMenu() {
 }
 
 bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
-//    MAIN_WAVE_DESIGN,
-//    MODE_SELECT,
-//    FX_MANAGEMENT,
-//    SUBOSCILLATOR_CONFIG,
-//    PLAYBACK_MONITORING,
-//    SNAPSHOTS_LIST,
-//    WAVETABLE_MANAGEMENT,
-//    MODULE_SETUP_CONFIG
+//    MODE_AB,
+//    MODE_WAVETABLE,
+//    MODE_MATRIX,
+//    MODE_DRUM,
     
     if(key.getKeyCode() == juce::KeyPress::leftKey) {
         switch(currentState) {
-            case MAIN_WAVE_DESIGN:
+            case MODE_AB:
                 break;
-            case MODE_SELECT:
-                setState(MAIN_WAVE_DESIGN);
+            case MODE_WAVETABLE:
+                setState(MODE_AB);
                 break;
-            case FX_MANAGEMENT:
-                setState(MODE_SELECT);
+            case MODE_MATRIX:
+                setState(MODE_WAVETABLE);
                 break;
-            case SUBOSCILLATOR_CONFIG:
-                setState(FX_MANAGEMENT);
-                break;
-            case PLAYBACK_MONITORING:
-                setState(SUBOSCILLATOR_CONFIG);
-                break;
-            case SNAPSHOTS_LIST:
-                setState(PLAYBACK_MONITORING);
-                break;
-            case WAVETABLE_MANAGEMENT:
-                setState(SNAPSHOTS_LIST);
-                break;
-            case MODULE_SETUP_CONFIG:
-                setState(WAVETABLE_MANAGEMENT);
+            case MODE_DRUM:
+                setState(MODE_MATRIX);
                 break;
             default:
                 break;
@@ -61,28 +45,16 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
     }
     if(key.getKeyCode() == juce::KeyPress::rightKey) {
         switch(currentState) {
-            case MAIN_WAVE_DESIGN:
-                setState(MODE_SELECT);
+            case MODE_AB:
+                setState(MODE_WAVETABLE);
                 break;
-            case MODE_SELECT:
-                setState(FX_MANAGEMENT);
+            case MODE_WAVETABLE:
+                setState(MODE_MATRIX);
                 break;
-            case FX_MANAGEMENT:
-                setState(SUBOSCILLATOR_CONFIG);
+            case MODE_MATRIX:
+                setState(MODE_DRUM);
                 break;
-            case SUBOSCILLATOR_CONFIG:
-                setState(PLAYBACK_MONITORING);
-                break;
-            case PLAYBACK_MONITORING:
-                setState(SNAPSHOTS_LIST);
-                break;
-            case SNAPSHOTS_LIST:
-                setState(WAVETABLE_MANAGEMENT);
-                break;
-            case WAVETABLE_MANAGEMENT:
-                setState(MODULE_SETUP_CONFIG);
-                break;
-            case MODULE_SETUP_CONFIG:
+            case MODE_DRUM:
                 break;
             default:
                 break;
@@ -90,34 +62,21 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
     }
     if(key.getKeyCode() == juce::KeyPress::returnKey) {
         switch(currentState) {
-            case MODULE_SETUP_CONFIG:
+//            case MODE_AB:
+//                setState(MODE_WAVETABLE);
+//                break;
+//            case MODE_WAVETABLE:
+//                setState(MODE_MATRIX);
+//                break;
+//            case MODE_MATRIX:
+//                setState(MODE_DRUM);
+//                break;
+            case MODE_DRUM:
                 context.setState(&mainMenu);
                 break;
-//            case MAIN_WAVE_DESIGN:
-//                getContext()->setState(new MainMenu());
-//                break;
-//            case MODE_SELECT:
-//                setState(FX_MANAGEMENT);
-//                break;
-//            case FX_MANAGEMENT:
-//                setState(SUBOSCILLATOR_CONFIG);
-//                break;
-//            case SUBOSCILLATOR_CONFIG:
-//                setState(PLAYBACK_MONITORING);
-//                break;
-//            case PLAYBACK_MONITORING:
-//                setState(SNAPSHOTS_LIST);
-//                break;
-//            case SNAPSHOTS_LIST:
-//                setState(WAVETABLE_MANAGEMENT);
-//                break;
-//            case WAVETABLE_MANAGEMENT:
-//                setState(MODULE_SETUP_CONFIG);
-//                break;
-//            case MODULE_SETUP_CONFIG:
-//                break;
             default:
                 break;
+
         }
     }
     return true;
@@ -129,67 +88,35 @@ void ModeMenu::paint(juce::Graphics& g) {
     int row = 0;
     int col = 0;
     
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_mode_menu_ab);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_mode_menu_wavetable);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_mode_menu_wave_matrix);
 
     col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
+    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_mode_menu_drum);
 
-    
-    row++;
-    col=0;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
-
-    col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
-
-    col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
-
-    col++;
-    Display::put_image_22x23(col*(23+2), row*(22+2), Graphic_main_menu_wave_design);
     
     switch(currentState) {
-        case MAIN_WAVE_DESIGN:
+        case MODE_AB:
             col = 0; row = 0;
             Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
             break;
-        case MODE_SELECT:
+        case MODE_WAVETABLE:
             col = 1; row = 0;
             Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
             break;
-        case FX_MANAGEMENT:
+        case MODE_MATRIX:
             col = 2; row = 0;
             Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
             break;
-        case SUBOSCILLATOR_CONFIG:
+        case MODE_DRUM:
             col = 3; row = 0;
             Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
-            break;
-        case PLAYBACK_MONITORING:
-            col = 0; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
-            break;
-        case SNAPSHOTS_LIST:
-            col = 1; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
-            break;
-        case WAVETABLE_MANAGEMENT:
-            col = 2; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
-            break;
-        case MODULE_SETUP_CONFIG:
-            col = 3; row = 1;
-            Display::invert_rectangle(col*(23+2), row*(22+2), 23, 22);
-            break;
         default:
             break;
     }
 }
-
-ModeMenu::ModeMenuState ModeMenu::lastState = MAIN_WAVE_DESIGN;
