@@ -26,7 +26,7 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
 //    MODE_MATRIX,
 //    MODE_DRUM,
     
-    if(key.getKeyCode() == juce::KeyPress::leftKey) {
+    if(key.getTextCharacter()=='o') {
         switch(currentState) {
             case MODE_AB:
                 break;
@@ -43,7 +43,7 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == juce::KeyPress::rightKey) {
+    if(key.getTextCharacter()=='p') {
         switch(currentState) {
             case MODE_AB:
                 setState(MODE_WAVETABLE);

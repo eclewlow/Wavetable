@@ -6,6 +6,14 @@
               defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
   <MAINGROUP id="QXUmXo" name="Wavetable">
     <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
+      <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="DSP">
+        <FILE id="KQYpDJ" name="Effect.cpp" compile="1" resource="0" file="Source/Effect.cpp"/>
+        <FILE id="D0FYxC" name="Effect.h" compile="0" resource="0" file="Source/Effect.h"/>
+        <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
+        <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
+        <FILE id="ZRCmFE" name="ParameterInterpolator.h" compile="0" resource="0"
+              file="Source/ParameterInterpolator.h"/>
+      </GROUP>
       <FILE id="K2JGe1" name="Globals.cpp" compile="1" resource="0" file="Source/Globals.cpp"/>
       <FILE id="kxXnUi" name="Globals.h" compile="0" resource="0" file="Source/Globals.h"/>
       <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="Menu">

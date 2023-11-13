@@ -30,7 +30,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 //    WAVETABLE_MANAGEMENT,
 //    MODULE_SETUP_CONFIG
     
-    if(key.getKeyCode() == juce::KeyPress::leftKey) {
+    if(key.getTextCharacter()=='o') {
         switch(currentState) {
             case MAIN_WAVE_DESIGN:
                 break;
@@ -59,7 +59,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == juce::KeyPress::rightKey) {
+    if(key.getTextCharacter()=='p') {
         switch(currentState) {
             case MAIN_WAVE_DESIGN:
                 setState(MODE_SELECT);
@@ -161,7 +161,8 @@ void MainMenu::paint(juce::Graphics& g) {
         default:
             break;
     }
-    
+    Display::Draw_Wave(0, 0, engine.GetWaveformData());
+    return;
 //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
 //    Display::put_string_9x9(0 + 1 + 1,
 //                               0 + 1 + 1,

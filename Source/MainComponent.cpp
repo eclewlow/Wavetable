@@ -21,9 +21,12 @@ MainComponent::MainComponent()
     {
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
+//        setAudioChannels(1, 1);
     }
     
     context.setState(&mainMenu);
+    engine.Init();
+    
     startTimer(100);
     
     setWantsKeyboardFocus(true);
@@ -62,29 +65,36 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     
     // get the audio samples to redirect to the audio output (numSamples represents the total number of frames needed to be played):
     //    auto* samplesInline = listener->getNextAudioSamples(bufferToFill.numSamples, outputChannelsNumber);
-    float phaseIncrement = 440.0f / 48000.0f;
     //    get
     
-    float temp_phase;
     // map the block of audio frames stored in samplesInline to the audio output:
+    int size = bufferToFill.numSamples;
+    float out[size];
+    
+    engine.Render(out, out, size);
+    if(juce::KeyPress::isKeyCurrentlyDown(78))
+        engine.handleKeyPress(juce::KeyPress(78));
+    if(juce::KeyPress::isKeyCurrentlyDown(77))
+        engine.handleKeyPress(juce::KeyPress(77));
+       
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {
-        temp_phase = phase;
         // get a pointer to the start sample in the buffer for this audio output channel :
         auto* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
         
         // fill the required number of samples :
+//        buffer = out;
         for (auto a = 0 ; a < bufferToFill.numSamples ; a++)
         {
-            buffer[a] = sin(2 * M_PI * temp_phase);
-            
-            temp_phase += phaseIncrement;
-            if(temp_phase >= 1.0f)
-                temp_phase -= 1.0f;
-            
+            buffer[a] = out[a];
+//            buffer[a] = engine.Render();
+//            buffer[a] = sin(2 * M_PI * temp_phase);
+
+//            temp_phase += phaseIncrement;
+//            if(temp_phase >= 1.0f)
+//                temp_phase -= 1.0f;
         }
     }
-    phase = temp_phase;
 }
 
 void MainComponent::releaseResources()
@@ -119,6 +129,7 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 }
 
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
+    printf("%d\n", key.getKeyCode());
     return context.handleKeyPress(key);
 }
 

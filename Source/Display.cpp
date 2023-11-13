@@ -58,6 +58,16 @@ void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
         Display::framebuffer[y>>3][x]&=~(0x01 << (y&0x07));
     }
 }
+
+void Display::Draw_Wave(uint8_t x, uint8_t y, int16_t* waveform_data) {
+    for(int i = 0; i < 2048; i++) {
+        //Setting the bit
+        int x = i >> 4;
+        int y = 32 + waveform_data[i] / 1024;
+        Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+    }
+}
+
 void Display::LCD_Line(uint8_t x0, uint8_t y0,
               uint8_t x1, uint8_t y1,
               uint8_t set) {
