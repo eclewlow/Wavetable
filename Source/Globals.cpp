@@ -13,9 +13,8 @@
 Context context;
 MainMenu mainMenu;
 ModeMenu modeMenu;
+FxMenu fxMenu;
 Engine engine;
-Effect effect;
-uint16_t fxKnob;
-uint16_t fxAmountKnob;
-uint16_t morphKnob;
-uint16_t tuneKnob;
+Effect fx_engine;
+Effect osc_fx_engine;
+Adc adc;

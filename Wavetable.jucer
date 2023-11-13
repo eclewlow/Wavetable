@@ -6,9 +6,21 @@
               defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
   <MAINGROUP id="QXUmXo" name="Wavetable">
     <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
-      <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="DSP">
-        <FILE id="KQYpDJ" name="Effect.cpp" compile="1" resource="0" file="Source/Effect.cpp"/>
-        <FILE id="D0FYxC" name="Effect.h" compile="0" resource="0" file="Source/Effect.h"/>
+      <GROUP id="{489D4EC3-8384-4F8D-8D52-F49B86ACA840}" name="drivers">
+        <FILE id="qBY66H" name="adc.cpp" compile="1" resource="0" file="Source/adc.cpp"/>
+        <FILE id="cK3RiG" name="adc.h" compile="0" resource="0" file="Source/adc.h"/>
+        <FILE id="RldXOa" name="encoder.cpp" compile="1" resource="0" file="Source/encoder.cpp"/>
+        <FILE id="V0KABH" name="encoder.h" compile="0" resource="0" file="Source/encoder.h"/>
+      </GROUP>
+      <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="dsp">
+        <GROUP id="{15594671-89C5-0E50-D89C-5FE77C83BE2D}" name="downsampler">
+          <FILE id="aNA7wn" name="4x_downsampler.h" compile="0" resource="0"
+                file="Source/4x_downsampler.h"/>
+        </GROUP>
+        <GROUP id="{A383232E-843A-150E-A217-239D65BAB750}" name="fx">
+          <FILE id="KQYpDJ" name="effect.cpp" compile="1" resource="0" file="Source/effect.cpp"/>
+          <FILE id="D0FYxC" name="effect.h" compile="0" resource="0" file="Source/effect.h"/>
+        </GROUP>
         <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
         <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
         <FILE id="ZRCmFE" name="ParameterInterpolator.h" compile="0" resource="0"
@@ -16,7 +28,9 @@
       </GROUP>
       <FILE id="K2JGe1" name="Globals.cpp" compile="1" resource="0" file="Source/Globals.cpp"/>
       <FILE id="kxXnUi" name="Globals.h" compile="0" resource="0" file="Source/Globals.h"/>
-      <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="Menu">
+      <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="menu">
+        <FILE id="oOow4a" name="FxMenu.cpp" compile="1" resource="0" file="Source/FxMenu.cpp"/>
+        <FILE id="lNDVBF" name="FxMenu.h" compile="0" resource="0" file="Source/FxMenu.h"/>
         <FILE id="KQ3d6h" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
         <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
         <FILE id="KvOzub" name="ModeMenu.cpp" compile="1" resource="0" file="Source/ModeMenu.cpp"/>

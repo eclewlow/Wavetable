@@ -1,22 +1,22 @@
 /*
-  ==============================================================================
-
-    Engine.cpp
-    Created: 9 Nov 2023 3:03:36pm
-    Author:  Eugene Clewlow
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ Engine.cpp
+ Created: 9 Nov 2023 3:03:36pm
+ Author:  Eugene Clewlow
+ 
+ ==============================================================================
+ */
 
 #include "Engine.h"
 #include "wavetables.h"
 #include "ParameterInterpolator.h"
 #include "Globals.h"
+#include "4x_downsampler.h"
 
 Engine::Engine() {
-    phaseIncrement = 43.06f / 48000.0f;
     phase = 0.0f;
-
+    
 }
 
 Engine::~Engine() {
@@ -24,20 +24,19 @@ Engine::~Engine() {
 }
 
 void Engine::Init() {
-    phaseIncrement = 43.06f / 48000.0f;
     phase = 0.0f;
     frame00 = (int16_t*)&Wavetable_harmonic_series[0];
     frame01 = (int16_t*)&Wavetable_harmonic_series[2048];
 }
 
-float Engine::Render() {
-    float sample = sin(2 * M_PI * phase);
-
-    phase += phaseIncrement;
-    if(phase >= 1.0f)
-        phase -= 1.0f;
-    return sample;
-}
+//float Engine::Render() {
+//    float sample = sin(2 * M_PI * phase);
+//
+//    phase += phaseIncrement;
+//    if(phase >= 1.0f)
+//        phase -= 1.0f;
+//    return sample;
+//}
 
 float Engine::GetSample(int16_t* frame, float phase) {
     float index = phase * 2048.0;
@@ -57,29 +56,77 @@ float Engine::GetSampleBetweenFrames(float phase, float thisX) {
     float index = thisX;
     uint8_t integral = floor(index);
     float fractional = index - integral;
-
+    
     uint8_t nextIntegral = integral + ceil(fractional);
-
+    
     float frame1sample = GetSample((int16_t*)&Wavetable_harmonic_series[integral * 2048], phase);
     float frame2sample = GetSample((int16_t*)&Wavetable_harmonic_series[nextIntegral * 2048], phase);
-
+    
     float sample = frame1sample * (1.0f - fractional) + frame2sample * fractional;
     return sample;
 }
 
-int16_t* Engine::GetWaveformData() {
-    float index = clamp(x, 0.0, 15.0);
-    uint8_t integral = floor(index);
-    float fractional = index - integral;
+int16_t* Engine::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, Effect* effect) {
+    //    float index = clamp(x, 0.0, 15.0);
+    //    uint8_t integral = floor(index);
+    //    float fractional = index - integral;
+    //
+    //    uint8_t nextIntegral = integral + ceil(fractional);
+    //
+    //    int16_t waveform_data[2048];
+    //    for (int i = 0 ; i < 2048; i++) {
+    //        int16_t data1 = Wavetable_harmonic_series[integral * 2048 + i];
+    //        int16_t data2 = Wavetable_harmonic_series[nextIntegral * 2048 + i];
+    //        waveform_data[i] = data1 * (1.0f - fractional) + data2 * fractional;
+    //    }
+    //    return waveform_data;
+    //    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
+    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
+    //    float a = 440; //frequency of A (coomon value is 440Hz)
+//    int16_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
+    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
+//    note = note - 24;
+//    float a = 440; //frequency of A (coomon value is 440Hz)
+//    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
+    //    float adjusted_phase = 0.0f;
+//    float phaseIncrement = frequency / 48000.0f;
 
-    uint8_t nextIntegral = integral + ceil(fractional);
-
+    float frequency = 23.4375;
+    //    float adjusted_phase = 0.0f;
+    float phaseIncrement = frequency / 48000.0f;
+    
+    //    float target = morph;
+    // convert 12 bit uint 0-4095 to 0...15 float
+    //    float morphTarget = morph * 15.0 / 4095.0;
+    //    float interpolatedFloat = interpolated16 / 32768.0f;
+    float temp_phase = 0.0f;
+//    effect->Reset();
+    //    ParameterInterpolator xInterpolator(&x, morphTarget, size);
     int16_t waveform_data[2048];
-    for (int i = 0 ; i < 2048; i++) {
-        int16_t data1 = Wavetable_harmonic_series[integral * 2048 + i];
-        int16_t data2 = Wavetable_harmonic_series[nextIntegral * 2048 + i];
-        waveform_data[i] = data1 * (1.0f - fractional) + data2 * fractional;
+    
+    for(int i = 0; i < 2048; i++) {
+        float thisX = x;
+        thisX = clamp(thisX, 0.0, 15.0);
+        
+        float calculated_phase = effect->RenderPhaseEffect(temp_phase, tune, fx_amount, fx);
+        
+//        printf("%f\n", calculated_phase);
+        
+        float sample = GetSampleBetweenFrames(calculated_phase, thisX);
+        
+        sample = effect->RenderSampleEffect(sample, temp_phase, tune, fx_amount, fx);
+        
+//        if(calculated_phase < temp_phase) break;
+        temp_phase += phaseIncrement;
+        
+        if(temp_phase >= 1.0f)
+            temp_phase -= 1.0f;
+        
+        waveform_data[i] = static_cast<int16_t>(sample * 32768.0f);
     }
+//    printf("done\n");
+    //      *out++ = sample;
+    //      *aux++ = sample;
     return waveform_data;
 }
 
@@ -118,23 +165,44 @@ int16_t* Engine::GetWaveformData() {
 //    frame01 = (int16_t*)&Wavetable_harmonic_series[nextIntegral * 2048];
 //}
 
-void Engine::Render(float* out, float* aux, uint32_t size)
+void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, Effect* effect)
 {
-    ParameterInterpolator xInterpolator(&x, targetX, size);
-
+    int16_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
+    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
+//    note = note - 24;
+    float a = 440; //frequency of A (coomon value is 440Hz)
+    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
+    //    float adjusted_phase = 0.0f;
+    float phaseIncrement = frequency / 48000.0f;
+    
+    //    float target = morph;
+    // convert 12 bit uint 0-4095 to 0...15 float
+    float morphTarget = morph * 15.0 / 4095.0;
+    //    float interpolatedFloat = interpolated16 / 32768.0f;
+    
+    ParameterInterpolator xInterpolator(&x, morphTarget, size);
+    Downsampler carrier_downsampler(&carrier_fir_);
+    
     while (size--) {
         float thisX = xInterpolator.Next();
         thisX = clamp(thisX, 0.0, 15.0);
-        float sample = GetSampleBetweenFrames(phase, thisX);
-
-        sample = effect.renderSampleEffect(sample);
         
-        phase += effect.renderPhaseEffect(phaseIncrement);
-        if(phase >= 1.0f)
-            phase -= 1.0f;
-      
-      *out++ = sample;
-      *aux++ = sample;
+//        for (size_t j = 0; j < kOversampling; ++j) {
+            float sample = GetSampleBetweenFrames(effect->RenderPhaseEffect(phase, tune, fx_amount, fx), thisX);
+            
+            sample = effect->RenderSampleEffect(sample, phase, tune, fx_amount, fx);
+            
+            phase += phaseIncrement;
+            
+            if(phase >= 1.0f)
+                phase -= 1.0f;
+            
+//            carrier_downsampler.Accumulate(j, sample);
+//        }
+        
+//        float sample = carrier_downsampler.Read();
+        *out++ = sample;
+        *aux++ = sample;
     }
 }
 
@@ -154,6 +222,6 @@ bool Engine::handleKeyPress(const juce::KeyPress &key) {
         targetX = newX;
         return true;
     }
-//    printf("%f", targetX);
+    //    printf("%f", targetX);
     return false;
 }

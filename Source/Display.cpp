@@ -65,6 +65,14 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, int16_t* waveform_data) {
         int x = i >> 4;
         int y = 32 + waveform_data[i] / 1024;
         Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+        while(y > 32) {
+            y--;
+            Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+        }
+        while(y < 32) {
+            y++;
+            Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+        }
     }
 }
 

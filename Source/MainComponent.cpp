@@ -26,6 +26,7 @@ MainComponent::MainComponent()
     
     context.setState(&mainMenu);
     engine.Init();
+    fx_engine.Init();
     
     startTimer(100);
     
@@ -70,12 +71,35 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     // map the block of audio frames stored in samplesInline to the audio output:
     int size = bufferToFill.numSamples;
     float out[size];
-    
-    engine.Render(out, out, size);
+
+    //86, 66 v, b
+        //88, 67  x, c
+    if(juce::KeyPress::isKeyCurrentlyDown(81))
+        adc.handleKeyPress(juce::KeyPress(81));
+    if(juce::KeyPress::isKeyCurrentlyDown(87))
+        adc.handleKeyPress(juce::KeyPress(87));
+
+    if(juce::KeyPress::isKeyCurrentlyDown(86))
+        adc.handleKeyPress(juce::KeyPress(86));
+    if(juce::KeyPress::isKeyCurrentlyDown(66))
+        adc.handleKeyPress(juce::KeyPress(66));
+
+    if(juce::KeyPress::isKeyCurrentlyDown(88))
+        adc.handleKeyPress(juce::KeyPress(88));
+    if(juce::KeyPress::isKeyCurrentlyDown(67))
+        adc.handleKeyPress(juce::KeyPress(67));
+
     if(juce::KeyPress::isKeyCurrentlyDown(78))
-        engine.handleKeyPress(juce::KeyPress(78));
+        adc.handleKeyPress(juce::KeyPress(78));
     if(juce::KeyPress::isKeyCurrentlyDown(77))
-        engine.handleKeyPress(juce::KeyPress(77));
+        adc.handleKeyPress(juce::KeyPress(77));
+
+    uint16_t tune = adc.getChannel(0);
+    uint16_t fx_amount = adc.getChannel(1);
+    uint16_t fx = adc.getChannel(2);
+    uint16_t morph = adc.getChannel(3);
+    
+    engine.Render(out, out, size, tune, fx_amount, fx, morph, &fx_engine);
        
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {

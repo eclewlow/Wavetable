@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    MainMenu.cpp
-    Created: 7 Nov 2023 1:30:39pm
-    Author:  Eugene Clewlow
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ MainMenu.cpp
+ Created: 7 Nov 2023 1:30:39pm
+ Author:  Eugene Clewlow
+ 
+ ==============================================================================
+ */
 
 #include "Display.h"
 #include "graphics.h"
@@ -17,18 +17,18 @@ MainMenu::MainMenu() {
 }
 
 MainMenu::~MainMenu() {
-
+    
 }
 
 bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
-//    MAIN_WAVE_DESIGN,
-//    MODE_SELECT,
-//    FX_MANAGEMENT,
-//    SUBOSCILLATOR_CONFIG,
-//    PLAYBACK_MONITORING,
-//    SNAPSHOTS_LIST,
-//    WAVETABLE_MANAGEMENT,
-//    MODULE_SETUP_CONFIG
+    //    MAIN_WAVE_DESIGN,
+    //    MODE_SELECT,
+    //    FX_MANAGEMENT,
+    //    SUBOSCILLATOR_CONFIG,
+    //    PLAYBACK_MONITORING,
+    //    SNAPSHOTS_LIST,
+    //    WAVETABLE_MANAGEMENT,
+    //    MODULE_SETUP_CONFIG
     
     if(key.getTextCharacter()=='o') {
         switch(currentState) {
@@ -88,35 +88,35 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-//    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
+    //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
     if(key.getKeyCode() == juce::KeyPress::returnKey) {
         switch(currentState) {
             case SUBOSCILLATOR_CONFIG:
                 context.setState(&modeMenu);
                 break;
-//            case MAIN_WAVE_DESIGN:
-//                getContext()->setState(new ModeMenu());
-//                break;
-//            case MODE_SELECT:
-//                setState(FX_MANAGEMENT);
-//                break;
-//            case FX_MANAGEMENT:
-//                setState(SUBOSCILLATOR_CONFIG);
-//                break;
-//            case SUBOSCILLATOR_CONFIG:
-//                setState(PLAYBACK_MONITORING);
-//                break;
-//            case PLAYBACK_MONITORING:
-//                setState(SNAPSHOTS_LIST);
-//                break;
-//            case SNAPSHOTS_LIST:
-//                setState(WAVETABLE_MANAGEMENT);
-//                break;
-//            case WAVETABLE_MANAGEMENT:
-//                setState(MODULE_SETUP_CONFIG);
-//                break;
-//            case MODULE_SETUP_CONFIG:
-//                break;
+                //            case MAIN_WAVE_DESIGN:
+                //                getContext()->setState(new ModeMenu());
+                //                break;
+                //            case MODE_SELECT:
+                //                setState(FX_MANAGEMENT);
+                //                break;
+                //            case FX_MANAGEMENT:
+                //                setState(SUBOSCILLATOR_CONFIG);
+                //                break;
+                //            case SUBOSCILLATOR_CONFIG:
+                //                setState(PLAYBACK_MONITORING);
+                //                break;
+                //            case PLAYBACK_MONITORING:
+                //                setState(SNAPSHOTS_LIST);
+                //                break;
+                //            case SNAPSHOTS_LIST:
+                //                setState(WAVETABLE_MANAGEMENT);
+                //                break;
+                //            case WAVETABLE_MANAGEMENT:
+                //                setState(MODULE_SETUP_CONFIG);
+                //                break;
+                //            case MODULE_SETUP_CONFIG:
+                //                break;
             default:
                 break;
         }
@@ -126,7 +126,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 
 void MainMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
-
+    
     int y_offset = 4;
     int x_offset = 64 - (23+2) * 2;
     int row = 0;
@@ -161,65 +161,70 @@ void MainMenu::paint(juce::Graphics& g) {
         default:
             break;
     }
-    Display::Draw_Wave(0, 0, engine.GetWaveformData());
-    return;
-//    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
-//    Display::put_string_9x9(0 + 1 + 1,
-//                               0 + 1 + 1,
-//                               8,
-//                               "ABCDEFGH");
-//    Display::put_string_9x9(0 + 1 + 1,
-//                               10 + 1 + 1,
-//                               8,
-//                               "IJKLMNOP");
-//    Display::put_string_9x9(0 + 1 + 1,
-//                               20 + 1 + 1,
-//                               8,
-//                               "QRSTUVWX");
-//    Display::put_string_9x9(0 + 1 + 1,
-//                               30 + 1 + 1,
-//                               8,
-//                               "YZ012345");
-//    Display::put_string_9x9(0 + 1 + 1,
-//                               40 + 1 + 1,
-//                               6,
-//                               "6789_-");
+    uint16_t tune = adc.getChannel(0);
+    uint16_t fx_amount = adc.getChannel(1);
+    uint16_t fx = adc.getChannel(2);
+    uint16_t morph = adc.getChannel(3);
     
-//    Display::put_image_16bit(100, 2, Graphic_icon_arrow_9x9, 9);
-//
-//    Display::put_image_16bit(100, 13, Graphic_icon_wave_hump, 15);
-//    Display::put_image_16bit(100, 30, Graphic_icon_wave_square, 15);
-//    Display::put_image_16bit(100, 47, Graphic_icon_delete_15x15, 15);
-//    return;
-//
+    Display::Draw_Wave(0, 0, engine.GetWaveformData( tune,  fx_amount,  fx,  morph, &osc_fx_engine));
+    return;
+    //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
+    //    Display::put_string_9x9(0 + 1 + 1,
+    //                               0 + 1 + 1,
+    //                               8,
+    //                               "ABCDEFGH");
+    //    Display::put_string_9x9(0 + 1 + 1,
+    //                               10 + 1 + 1,
+    //                               8,
+    //                               "IJKLMNOP");
+    //    Display::put_string_9x9(0 + 1 + 1,
+    //                               20 + 1 + 1,
+    //                               8,
+    //                               "QRSTUVWX");
+    //    Display::put_string_9x9(0 + 1 + 1,
+    //                               30 + 1 + 1,
+    //                               8,
+    //                               "YZ012345");
+    //    Display::put_string_9x9(0 + 1 + 1,
+    //                               40 + 1 + 1,
+    //                               6,
+    //                               "6789_-");
+    
+    //    Display::put_image_16bit(100, 2, Graphic_icon_arrow_9x9, 9);
+    //
+    //    Display::put_image_16bit(100, 13, Graphic_icon_wave_hump, 15);
+    //    Display::put_image_16bit(100, 30, Graphic_icon_wave_square, 15);
+    //    Display::put_image_16bit(100, 47, Graphic_icon_delete_15x15, 15);
+    //    return;
+    //
     Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
-
-//    Display::put_string_5x5(0,0,1,"A");
-//    Display::put_string_5x5(10,0,1,"B");
-//    Display::put_string_5x5(20,0,1,"CZ");
-
+    
+    //    Display::put_string_5x5(0,0,1,"A");
+    //    Display::put_string_5x5(10,0,1,"B");
+    //    Display::put_string_5x5(20,0,1,"CZ");
+    
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_ab);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_fx);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_sub);
-
+    
     
     row++;
     col=0;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_oscilloscope);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_snapshots);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_wave_management);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_setup);
     
