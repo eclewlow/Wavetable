@@ -66,9 +66,14 @@ public:
 
     inline float getDepth() { return depth; }
     inline void setDepth(float newDepth) { depth = std::clamp(newDepth, 0.0f, 1.0f); }
+
+    inline int8_t getRatio() { return ratio_; }
+    inline void setRatio(int8_t ratio) { ratio_ = std::clamp<int>(ratio, 0, 100); }
+
 protected:
     float depth;
     bool sync;
+    int8_t ratio_;
     OscillatorShape oscillatorShape;
     EffectType effectType;
     ControlType controlType;
