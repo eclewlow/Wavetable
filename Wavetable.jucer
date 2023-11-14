@@ -20,6 +20,22 @@
         <GROUP id="{A383232E-843A-150E-A217-239D65BAB750}" name="fx">
           <FILE id="KQYpDJ" name="effect.cpp" compile="1" resource="0" file="Source/effect.cpp"/>
           <FILE id="D0FYxC" name="effect.h" compile="0" resource="0" file="Source/effect.h"/>
+          <FILE id="qGvsSN" name="fm.cpp" compile="1" resource="0" file="Source/fm.cpp"/>
+          <FILE id="Nix1lY" name="fm.h" compile="0" resource="0" file="Source/fm.h"/>
+          <FILE id="T62Xez" name="phase_distortion.cpp" compile="1" resource="0"
+                file="Source/phase_distortion.cpp"/>
+          <FILE id="LhX9Mk" name="phase_distortion.h" compile="0" resource="0"
+                file="Source/phase_distortion.h"/>
+          <FILE id="cNJir5" name="phase_modulation.cpp" compile="1" resource="0"
+                file="Source/phase_modulation.cpp"/>
+          <FILE id="BZNYHh" name="phase_modulation.h" compile="0" resource="0"
+                file="Source/phase_modulation.h"/>
+          <FILE id="cMqi9o" name="ring_modulator.cpp" compile="1" resource="0"
+                file="Source/ring_modulator.cpp"/>
+          <FILE id="YUl0Ay" name="ring_modulator.h" compile="0" resource="0"
+                file="Source/ring_modulator.h"/>
+          <FILE id="JhdFo6" name="wavefolder.cpp" compile="1" resource="0" file="Source/wavefolder.cpp"/>
+          <FILE id="nuX1Ia" name="wavefolder.h" compile="0" resource="0" file="Source/wavefolder.h"/>
         </GROUP>
         <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
         <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
@@ -35,6 +51,9 @@
         <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
         <FILE id="KvOzub" name="ModeMenu.cpp" compile="1" resource="0" file="Source/ModeMenu.cpp"/>
         <FILE id="o26SOG" name="ModeMenu.h" compile="0" resource="0" file="Source/ModeMenu.h"/>
+        <FILE id="VIJE1D" name="Oscilloscope.cpp" compile="1" resource="0"
+              file="Source/Oscilloscope.cpp"/>
+        <FILE id="SBRQro" name="Oscilloscope.h" compile="0" resource="0" file="Source/Oscilloscope.h"/>
       </GROUP>
       <FILE id="bEvxIp" name="Context.cpp" compile="1" resource="0" file="Source/Context.cpp"/>
       <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>

@@ -30,7 +30,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
     //    WAVETABLE_MANAGEMENT,
     //    MODULE_SETUP_CONFIG
     
-    if(key.getTextCharacter()=='o') {
+    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
         switch(currentState) {
             case MAIN_WAVE_DESIGN:
                 break;
@@ -59,7 +59,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getTextCharacter()=='p') {
+    if(key.getKeyCode() == LEFT_ENCODER_CW) {
         switch(currentState) {
             case MAIN_WAVE_DESIGN:
                 setState(MODE_SELECT);
@@ -89,11 +89,13 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
-    if(key.getKeyCode() == juce::KeyPress::returnKey) {
+    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
-            case SUBOSCILLATOR_CONFIG:
+            case MODE_SELECT:
                 context.setState(&modeMenu);
                 break;
+            case PLAYBACK_MONITORING:
+                context.setState(&oscilloscope);
                 //            case MAIN_WAVE_DESIGN:
                 //                getContext()->setState(new ModeMenu());
                 //                break;
@@ -161,13 +163,6 @@ void MainMenu::paint(juce::Graphics& g) {
         default:
             break;
     }
-    uint16_t tune = adc.getChannel(0);
-    uint16_t fx_amount = adc.getChannel(1);
-    uint16_t fx = adc.getChannel(2);
-    uint16_t morph = adc.getChannel(3);
-    
-    Display::Draw_Wave(0, 0, engine.GetWaveformData( tune,  fx_amount,  fx,  morph, &osc_fx_engine));
-    return;
     //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
     //    Display::put_string_9x9(0 + 1 + 1,
     //                               0 + 1 + 1,

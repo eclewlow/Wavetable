@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    ModeMenu.cpp
-    Created: 7 Nov 2023 4:54:56pm
-    Author:  Eugene Clewlow
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ ModeMenu.cpp
+ Created: 7 Nov 2023 4:54:56pm
+ Author:  Eugene Clewlow
+ 
+ ==============================================================================
+ */
 
 #include "Display.h"
 #include "graphics.h"
@@ -17,16 +17,16 @@ ModeMenu::ModeMenu() {
 }
 
 ModeMenu::~ModeMenu() {
-
+    
 }
 
 bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
-//    MODE_AB,
-//    MODE_WAVETABLE,
-//    MODE_MATRIX,
-//    MODE_DRUM,
+    //    MODE_AB,
+    //    MODE_WAVETABLE,
+    //    MODE_MATRIX,
+    //    MODE_DRUM,
     
-    if(key.getTextCharacter()=='o') {
+    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
         switch(currentState) {
             case MODE_AB:
                 break;
@@ -43,7 +43,7 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getTextCharacter()=='p') {
+    if(key.getKeyCode() == LEFT_ENCODER_CW) {
         switch(currentState) {
             case MODE_AB:
                 setState(MODE_WAVETABLE);
@@ -60,31 +60,35 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == juce::KeyPress::returnKey) {
+    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
-//            case MODE_AB:
-//                setState(MODE_WAVETABLE);
-//                break;
-//            case MODE_WAVETABLE:
-//                setState(MODE_MATRIX);
-//                break;
-//            case MODE_MATRIX:
-//                setState(MODE_DRUM);
-//                break;
+                //            case MODE_AB:
+                //                setState(MODE_WAVETABLE);
+                //                break;
+                //            case MODE_WAVETABLE:
+                //                setState(MODE_MATRIX);
+                //                break;
+                //            case MODE_MATRIX:
+                //                setState(MODE_DRUM);
+                //                break;
             case MODE_DRUM:
                 context.setState(&mainMenu);
                 break;
             default:
                 break;
-
+                
         }
     }
+    if(key.getKeyCode() == BACK_BUTTON) {
+        context.setState(&mainMenu);
+    }
+    
     return true;
 }
 
 void ModeMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
-
+    
     int y_offset = 32 - (22+2) / 2;
     int x_offset = 64 - (23+2) * 2;
     int row = 0;
@@ -95,7 +99,7 @@ void ModeMenu::paint(juce::Graphics& g) {
     //    MODE_WAVETABLE,
     //    MODE_MATRIX,
     //    MODE_DRUM,
-
+    
     switch(currentState) {
         case MODE_AB:
             caption = (char*)"AB WAVE";
@@ -112,22 +116,22 @@ void ModeMenu::paint(juce::Graphics& g) {
         default:
             break;
     }
-
+    
     Display::put_string_9x9(64-4*10/2,5,strlen(caption),"MODE");
     
     Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
-
+    
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_ab);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wavetable);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wave_matrix);
-
+    
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_drum);
-
+    
     
     switch(currentState) {
         case MODE_AB:

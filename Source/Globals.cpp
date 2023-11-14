@@ -14,6 +14,7 @@ Context context;
 MainMenu mainMenu;
 ModeMenu modeMenu;
 FxMenu fxMenu;
+Oscilloscope oscilloscope;
 Engine engine;
 Effect fx_engine;
 Effect osc_fx_engine;

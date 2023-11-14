@@ -19,6 +19,7 @@ public:
         SNH_SHAPE,
         RAMP_SHAPE,
         SAWTOOTH_SHAPE,
+        SQUARE_SHAPE,
     };
     enum EffectType {
         FM,

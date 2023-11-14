@@ -15,7 +15,7 @@ class Adc {
 public:
     Adc();
     ~Adc() {}
-    bool handleKeyPress(const juce::KeyPress &key);
+    bool handleKeyPress();
     inline uint16_t getChannel(int channel) { return values_[channel]; }
 private:
     int16_t values_[8];

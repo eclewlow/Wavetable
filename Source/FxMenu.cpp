@@ -28,7 +28,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
 //    FX_MENU_EDIT_WAVE,
 
     
-    if(key.getTextCharacter()=='o') {
+    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
         switch(currentState) {
             case FX_MENU_EDIT_DEPTH:
                 break;
@@ -57,7 +57,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getTextCharacter()=='p') {
+    if(key.getKeyCode() == LEFT_ENCODER_CW) {
         switch(currentState) {
 //            case MAIN_WAVE_DESIGN:
 //                setState(MODE_SELECT);
@@ -86,8 +86,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
-    if(key.getKeyCode() == juce::KeyPress::returnKey) {
+    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case FX_MENU_EDIT_DEPTH:
                 context.setState(&modeMenu);
@@ -96,7 +95,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == juce::KeyPress::escapeKey) {
+    if(key.getKeyCode() == BACK_BUTTON) {
         switch(currentState) {
             case FX_MENU_EDIT_DEPTH:
                 context.setState(&modeMenu);
