@@ -10,12 +10,16 @@
 
 #include "Globals.h"
 
-Context context;
 MainMenu mainMenu;
 ModeMenu modeMenu;
 FxMenu fxMenu;
 Oscilloscope oscilloscope;
+
+Context context;
 Engine engine;
-Effect fx_engine;
-Effect osc_fx_engine;
+
+EffectManager effect_manager;
+FM fm;
+PhaseDistortion phase_distortion;
+
 Adc adc;

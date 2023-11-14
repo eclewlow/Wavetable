@@ -13,7 +13,8 @@
 #include "Globals.h"
 
 FxMenu::FxMenu() {
-    setState(FX_MENU_EDIT_NONE);
+    setLeftState(FX_MENU_LEFT_FX);
+    setRightState(FX_MENU_RIGHT_MOD);
 }
 
 FxMenu::~FxMenu() {
@@ -21,88 +22,94 @@ FxMenu::~FxMenu() {
 }
 
 bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
-//    FX_MENU_EDIT_NONE
-//    FX_MENU_EDIT_DEPTH,
-//    FX_MENU_EDIT_RATIO,
-//    FX_MENU_EDIT_SYNC,
-//    FX_MENU_EDIT_WAVE,
 
-    
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
-        switch(currentState) {
-            case FX_MENU_EDIT_DEPTH:
+        switch(left_state_) {
+            case FX_MENU_LEFT_FX:
+                if(effect_manager.getEffect() == &fm) {
+                    effect_manager.setEffect(&phase_distortion);
+                }
+                else if(effect_manager.getEffect() == &phase_distortion) {
+                    effect_manager.setEffect(&fm);
+                }
                 break;
-//            case MODE_SELECT:
-//                setState(MAIN_WAVE_DESIGN);
-//                break;
-//            case FX_MANAGEMENT:
-//                setState(MODE_SELECT);
-//                break;
-//            case SUBOSCILLATOR_CONFIG:
-//                setState(FX_MANAGEMENT);
-//                break;
-//            case PLAYBACK_MONITORING:
-//                setState(SUBOSCILLATOR_CONFIG);
-//                break;
-//            case SNAPSHOTS_LIST:
-//                setState(PLAYBACK_MONITORING);
-//                break;
-//            case WAVETABLE_MANAGEMENT:
-//                setState(SNAPSHOTS_LIST);
-//                break;
-//            case MODULE_SETUP_CONFIG:
-//                setState(WAVETABLE_MANAGEMENT);
-//                break;
+            case FX_MENU_LEFT_DEPTH:
+                effect_manager.setDepth(effect_manager.getDepth()-0.1f);
+                break;
             default:
                 break;
         }
     }
     if(key.getKeyCode() == LEFT_ENCODER_CW) {
-        switch(currentState) {
-//            case MAIN_WAVE_DESIGN:
-//                setState(MODE_SELECT);
-//                break;
-//            case MODE_SELECT:
-//                setState(FX_MANAGEMENT);
-//                break;
-//            case FX_MANAGEMENT:
-//                setState(SUBOSCILLATOR_CONFIG);
-//                break;
-//            case SUBOSCILLATOR_CONFIG:
-//                setState(PLAYBACK_MONITORING);
-//                break;
-//            case PLAYBACK_MONITORING:
-//                setState(SNAPSHOTS_LIST);
-//                break;
-//            case SNAPSHOTS_LIST:
-//                setState(WAVETABLE_MANAGEMENT);
-//                break;
-//            case WAVETABLE_MANAGEMENT:
-//                setState(MODULE_SETUP_CONFIG);
-//                break;
-//            case MODULE_SETUP_CONFIG:
-//                break;
+        switch(left_state_) {
+            case FX_MENU_LEFT_FX:
+                if(effect_manager.getEffect() == &fm) {
+                    effect_manager.setEffect(&phase_distortion);
+                }
+                else if(effect_manager.getEffect() == &phase_distortion) {
+                    effect_manager.setEffect(&fm);
+                }
+                break;
+            case FX_MENU_LEFT_DEPTH:
+                effect_manager.setDepth(effect_manager.getDepth()+0.1f);
+                break;
             default:
                 break;
         }
     }
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
-        switch(currentState) {
-            case FX_MENU_EDIT_DEPTH:
-                context.setState(&modeMenu);
+        switch(left_state_) {
+            case FX_MENU_LEFT_FX:
+                setLeftState(FX_MENU_LEFT_DEPTH);
+                break;
+            case FX_MENU_LEFT_DEPTH:
+                setLeftState(FX_MENU_LEFT_FX);
+                break;
+            default:
+                break;
+        }
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        switch(right_state_) {
+            case FX_MENU_RIGHT_MOD:
+                if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
+                    break;
+                }
+                else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR) {
+                    setRightState(FX_MENU_RIGHT_SCALE);
+                    break;
+                }
+                else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
+                    setRightState(FX_MENU_RIGHT_WAVE);
+                    break;
+                }
+                break;
+            case FX_MENU_RIGHT_SCALE:
+                setRightState(FX_MENU_RIGHT_RANGE);
+                break;
+            case FX_MENU_RIGHT_WAVE:
+                setRightState(FX_MENU_RIGHT_SYNC);
+                break;
+            case FX_MENU_RIGHT_SYNC:
+                if(effect_manager.getSync()) {
+                    setRightState(FX_MENU_RIGHT_RATIO);
+                    break;
+                } else {
+                    setRightState(FX_MENU_RIGHT_FREQUENCY);
+                    break;
+                }
+                break;
+            case FX_MENU_RIGHT_RATIO:
+            case FX_MENU_RIGHT_FREQUENCY:
+            case FX_MENU_RIGHT_RANGE:
+                setRightState(FX_MENU_RIGHT_MOD);
                 break;
             default:
                 break;
         }
     }
     if(key.getKeyCode() == BACK_BUTTON) {
-        switch(currentState) {
-            case FX_MENU_EDIT_DEPTH:
-                context.setState(&modeMenu);
-                break;
-            default:
-                break;
-        }
+        context.setState(&mainMenu);
     }
 
     return true;
@@ -116,136 +123,47 @@ void FxMenu::paint(juce::Graphics& g) {
     int row = 0;
     int col = 0;
     char *caption;
-    
-    switch(currentState) {
-//        case MAIN_WAVE_DESIGN:
-//            caption = (char*)"AB WAVE";
-//            break;
-//        case MODE_SELECT:
-//            caption = (char*)"MODE";
-//            break;
-//        case FX_MANAGEMENT:
-//            caption = (char*)"FX";
-//            break;
-//        case SUBOSCILLATOR_CONFIG:
-//            caption = (char*)"SUB";
-//            break;
-//        case PLAYBACK_MONITORING:
-//            caption = (char*)"SCOPE";
-//            break;
-//        case SNAPSHOTS_LIST:
-//            caption = (char*)"SNAPSHOT";
-//            break;
-//        case WAVETABLE_MANAGEMENT:
-//            caption = (char*)"MANAGE";
-//            break;
-//        case MODULE_SETUP_CONFIG:
-//            caption = (char*)"CONFIG";
-//            break;
-        default:
-            break;
+    char *effectName;
+    if(effect_manager.getEffect()==&fm)
+    {
+        effectName = (char*)"FM";
     }
+    else if(effect_manager.getEffect()==&phase_distortion)
+    {
+        effectName = (char*)"PHDIST";
+    }
+//    else if(effect_manager.getEffect()==&fm)
+//    {
+//        effectName = "FM";
+//    }
+    int row_height = 9;
+    x_offset = 5;
+    Display::put_string_9x9(x_offset, y_offset, strlen("FX"), "FX");
+    
+    int centered_effect_name = (69 + 5 + 10 * 2) / 2 - strlen(effectName) * 6 / 2;
+    Display::put_string_5x5(centered_effect_name, y_offset + (row_height-5) / 2, strlen(effectName), effectName, left_state_ == FX_MENU_LEFT_FX);
+
+    
+    
+    x_offset += 64;
+    Display::put_string_9x9(x_offset, y_offset, strlen("MOD"), "MOD");
+
+    int graph_height = 22;
+    int graph_y_offset = y_offset + row_height + 1;
+    Display::outline_rectangle(0, graph_y_offset, 64 - 3, graph_height);
+    Display::outline_rectangle(64, graph_y_offset, 64 - 3, graph_height);
+    
     uint16_t tune = adc.getChannel(0);
     uint16_t fx_amount = adc.getChannel(1);
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
-    Display::Draw_Wave(0, 0, engine.GetWaveformData( tune,  fx_amount,  fx,  morph, &osc_fx_engine));
-    return;
-    //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
-    //    Display::put_string_9x9(0 + 1 + 1,
-    //                               0 + 1 + 1,
-    //                               8,
-    //                               "ABCDEFGH");
-    //    Display::put_string_9x9(0 + 1 + 1,
-    //                               10 + 1 + 1,
-    //                               8,
-    //                               "IJKLMNOP");
-    //    Display::put_string_9x9(0 + 1 + 1,
-    //                               20 + 1 + 1,
-    //                               8,
-    //                               "QRSTUVWX");
-    //    Display::put_string_9x9(0 + 1 + 1,
-    //                               30 + 1 + 1,
-    //                               8,
-    //                               "YZ012345");
-    //    Display::put_string_9x9(0 + 1 + 1,
-    //                               40 + 1 + 1,
-    //                               6,
-    //                               "6789_-");
+    Display::Draw_Wave(1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+    Display::Draw_Wave(64+1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
     
-    //    Display::put_image_16bit(100, 2, Graphic_icon_arrow_9x9, 9);
-    //
-    //    Display::put_image_16bit(100, 13, Graphic_icon_wave_hump, 15);
-    //    Display::put_image_16bit(100, 30, Graphic_icon_wave_square, 15);
-    //    Display::put_image_16bit(100, 47, Graphic_icon_delete_15x15, 15);
-    //    return;
-    //
-    Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
-    
-    //    Display::put_string_5x5(0,0,1,"A");
-    //    Display::put_string_5x5(10,0,1,"B");
-    //    Display::put_string_5x5(20,0,1,"CZ");
-    
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_ab);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_fx);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_sub);
-    
-    
-    row++;
-    col=0;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_oscilloscope);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_snapshots);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_wave_management);
-    
-    col++;
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_setup);
-    
-    switch(currentState) {
-//        case MAIN_WAVE_DESIGN:
-//            col = 0; row = 0;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case MODE_SELECT:
-//            col = 1; row = 0;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case FX_MANAGEMENT:
-//            col = 2; row = 0;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case SUBOSCILLATOR_CONFIG:
-//            col = 3; row = 0;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case PLAYBACK_MONITORING:
-//            col = 0; row = 1;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case SNAPSHOTS_LIST:
-//            col = 1; row = 1;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case WAVETABLE_MANAGEMENT:
-//            col = 2; row = 1;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-//        case MODULE_SETUP_CONFIG:
-//            col = 3; row = 1;
-//            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-//            break;
-        default:
-            break;
-    }
+    int depth_y_offset = graph_y_offset + graph_height + 2;
+    Display::put_string_5x5(1, depth_y_offset, strlen("DEPTH:"), "DEPTH:");
+
+    Display::put_string_5x5(strlen("DEPTH:")*6 + 1, depth_y_offset, strlen("25%"), "25%", left_state_ == FX_MENU_LEFT_DEPTH);
+
 }

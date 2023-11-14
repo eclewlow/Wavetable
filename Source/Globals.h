@@ -15,18 +15,28 @@
 #include "FxMenu.h"
 #include "Oscilloscope.h"
 
+#include "effect_manager.h"
+#include "fm.h"
+#include "phase_distortion.h"
+
 #include "Context.h"
 #include "Engine.h"
+
 #include "adc.h"
 
-extern Context context;
 extern MainMenu mainMenu;
 extern ModeMenu modeMenu;
 extern FxMenu fxMenu;
 extern Oscilloscope oscilloscope;
+
+extern Context context;
 extern Engine engine;
-extern Effect fx_engine;
-extern Effect osc_fx_engine;
+
+extern EffectManager effect_manager;
+extern FM fm;
+extern PhaseDistortion phase_distortion;
+//extern Effect fx_engine;
+//extern Effect osc_fx_engine;
 extern Adc adc;
 
 
@@ -74,11 +84,11 @@ inline double clamp(double input, double low, double high) {
 #define PITCH_POT_CCW           KEYCODE_A
 #define PITCH_POT_CW            KEYCODE_S
 
-#define FX_POT_CCW              KEYCODE_D
-#define FX_POT_CW               KEYCODE_F
+#define FX_AMOUNT_POT_CCW       KEYCODE_D
+#define FX_AMOUNT_POT_CW        KEYCODE_F
 
-#define FX_AMOUNT_POT_CCW       KEYCODE_G
-#define FX_AMOUNT_POT_CW        KEYCODE_H
+#define FX_POT_CCW              KEYCODE_G
+#define FX_POT_CW               KEYCODE_H
 
 #define MORPH_POT_CCW           KEYCODE_J
 #define MORPH_POT_CW            KEYCODE_K

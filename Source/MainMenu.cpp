@@ -96,6 +96,10 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case PLAYBACK_MONITORING:
                 context.setState(&oscilloscope);
+                break;
+            case FX_MANAGEMENT:
+                context.setState(&fxMenu);
+                break;
                 //            case MAIN_WAVE_DESIGN:
                 //                getContext()->setState(new ModeMenu());
                 //                break;

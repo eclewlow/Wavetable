@@ -26,7 +26,9 @@ MainComponent::MainComponent()
     
     context.setState(&mainMenu);
     engine.Init();
-    fx_engine.Init();
+    effect_manager.Init();
+    effect_manager.setEffect(&fm);
+//    fx_engine.Init();
     
     startTimer(100);
     
@@ -79,7 +81,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
-    engine.Render(out, out, size, tune, fx_amount, fx, morph, &fx_engine);
+    engine.Render(out, out, size, tune, fx_amount, fx, morph);
        
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {

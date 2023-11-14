@@ -20,6 +20,10 @@
         <GROUP id="{A383232E-843A-150E-A217-239D65BAB750}" name="fx">
           <FILE id="KQYpDJ" name="effect.cpp" compile="1" resource="0" file="Source/effect.cpp"/>
           <FILE id="D0FYxC" name="effect.h" compile="0" resource="0" file="Source/effect.h"/>
+          <FILE id="Jaz5ww" name="effect_manager.cpp" compile="1" resource="0"
+                file="Source/effect_manager.cpp"/>
+          <FILE id="lLkfxd" name="effect_manager.h" compile="0" resource="0"
+                file="Source/effect_manager.h"/>
           <FILE id="qGvsSN" name="fm.cpp" compile="1" resource="0" file="Source/fm.cpp"/>
           <FILE id="Nix1lY" name="fm.h" compile="0" resource="0" file="Source/fm.h"/>
           <FILE id="T62Xez" name="phase_distortion.cpp" compile="1" resource="0"

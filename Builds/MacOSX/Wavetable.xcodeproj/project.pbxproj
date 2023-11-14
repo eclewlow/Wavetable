@@ -18,6 +18,7 @@
 		247F7A416B73C7A5C20B13E5 /* ring_modulator.cpp */ = {isa = PBXBuildFile; fileRef = 358FCF0052132F10C6541ABF; };
 		2485CB36FB363800D7C0D181 /* MainMenu.cpp */ = {isa = PBXBuildFile; fileRef = E1C7046B730C3C06FEE408B0; };
 		291BFF969B3969A4D8A6C3B3 /* Oscilloscope.cpp */ = {isa = PBXBuildFile; fileRef = 5B91C137AE2665F4CD2678D8; };
+		29EAF9BD60E54FC449DF3454 /* effect_manager.cpp */ = {isa = PBXBuildFile; fileRef = EED6C95E1A6E6695470DBD63; };
 		30036A3431A50F54B8E95ABA /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = C8CD861EB0C193949B5290A7; };
 		360639B97082A4C1965FA861 /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = BAD69672F943AE131BDFBB3E; };
 		37FE368C5B255838D1EB5383 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = C6A3645CA5DC778E1259A961; };
@@ -91,6 +92,7 @@
 		3F66F2025D6CA01E6A216E3A /* Context.cpp */ /* Context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../Source/Context.cpp; sourceTree = SOURCE_ROOT; };
 		46A7BFC0375227442070AC3C /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
 		4D8B08DA73C4BA56C7E97697 /* ModeMenu.h */ /* ModeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModeMenu.h; path = ../../Source/ModeMenu.h; sourceTree = SOURCE_ROOT; };
+		50574715D6AA16E2DB76716B /* effect_manager.h */ /* effect_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = effect_manager.h; path = ../../Source/effect_manager.h; sourceTree = SOURCE_ROOT; };
 		54BAFA5EF43B2106E68E22CF /* phase_modulation.h */ /* phase_modulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = phase_modulation.h; path = ../../Source/phase_modulation.h; sourceTree = SOURCE_ROOT; };
 		58F6F8D3E7B824C7B0F472D9 /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
 		5B91C137AE2665F4CD2678D8 /* Oscilloscope.cpp */ /* Oscilloscope.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Oscilloscope.cpp; path = ../../Source/Oscilloscope.cpp; sourceTree = SOURCE_ROOT; };
@@ -144,6 +146,7 @@
 		E495D2C0D5DB7155F14B887B /* AudioToolbox.framework */ /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E50EC1842C1ADDB660EA7E1E /* Context.h */ /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Context.h; path = ../../Source/Context.h; sourceTree = SOURCE_ROOT; };
 		ED2D1C0CC5349F48DDCB58EC /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_gui_extra"; sourceTree = "<absolute>"; };
+		EED6C95E1A6E6695470DBD63 /* effect_manager.cpp */ /* effect_manager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = effect_manager.cpp; path = ../../Source/effect_manager.cpp; sourceTree = SOURCE_ROOT; };
 		F0FBA0DF3BFDFE77B9A79E6A /* include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		F16B6981CEBD543A1BF8E84E /* adc.cpp */ /* adc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = adc.cpp; path = ../../Source/adc.cpp; sourceTree = SOURCE_ROOT; };
 		F20EBE7C6BB0264FBEFDF1FD /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -256,6 +259,8 @@
 			children = (
 				92A0B00CDC376ACD8A908BBA,
 				9AF20A70518F709DA6622BBB,
+				EED6C95E1A6E6695470DBD63,
+				50574715D6AA16E2DB76716B,
 				BF31EB588EC6A97E8FF36216,
 				FE972401DF03BE6B5653FB1B,
 				8A8A3AA3A426897E2704DDB0,
@@ -454,6 +459,7 @@
 				6EC37FB8C3B8DE65E38E342B,
 				386626AC9E6E002BB1CA3272,
 				178C4C8089F471D37E9ABD7F,
+				29EAF9BD60E54FC449DF3454,
 				59DAAD93958B48E65E01DFEF,
 				802DF1F6EF2AC8B8BF70CF9C,
 				F2F301CD63A9C39AF3810E15,

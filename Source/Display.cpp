@@ -59,19 +59,39 @@ void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
     }
 }
 
-void Display::Draw_Wave(uint8_t x, uint8_t y, int16_t* waveform_data) {
-    for(int i = 0; i < 2048; i++) {
-        //Setting the bit
-        int x = i >> 4;
-        int y = 32 + waveform_data[i] / 1024;
-        Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
-        while(y > 32) {
-            y--;
-            Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, bool shade) {
+    uint8_t last_x = 0;
+    uint8_t last_y = 0;
+    for(int i = 0; i < width; i++) {
+
+        float average = 0;
+
+        for(int j = i * 2048 / width; j < i * 2048 / width + 2048 / width; j++) {
+            average += waveform_data[j];
         }
-        while(y < 32) {
-            y++;
-            Display::framebuffer[y>>3][x]|=(0x01 << (y&0x07));
+        average /= (2048 / width);
+        
+        int col = i + x;
+
+        int center = y + height / 2;
+        int row = center + static_cast<int>((average / 32768.0) * (height / 2));
+        if(i == 0) {
+            Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+        } else {
+            Display::LCD_Line(last_x, last_y, i + x, row, true);
+        }
+        last_x = i + x;
+        last_y = row;
+
+        if(shade) {
+            while(row > center) {
+                row--;
+                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+            }
+            while(row < center) {
+                row++;
+                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+            }
         }
     }
 }
@@ -99,7 +119,8 @@ void Display::LCD_Line(uint8_t x0, uint8_t y0,
     
     for (;;)
     {
-        Display::Put_Pixel(x0, y0, set);
+        if(x0 < 128 && y0 < 64)
+            Display::Put_Pixel(x0, y0, set);
         if ((x0 == x1) && (y0 == y1))
             break;
         e2 = err;
@@ -249,12 +270,8 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         {
             //Get the font data, convert it to a word and shift it down. Leave
             //one blank row of pixels above as a spacer.
-            if(inverted)
-                Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07)^0x3F80;
-            else {
-                Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
-                Pixel_Data.as_word >>= 3;
-            }
+            Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
+            Pixel_Data.as_word >>= 3;
                             
             //Set the correct bits in this row and the next row down.
             LCD_Memory[0]|=Pixel_Data.as_bytes[0];
@@ -266,9 +283,11 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         }
             LCD_Memory++;
     }
+    if(inverted)
+        Display::invert_rectangle(x - 1, y - 1, 6 * Field_Width + 1, 7);
 }
 
-void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input)
+void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted)
 {
     uint8_t
     Terminator_Found;
@@ -324,6 +343,9 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         }
         LCD_Memory++;
     }
+    if(inverted)
+        Display::invert_rectangle(x - 1, y - 1, 10 * Field_Width + 1, 12);
+
 }
 
 void Display::put_image_16bit(uint8_t x, uint8_t y, const uint8_t image[][2], uint8_t width)
@@ -463,4 +485,17 @@ void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
       LCD_Memory_2++;
       }
     }
+  }
+
+//============================================================================
+void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+  {
+    uint8_t x1 = x;
+    uint8_t y1 = y;
+    uint8_t x2 = x + width;
+    uint8_t y2 = y + height;
+    Display::LCD_Line(x1+1,y1,x2-1,y1,1);
+    Display::LCD_Line(x1+1,y2,x2-1,y2,1);
+    Display::LCD_Line(x1,y1,x1,y2,1);
+    Display::LCD_Line(x2,y1,x2,y2,1);
   }

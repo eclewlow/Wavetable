@@ -87,6 +87,18 @@ bool Oscilloscope::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+//        uint16_t tune = adc.getChannel(0);
+//        uint16_t fx_amount = adc.getChannel(1);
+//        uint16_t fx = adc.getChannel(2);
+//        uint16_t morph = adc.getChannel(3);
+//
+//        int16_t* wavedata = engine.GetWaveformData( tune,  fx_amount,  fx,  morph);
+//        printf("=======================");
+//        for(int i = 0; i < 2048; i++) {
+//            printf("%i\n", wavedata[i]);
+//        }
+//        printf("=======================");
+
         switch(currentState) {
             case OSCILLOSCOPE_STATE_NONE:
 //                context.setState(&modeMenu);
@@ -150,7 +162,7 @@ void Oscilloscope::paint(juce::Graphics& g) {
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
-    Display::Draw_Wave(0, 0, engine.GetWaveformData( tune,  fx_amount,  fx,  morph, &osc_fx_engine));
+    Display::Draw_Wave(0, 0, 128, 64, engine.GetWaveformData( tune,  fx_amount,  fx,  morph), true);
     return;
     //    Display::put_string_5x5(0,0,16,"ABCDEFGHIJKLMNOP");
     //    Display::put_string_9x9(0 + 1 + 1,

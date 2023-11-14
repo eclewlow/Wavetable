@@ -61,7 +61,7 @@ public:
     static void paint(juce::Graphics& g);
     static void clear_screen();
     static void Put_Pixel(uint8_t x, uint8_t y, uint8_t set);
-    static void Draw_Wave(uint8_t x, uint8_t y, int16_t* waveform_data);
+    static void Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, bool shade=false);
     static void LCD_Line(uint8_t x0, uint8_t y0,
                   uint8_t x1, uint8_t y1,
                          uint8_t set);
@@ -75,8 +75,9 @@ public:
     
     static void put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
     static void put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
-    static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
-
+    static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
+    static void outline_rectangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+    
     typedef union
       {
       uint8_t

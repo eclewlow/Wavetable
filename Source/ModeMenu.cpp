@@ -119,7 +119,7 @@ void ModeMenu::paint(juce::Graphics& g) {
     
     Display::put_string_9x9(64-4*10/2,5,strlen(caption),"MODE");
     
-    Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
+    Display::put_string_9x9(64-strlen(caption)*10/2,64-13,strlen(caption),caption);
     
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_ab);
     
