@@ -85,12 +85,13 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case DEVICE_INFO:
-//                setState(DEVICE_DISPLAY);
+                context.setState(&infoMenu);
                 break;
             case DEVICE_DISPLAY:
-//                setState(DEVICE_OSCILLOSCOPE);
+                context.setState(&displayConfigurationMenu);
                 break;
             case DEVICE_OSCILLOSCOPE:
+                context.setState(&oscilloscopeConfigurationMenu);
 //                setState(DEVICE_IO);
                 break;
             case DEVICE_IO:

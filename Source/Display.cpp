@@ -9,6 +9,7 @@
 */
 
 #include "Display.h"
+#include "Globals.h"
 
 uint8_t Display::framebuffer[8][128];
 
@@ -24,6 +25,16 @@ void Display::paint(juce::Graphics& g)
 {
     g.setColour(juce::Colour(0xFF, 0xFF, 0xFF));
     g.fillRect(0, 0, 128, 64);
+    
+    if(user_settings.getInvert()) {
+        for(int page=0;page<8;page++)
+        {
+            for(int column=0;column<128;column++)
+            {
+                framebuffer[page][column] = ~framebuffer[page][column];
+            }
+        }
+    }
     
     for(int page=0;page<8;page++)
     {

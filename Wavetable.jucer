@@ -6,6 +6,9 @@
               defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
   <MAINGROUP id="QXUmXo" name="Wavetable">
     <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
+      <FILE id="RBIL0J" name="UserSettings.cpp" compile="1" resource="0"
+            file="Source/UserSettings.cpp"/>
+      <FILE id="U2uLnx" name="UserSettings.h" compile="0" resource="0" file="Source/UserSettings.h"/>
       <GROUP id="{489D4EC3-8384-4F8D-8D52-F49B86ACA840}" name="drivers">
         <FILE id="qBY66H" name="adc.cpp" compile="1" resource="0" file="Source/adc.cpp"/>
         <FILE id="cK3RiG" name="adc.h" compile="0" resource="0" file="Source/adc.h"/>

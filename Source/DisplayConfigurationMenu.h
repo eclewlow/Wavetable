@@ -9,3 +9,30 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+#include "State.h"
+
+class State;
+
+class DisplayConfigurationMenu: public State
+{
+public:
+    enum DisplayConfigurationMenuState {
+        DISPLAY_MENU_BRIGHTNESS,
+        DISPLAY_MENU_CONTRAST,
+        DISPLAY_MENU_INVERT,
+        DISPLAY_MENU_SCOPE,
+
+//        FX_MENU_LEFT_DEPTH,
+    };
+    DisplayConfigurationMenu();
+    ~DisplayConfigurationMenu();
+    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual void paint(juce::Graphics& g);
+    inline void setState(DisplayConfigurationMenuState state) { state_ = state; }
+
+private:
+    DisplayConfigurationMenuState state_;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DisplayConfigurationMenu);
+};

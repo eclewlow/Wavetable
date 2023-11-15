@@ -68,10 +68,18 @@ public:
     inline float getDepth() { return depth; }
     inline void setDepth(float newDepth) { depth = std::clamp(newDepth, 0.0f, 1.0f); }
 
+    inline int getScale() { return scale_; }
+    inline void setScale(int scale) { scale_ = std::clamp<int>(scale, 0, 100); }
+
+    inline int getRange() { return range_; }
+    inline void setRange(int range) { range_ = std::clamp<int>(range, 1, 10); }
+
 protected:
     float depth;
     bool sync;
     float ratio_;
+    int scale_;
+    int range_;
     OscillatorShape oscillatorShape;
     EffectType effectType;
     ControlType controlType;

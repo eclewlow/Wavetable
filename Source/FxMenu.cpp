@@ -103,7 +103,12 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
             case FX_MENU_RIGHT_SYNC:
                 effect_manager.setSync(!effect_manager.getSync());
                 break;
-
+            case FX_MENU_RIGHT_RANGE:
+                effect_manager.setRange(effect_manager.getRange() - 1);
+                break;
+            case FX_MENU_RIGHT_SCALE:
+                effect_manager.setScale(effect_manager.getScale() - 1);
+                break;
             case FX_MENU_RIGHT_WAVE:
                 if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
                 {
@@ -149,6 +154,12 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case FX_MENU_RIGHT_SYNC:
                 effect_manager.setSync(!effect_manager.getSync());
+                break;
+            case FX_MENU_RIGHT_RANGE:
+                effect_manager.setRange(effect_manager.getRange() + 1);
+                break;
+            case FX_MENU_RIGHT_SCALE:
+                effect_manager.setScale(effect_manager.getScale() + 1);
                 break;
             case FX_MENU_RIGHT_WAVE:
                 if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
@@ -400,5 +411,20 @@ void FxMenu::paint(juce::Graphics& g) {
                 snprintf(rs_strings, 5, "%.0f", frequency);
             Display::put_string_5x5(64 + 6*6+1, depth_y_offset, strlen(rs_strings), rs_strings, right_state_ == FX_MENU_RIGHT_FREQUENCY);
         }
+    }
+    else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR) {
+        // TODO: draw incoming ADC FX CV value
+//        Display::Draw_Wave(64+1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+        char line[20];
+        snprintf(line, 20, "%d", effect_manager.getScale());
+
+        row_height = 7;
+        Display::put_string_5x5(64, depth_y_offset, strlen("SCALE:"), "SCALE:");
+        Display::put_string_5x5(64+6*6, depth_y_offset, strlen(line), line, right_state_ == FX_MENU_RIGHT_SCALE);
+        depth_y_offset += row_height;
+        
+        snprintf(line, 20, "~%dV", effect_manager.getRange());
+        Display::put_string_5x5(64, depth_y_offset, strlen("RANGE:"), "RANGE:");
+        Display::put_string_5x5(64+6*6, depth_y_offset, strlen(line), line, right_state_ == FX_MENU_RIGHT_RANGE);
     }
 }

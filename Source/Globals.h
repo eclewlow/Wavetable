@@ -16,6 +16,9 @@
 #include "Oscilloscope.h"
 #include "ControlStatusMenu.h"
 #include "DeviceConfigurationMenu.h"
+#include "InfoMenu.h"
+#include "DisplayConfigurationMenu.h"
+#include "OscilloscopeConfigurationMenu.h"
 
 #include "effect_manager.h"
 #include "fm.h"
@@ -28,6 +31,7 @@
 
 #include "Context.h"
 #include "Engine.h"
+#include "UserSettings.h"
 
 #include "adc.h"
 
@@ -37,9 +41,13 @@ extern FxMenu fxMenu;
 extern Oscilloscope oscilloscope;
 extern ControlStatusMenu controlStatusMenu;
 extern DeviceConfigurationMenu deviceConfigurationMenu;
+extern InfoMenu infoMenu;
+extern DisplayConfigurationMenu displayConfigurationMenu;
+extern OscilloscopeConfigurationMenu oscilloscopeConfigurationMenu;
 
 extern Context context;
 extern Engine engine;
+extern UserSettings user_settings;
 
 extern EffectManager effect_manager;
 extern FM fm;

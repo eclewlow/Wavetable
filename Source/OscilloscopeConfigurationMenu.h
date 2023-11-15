@@ -9,3 +9,19 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+#include "State.h"
+
+class State;
+
+class OscilloscopeConfigurationMenu: public State
+{
+public:
+    OscilloscopeConfigurationMenu();
+    ~OscilloscopeConfigurationMenu();
+    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual void paint(juce::Graphics& g);
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscilloscopeConfigurationMenu);
+};

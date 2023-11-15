@@ -16,9 +16,13 @@ FxMenu fxMenu;
 Oscilloscope oscilloscope;
 ControlStatusMenu controlStatusMenu;
 DeviceConfigurationMenu deviceConfigurationMenu;
+InfoMenu infoMenu;
+DisplayConfigurationMenu displayConfigurationMenu;
+OscilloscopeConfigurationMenu oscilloscopeConfigurationMenu;
 
 Context context;
 Engine engine;
+UserSettings user_settings;
 
 EffectManager effect_manager;
 FM fm;

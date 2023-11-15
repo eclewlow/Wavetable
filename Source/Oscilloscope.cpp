@@ -76,7 +76,8 @@ void Oscilloscope::paint(juce::Graphics& g) {
     int y = 2;
     int height = 40;
     Display::outline_rectangle(x, y, width, height);
-    Display::Draw_Wave(x, y, width, height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+    
+    Display::Draw_Wave(x, y, width, height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph), user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
     
     std::string note_letter = "C C#D D#E F F#G G#A A#B ";
     int note_index = note % 12;
