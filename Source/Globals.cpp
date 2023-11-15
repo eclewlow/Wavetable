@@ -21,5 +21,7 @@ Engine engine;
 EffectManager effect_manager;
 FM fm;
 PhaseDistortion phase_distortion;
+RingModulator ring_modulator;
+Wavefolder wavefolder;
 
 Adc adc;

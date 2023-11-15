@@ -18,6 +18,8 @@
 #include "effect_manager.h"
 #include "fm.h"
 #include "phase_distortion.h"
+#include "ring_modulator.h"
+#include "wavefolder.h"
 
 #include "Context.h"
 #include "Engine.h"
@@ -35,6 +37,8 @@ extern Engine engine;
 extern EffectManager effect_manager;
 extern FM fm;
 extern PhaseDistortion phase_distortion;
+extern RingModulator ring_modulator;
+extern Wavefolder wavefolder;
 //extern Effect fx_engine;
 //extern Effect osc_fx_engine;
 extern Adc adc;

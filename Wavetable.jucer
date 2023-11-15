@@ -18,6 +18,10 @@
                 file="Source/4x_downsampler.h"/>
         </GROUP>
         <GROUP id="{A383232E-843A-150E-A217-239D65BAB750}" name="fx">
+          <FILE id="oj5IL4" name="bitcrusher.cpp" compile="1" resource="0" file="Source/bitcrusher.cpp"/>
+          <FILE id="eNbmLP" name="bitcrusher.h" compile="0" resource="0" file="Source/bitcrusher.h"/>
+          <FILE id="JnqCIr" name="drive.cpp" compile="1" resource="0" file="Source/drive.cpp"/>
+          <FILE id="zSWkcq" name="drive.h" compile="0" resource="0" file="Source/drive.h"/>
           <FILE id="KQYpDJ" name="effect.cpp" compile="1" resource="0" file="Source/effect.cpp"/>
           <FILE id="D0FYxC" name="effect.h" compile="0" resource="0" file="Source/effect.h"/>
           <FILE id="Jaz5ww" name="effect_manager.cpp" compile="1" resource="0"
@@ -30,16 +34,14 @@
                 file="Source/phase_distortion.cpp"/>
           <FILE id="LhX9Mk" name="phase_distortion.h" compile="0" resource="0"
                 file="Source/phase_distortion.h"/>
-          <FILE id="cNJir5" name="phase_modulation.cpp" compile="1" resource="0"
-                file="Source/phase_modulation.cpp"/>
-          <FILE id="BZNYHh" name="phase_modulation.h" compile="0" resource="0"
-                file="Source/phase_modulation.h"/>
           <FILE id="cMqi9o" name="ring_modulator.cpp" compile="1" resource="0"
                 file="Source/ring_modulator.cpp"/>
           <FILE id="YUl0Ay" name="ring_modulator.h" compile="0" resource="0"
                 file="Source/ring_modulator.h"/>
           <FILE id="JhdFo6" name="wavefolder.cpp" compile="1" resource="0" file="Source/wavefolder.cpp"/>
           <FILE id="nuX1Ia" name="wavefolder.h" compile="0" resource="0" file="Source/wavefolder.h"/>
+          <FILE id="zcqjMS" name="wavewrapper.cpp" compile="1" resource="0" file="Source/wavewrapper.cpp"/>
+          <FILE id="qAs4Tv" name="wavewrapper.h" compile="0" resource="0" file="Source/wavewrapper.h"/>
         </GROUP>
         <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
         <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>

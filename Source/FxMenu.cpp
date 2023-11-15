@@ -27,10 +27,16 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
-                    effect_manager.setEffect(&phase_distortion);
+                    effect_manager.setEffect(&wavefolder);
+                }
+                else if(effect_manager.getEffect() == &ring_modulator) {
+                    effect_manager.setEffect(&fm);
                 }
                 else if(effect_manager.getEffect() == &phase_distortion) {
-                    effect_manager.setEffect(&fm);
+                    effect_manager.setEffect(&ring_modulator);
+                }
+                else if(effect_manager.getEffect() == &wavefolder) {
+                    effect_manager.setEffect(&phase_distortion);
                 }
                 break;
             case FX_MENU_LEFT_DEPTH:
@@ -44,9 +50,15 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
+                    effect_manager.setEffect(&ring_modulator);
+                }
+                else if(effect_manager.getEffect() == &ring_modulator) {
                     effect_manager.setEffect(&phase_distortion);
                 }
                 else if(effect_manager.getEffect() == &phase_distortion) {
+                    effect_manager.setEffect(&wavefolder);
+                }
+                else if(effect_manager.getEffect() == &wavefolder) {
                     effect_manager.setEffect(&fm);
                 }
                 break;
@@ -101,7 +113,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 break;
             case FX_MENU_RIGHT_RATIO:
-                effect_manager.setRatio(effect_manager.getRatio()-1);
+//                effect_manager.setRatio(effect_manager.getRatio()-1);
                 break;
             default:
                 break;
@@ -147,7 +159,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 break;
             case FX_MENU_RIGHT_RATIO:
-                effect_manager.setRatio(effect_manager.getRatio()+1);
+//                effect_manager.setRatio(effect_manager.getRatio()+1);
                 break;
             default:
                 break;
@@ -227,11 +239,19 @@ void FxMenu::paint(juce::Graphics& g) {
     {
         effectName = (char*)"FM";
     }
+    else if(effect_manager.getEffect()==&ring_modulator)
+    {
+        effectName = (char*)"RM";
+    }
     else if(effect_manager.getEffect()==&phase_distortion)
     {
         effectName = (char*)"PHDIST";
     }
-    
+    else if(effect_manager.getEffect()==&wavefolder)
+    {
+        effectName = (char*)"FOLD";
+    }
+
     int row_height = 9;
     x_offset = 5;
     Display::put_string_9x9(x_offset, y_offset, strlen("FX"), "FX");
@@ -328,8 +348,19 @@ void FxMenu::paint(juce::Graphics& g) {
         depth_y_offset += row_height;
         
         if(effect_manager.getSync()) {
+            float ratio;
+            if(fx * 25.0f / 4095 < 10.0f)
+                ratio = int(fx * 25.0f / 4095) / 10.0f;
+            else {
+                ratio = int(fx*25.0f/4095) - 9;
+            }
+
             Display::put_string_5x5(64, depth_y_offset, strlen("RATIO:"), "RATIO:");
-            snprintf(rs_strings, 5, "X%d", effect_manager.getRatio());
+            if(ratio < 1.0f) {
+                snprintf(rs_strings, 5, "X%.2f", ratio);
+            }
+            else
+                snprintf(rs_strings, 5, "X%.0f", ratio);
             Display::put_string_5x5(64 + 6*6+1, depth_y_offset, strlen(rs_strings), rs_strings, right_state_ == FX_MENU_RIGHT_RATIO);
         } else {
             float frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);

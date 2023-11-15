@@ -24,7 +24,7 @@ float FM::GetSample(float phase) {
     return sample;
 }
 
-float FM::RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float FM::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
     return sample;
 }
 
@@ -51,42 +51,42 @@ float FM::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
+
+    if(!effect_manager.getSync())
+        frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
+    else {
+        if(fx * 25.0f / 4095 < 10.0f)
+            frequency *= (int(fx * 25.0f / 4095) / 10.0f);
+        else {
+            frequency *= (int(fx*25.0f/4095) - 9);
+        }
+    }
+    phaseIncrement = frequency / 48000.0f;
+    
+    float *target_phase;
+
+    if(isOscilloscope)
+        target_phase = &oscilloscopePhase;
+    else
+        target_phase = &phase;
     
     switch(effect_manager.getControlType()) {
-        case EffectManager::INTERNAL_MODULATOR: {
-            if(!effect_manager.getSync()) {
-                // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-                //                (440 / 32) * 2 ^(-x / 12.0) = 0.13
-                //                0.13 * 32 / 440 = 2^(-x/12.0)
-                //                log2(.00945454545454545) = =-x/12.0
-                //                -6.725 = -x/12.0
-                //                x = 80.7
-                //0.13...4189
-                // 2^(0 x X) = 0.13, log2 = -2.9434.. -3
-                // 2^(1 x X) = 4189  log2 = 12.032
-                //                1 * 15 - 3
-                float frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
-                float phaseIncrement = frequency / 48000.0f;
-                
-                if(isOscilloscope) {
-                    float sample = GetSample(oscilloscopePhase);
-                    oscilloscopePhase += phaseIncrement;
-                    if(oscilloscopePhase >= 1.0)
-                        oscilloscopePhase -= 1.0;
-                    adjusted_phase = input_phase + amount * sample;
-                } else {
-                    float sample = GetSample(phase);
-                    phase += phaseIncrement;
-                    if(phase >= 1.0)
-                        phase -= 1.0;
-                    adjusted_phase = input_phase + amount * sample;
-                }
-                
-                while(adjusted_phase >= 1.0)
-                    adjusted_phase -= 1.0;
-                while(adjusted_phase < 0.0)
-                    adjusted_phase += 1.0;
-            }
+        case EffectManager::INTERNAL_MODULATOR:
+        {
+            float sample = 0.0f;
+            
+            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
+                sample = GetSine(*target_phase);
+            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
+                sample = GetSawtooth(*target_phase, phaseIncrement);
+            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
+                sample = GetSquare(*target_phase, phaseIncrement);
+            
+            *target_phase += phaseIncrement;
+            if(*target_phase >= 1.0)
+                *target_phase -= 1.0;
+            adjusted_phase = input_phase + amount * sample;
+            
             break;
         }
         case EffectManager::EXTERNAL_MODULATOR:
@@ -95,6 +95,10 @@ float FM::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount
         }
         case EffectManager::MANUAL_CONTROL:
         {
+            float sample = 2.0 * fx / 4095.0 - 1.0;//-1 to 1;
+
+            adjusted_phase = input_phase + amount * sample;
+
             break;
         }
         default:
@@ -103,6 +107,12 @@ float FM::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount
         }
     }
     
+    
+    while(adjusted_phase >= 1.0)
+        adjusted_phase -= 1.0;
+    while(adjusted_phase < 0.0)
+        adjusted_phase += 1.0;
+
     
     return adjusted_phase;
     

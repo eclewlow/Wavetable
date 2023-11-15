@@ -16,6 +16,7 @@ void EffectManager::Init() {
     oscillatorShape = SINE_SHAPE;
     effectType = FM;
     controlType = INTERNAL_MODULATOR;
+    ratio_ = 0.1f;
 }
 
 void EffectManager::Reset() {
@@ -24,6 +25,7 @@ void EffectManager::Reset() {
     oscillatorShape = SINE_SHAPE;
     effectType = FM;
     controlType = INTERNAL_MODULATOR;
+    ratio_ = 0.1f;
 }
 
 float EffectManager::RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {

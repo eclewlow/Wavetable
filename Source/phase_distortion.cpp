@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    phase_distortion.cpp
-    Created: 13 Nov 2023 6:31:26pm
-    Author:  Eugene Clewlow
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ phase_distortion.cpp
+ Created: 13 Nov 2023 6:31:26pm
+ Author:  Eugene Clewlow
+ 
+ ==============================================================================
+ */
 
 #include "phase_distortion.h"
 
@@ -26,7 +26,7 @@ float PhaseDistortion::GetSample(float phase) {
     return sample;
 }
 
-float PhaseDistortion::RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float PhaseDistortion::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
     return sample;
 }
 
@@ -44,7 +44,7 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
     // if control type == external oscillator
     //      the coefficient is a value from -1... 1 based on adc.channel(4+2)   2xadc_value / 4095.0 - 1.0... NO fx knob acts as attenuator, so the adc value is scaled down. (fxKnobval / 4095.0) * (2xcv_value / 4095.0 - 1.0)
     
-//    float frequency =
+    //    float frequency =
     // calculate amount is fx amount (converted to 1.0) * depth
     // tune / 4095.0 * 10 octaves
     uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
@@ -54,70 +54,45 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
     
+    float warpedPos;
+    float m1, m2, b2;
+    float x1 = 0.2;
+    
+    if(!effect_manager.getSync())
+        frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
+    else {
+        if(fx * 25.0f / 4095 < 10.0f)
+            frequency *= (int(fx * 25.0f / 4095) / 10.0f);
+        else {
+            frequency *= (int(fx*25.0f/4095) - 9);
+        }
+    }
+    
+    phaseIncrement = frequency / 48000.0f;
+    
+    float *target_phase;
+    
+    if(isOscilloscope)
+        target_phase = &oscilloscopePhase;
+    else
+        target_phase = &phase;
+    
+    
     switch(effect_manager.getControlType()) {
         case EffectManager::INTERNAL_MODULATOR: {
-            if(!effect_manager.getSync()) {
-                float warpedPos;
-                float m1, m2, b2;
-                float x1 = 0.2;
-                
-                float frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
-                float phaseIncrement = frequency / 48000.0f;
-                
-                if(isOscilloscope) {
-                    x1 = (amount * GetSample(oscilloscopePhase) + 1.0f) / 2.0f;
-                    oscilloscopePhase += phaseIncrement;
-                    if(oscilloscopePhase >= 1.0)
-                        oscilloscopePhase -= 1.0;
-                }
-                else {
-                    x1 = (amount * GetSample(phase) + 1.0f) / 2.0f;
-                    phase += phaseIncrement;
-                    if(phase >= 1.0)
-                        phase -= 1.0;
-                }
-                
-                m1 = .5 / x1;
-                m2 = .5 / (1.0 - x1);
-                b2 = 1.0 - m2;
-                
-                if(input_phase < x1) {
-                    warpedPos = m1 * input_phase;
-                } else {
-                    warpedPos = m2 * input_phase + b2;
-                }
-                adjusted_phase = warpedPos;
-
-                while(adjusted_phase >= 1.0)
-                    adjusted_phase -= 1.0;
-                while(adjusted_phase < 0.0)
-                    adjusted_phase += 1.0;
-
-                // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-//                (440 / 32) * 2 ^(-x / 12.0) = 0.13
-//                0.13 * 32 / 440 = 2^(-x/12.0)
-//                log2(.00945454545454545) = =-x/12.0
-//                -6.725 = -x/12.0
-//                x = 80.7
-                //0.13...4189
-                // 2^(0 x X) = 0.13, log2 = -2.9434.. -3
-                // 2^(1 x X) = 4189  log2 = 12.032
-//                1 * 15 - 3
-//                float frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
-//                frequency = 220.0f/64.0f;
-//                float phaseIncrement = frequency / 48000.0f;
-//
-//                float sample = GetSample(phase);
-//                phase += phaseIncrement;
-//                if(phase >= 1.0)
-//                    phase -= 1.0;
-//                adjusted_phase = (0.5 * sample + 1.0) / 2.0;
-//                printf("%f\n", adjusted_phase);
-//                while(adjusted_phase >= 1.0)
-//                    adjusted_phase -= 1.0;
-//                while(adjusted_phase < 0.0)
-//                    adjusted_phase += 1.0;
-            }
+            
+            
+            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
+                x1 = (amount * GetSine(*target_phase) + 1.0f) / 2.0f;
+            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
+                x1 = (amount * GetSawtooth(*target_phase, phaseIncrement) + 1.0f) / 2.0f;
+            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
+                x1 = (amount * GetSquare(*target_phase, phaseIncrement) + 1.0f) / 2.0f;
+            
+            *target_phase += phaseIncrement;
+            if(*target_phase >= 1.0)
+                *target_phase -= 1.0;
+            
             break;
         }
         case EffectManager::EXTERNAL_MODULATOR:
@@ -126,6 +101,8 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
         }
         case EffectManager::MANUAL_CONTROL:
         {
+            x1 = 0.5f + amount * (1.0f * fx / 4095.0f - 0.5f);
+
             break;
         }
         default:
@@ -133,9 +110,24 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
             break;
         }
     }
-
+    
+    m1 = .5 / x1;
+    m2 = .5 / (1.0 - x1);
+    b2 = 1.0 - m2;
+    
+    if(input_phase < x1) {
+        warpedPos = m1 * input_phase;
+    } else {
+        warpedPos = m2 * input_phase + b2;
+    }
+    adjusted_phase = warpedPos;
+    
+    while(adjusted_phase >= 1.0)
+        adjusted_phase -= 1.0;
+    while(adjusted_phase < 0.0)
+        adjusted_phase += 1.0;
     
     return adjusted_phase;
-
+    
     //    gain = 4 * volume / volume_increment
 }
