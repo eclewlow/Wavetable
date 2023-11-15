@@ -14,6 +14,7 @@ MainMenu mainMenu;
 ModeMenu modeMenu;
 FxMenu fxMenu;
 Oscilloscope oscilloscope;
+DeviceConfigurationMenu deviceConfigurationMenu;
 
 Context context;
 Engine engine;

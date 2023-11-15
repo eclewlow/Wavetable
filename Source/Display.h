@@ -76,7 +76,7 @@ public:
     static void put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
     static void put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
     static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
-    static void outline_rectangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+    static void outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
     
     typedef union
       {

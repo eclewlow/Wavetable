@@ -14,6 +14,7 @@
 #include "ModeMenu.h"
 #include "FxMenu.h"
 #include "Oscilloscope.h"
+#include "DeviceConfigurationMenu.h"
 
 #include "effect_manager.h"
 #include "fm.h"
@@ -30,6 +31,7 @@ extern MainMenu mainMenu;
 extern ModeMenu modeMenu;
 extern FxMenu fxMenu;
 extern Oscilloscope oscilloscope;
+extern DeviceConfigurationMenu deviceConfigurationMenu;
 
 extern Context context;
 extern Engine engine;

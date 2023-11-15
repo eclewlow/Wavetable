@@ -51,15 +51,57 @@
       <FILE id="K2JGe1" name="Globals.cpp" compile="1" resource="0" file="Source/Globals.cpp"/>
       <FILE id="kxXnUi" name="Globals.h" compile="0" resource="0" file="Source/Globals.h"/>
       <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="menu">
+        <FILE id="KI76Os" name="CalibrationMenu.cpp" compile="1" resource="0"
+              file="Source/CalibrationMenu.cpp"/>
+        <FILE id="ewJgMR" name="CalibrationMenu.h" compile="0" resource="0"
+              file="Source/CalibrationMenu.h"/>
+        <FILE id="WHxsjU" name="ControlStatusMenu.cpp" compile="1" resource="0"
+              file="Source/ControlStatusMenu.cpp"/>
+        <FILE id="kwMHh0" name="ControlStatusMenu.h" compile="0" resource="0"
+              file="Source/ControlStatusMenu.h"/>
+        <FILE id="XBtfPT" name="DeviceConfigurationMenu.cpp" compile="1" resource="0"
+              file="Source/DeviceConfigurationMenu.cpp"/>
+        <FILE id="QgUAtl" name="DeviceConfigurationMenu.h" compile="0" resource="0"
+              file="Source/DeviceConfigurationMenu.h"/>
+        <FILE id="NcovH2" name="DisplayConfigurationMenu.cpp" compile="1" resource="0"
+              file="Source/DisplayConfigurationMenu.cpp"/>
+        <FILE id="LZZHpP" name="DisplayConfigurationMenu.h" compile="0" resource="0"
+              file="Source/DisplayConfigurationMenu.h"/>
+        <FILE id="b7UxxJ" name="EnterNameMenu.cpp" compile="1" resource="0"
+              file="Source/EnterNameMenu.cpp"/>
+        <FILE id="fgmmi4" name="EnterNameMenu.h" compile="0" resource="0" file="Source/EnterNameMenu.h"/>
         <FILE id="oOow4a" name="FxMenu.cpp" compile="1" resource="0" file="Source/FxMenu.cpp"/>
         <FILE id="lNDVBF" name="FxMenu.h" compile="0" resource="0" file="Source/FxMenu.h"/>
+        <FILE id="CeF9m6" name="InfoMenu.cpp" compile="1" resource="0" file="Source/InfoMenu.cpp"/>
+        <FILE id="g1unQD" name="InfoMenu.h" compile="0" resource="0" file="Source/InfoMenu.h"/>
+        <FILE id="F65H3R" name="IOConfigurationMenu.cpp" compile="1" resource="0"
+              file="Source/IOConfigurationMenu.cpp"/>
+        <FILE id="jmFLht" name="IOConfigurationMenu.h" compile="0" resource="0"
+              file="Source/IOConfigurationMenu.h"/>
         <FILE id="KQ3d6h" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
         <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
+        <FILE id="ZaqZt6" name="MemoryClearMenu.cpp" compile="1" resource="0"
+              file="Source/MemoryClearMenu.cpp"/>
+        <FILE id="cWL9AR" name="MemoryClearMenu.h" compile="0" resource="0"
+              file="Source/MemoryClearMenu.h"/>
         <FILE id="KvOzub" name="ModeMenu.cpp" compile="1" resource="0" file="Source/ModeMenu.cpp"/>
         <FILE id="o26SOG" name="ModeMenu.h" compile="0" resource="0" file="Source/ModeMenu.h"/>
         <FILE id="VIJE1D" name="Oscilloscope.cpp" compile="1" resource="0"
               file="Source/Oscilloscope.cpp"/>
         <FILE id="SBRQro" name="Oscilloscope.h" compile="0" resource="0" file="Source/Oscilloscope.h"/>
+        <FILE id="LGGSS8" name="OscilloscopeConfigurationMenu.cpp" compile="1"
+              resource="0" file="Source/OscilloscopeConfigurationMenu.cpp"/>
+        <FILE id="MkKrUM" name="OscilloscopeConfigurationMenu.h" compile="0"
+              resource="0" file="Source/OscilloscopeConfigurationMenu.h"/>
+        <FILE id="ugKjzB" name="QuantizerMenu.cpp" compile="1" resource="0"
+              file="Source/QuantizerMenu.cpp"/>
+        <FILE id="t7CjOl" name="QuantizerMenu.h" compile="0" resource="0" file="Source/QuantizerMenu.h"/>
+        <FILE id="hLMHxy" name="SubOscillatorMenu.cpp" compile="1" resource="0"
+              file="Source/SubOscillatorMenu.cpp"/>
+        <FILE id="IpUQAK" name="SubOscillatorMenu.h" compile="0" resource="0"
+              file="Source/SubOscillatorMenu.h"/>
+        <FILE id="sNgfFz" name="WaveEditor.cpp" compile="1" resource="0" file="Source/WaveEditor.cpp"/>
+        <FILE id="KARpT5" name="WaveEditor.h" compile="0" resource="0" file="Source/WaveEditor.h"/>
       </GROUP>
       <FILE id="bEvxIp" name="Context.cpp" compile="1" resource="0" file="Source/Context.cpp"/>
       <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>
