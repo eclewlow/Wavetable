@@ -27,7 +27,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
-                    effect_manager.setEffect(&wavewrapper);
+                    effect_manager.setEffect(&bitcrush);
                 }
                 else if(effect_manager.getEffect() == &ring_modulator) {
                     effect_manager.setEffect(&fm);
@@ -40,6 +40,9 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 else if(effect_manager.getEffect() == &wavewrapper) {
                     effect_manager.setEffect(&wavefolder);
+                }
+                else if(effect_manager.getEffect() == &bitcrush) {
+                    effect_manager.setEffect(&wavewrapper);
                 }
                 break;
             case FX_MENU_LEFT_DEPTH:
@@ -65,6 +68,9 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                     effect_manager.setEffect(&wavewrapper);
                 }
                 else if(effect_manager.getEffect() == &wavewrapper) {
+                    effect_manager.setEffect(&bitcrush);
+                }
+                else if(effect_manager.getEffect() == &bitcrush) {
                     effect_manager.setEffect(&fm);
                 }
                 break;
@@ -260,6 +266,10 @@ void FxMenu::paint(juce::Graphics& g) {
     else if(effect_manager.getEffect()==&wavewrapper)
     {
         effectName = (char*)"WRAP";
+    }
+    else if(effect_manager.getEffect()==&bitcrush)
+    {
+        effectName = (char*)"CRUSH";
     }
 
     int row_height = 9;

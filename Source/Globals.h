@@ -23,6 +23,7 @@
 #include "ring_modulator.h"
 #include "wavefolder.h"
 #include "wavewrapper.h"
+#include "bitcrush.h"
 
 #include "Context.h"
 #include "Engine.h"
@@ -45,6 +46,8 @@ extern PhaseDistortion phase_distortion;
 extern RingModulator ring_modulator;
 extern Wavefolder wavefolder;
 extern Wavewrapper wavewrapper;
+extern Bitcrush bitcrush;
+
 extern Adc adc;
 
 

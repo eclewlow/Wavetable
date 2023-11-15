@@ -11,20 +11,20 @@
 #include "Effect.h"
 #include "Globals.h"
 
-void Wavewrapper::Init() {
+void Bitcrush::Init() {
     phase = 0.0f;
 }
 
-void Wavewrapper::Reset() {
+void Bitcrush::Reset() {
     phase = 0.0f;
 }
 
-float Wavewrapper::GetSample(float phase) {
+float Bitcrush::GetSample(float phase) {
     float sample = sin(2 * M_PI * phase);
     return sample;
 }
 
-float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Bitcrush::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
     
     uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
@@ -70,13 +70,18 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t 
             if(*target_phase >= 1.0)
                 *target_phase -= 1.0;
             
-            // add gain.. fx_amount * sample
-            modulator_sample = 24 * sample * modulator_sample;
-            //  if sample > 1.0  wrap around
-            while(modulator_sample > 1.0) modulator_sample -= 2.0f;
-            while(modulator_sample < -1.0) modulator_sample += 2.0f;
+            // amount of bitcrush fx
+            // reduce sample
+            // -1 to 1
+            // round to nearest multiple of 0.25
+            // 0.75  / 0.25 = 3
+            //
+            // // 1 means low bit rate.  0.001 means high bit rate
+            float bit_rate_divisor = std::clamp((modulator_sample + 1.0f) / 2.0f, 0.001f, 1.0f);
+            // bit rate = 1 / divisor
+            float calculated_sample = static_cast<int>(sample / bit_rate_divisor) * bit_rate_divisor;
 
-            sample = sample * (1 - amount) + amount * modulator_sample;
+            sample = sample * (1 - amount) + amount * calculated_sample;
 
             
             break;
@@ -87,15 +92,14 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t 
         }
         case EffectManager::MANUAL_CONTROL:
         {
-            float modulator_sample = 2.0 * fx / 4095.0 - 1.0;
+            float modulator_sample = fx / 4095.0;
             
-            modulator_sample = 24 * sample * modulator_sample;
-            
-            while(modulator_sample > 1.0) modulator_sample -= 2.0f;
-            while(modulator_sample < -1.0) modulator_sample += 2.0f;
-            
-            sample = sample * (1 - amount) + amount * modulator_sample;
-            
+            float bit_rate_divisor = std::clamp(modulator_sample, 0.001f, 1.0f);
+
+            float calculated_sample = static_cast<int>(sample / bit_rate_divisor) * bit_rate_divisor;
+
+            sample = sample * (1 - amount) + amount * calculated_sample;
+
             break;
         }
         default:
@@ -107,6 +111,6 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t 
     return sample;
 }
 
-float Wavewrapper::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Bitcrush::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
     return input_phase;
 }

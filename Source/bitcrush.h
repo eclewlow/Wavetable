@@ -15,10 +15,10 @@
 class Bitcrush: public Effect {
 public:
 
-    Wavewrapper() {
+    Bitcrush() {
         phase = 0.0f;
     }
-    ~Wavewrapper() {}
+    ~Bitcrush() {}
     void Init();
     void Reset();
     float RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope);
@@ -26,5 +26,5 @@ public:
     float GetSample(float phase);
 protected:
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Wavewrapper);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Bitcrush);
 };

@@ -26,5 +26,6 @@ PhaseDistortion phase_distortion;
 RingModulator ring_modulator;
 Wavefolder wavefolder;
 Wavewrapper wavewrapper;
+Bitcrush bitcrush;
 
 Adc adc;
