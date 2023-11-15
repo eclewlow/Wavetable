@@ -54,9 +54,6 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
         }
     }
     
-    if(downsampling)
-        frequency /= 4.0f;
-    
     phaseIncrement = frequency / 48000.0f;
     
     float *target_phase;

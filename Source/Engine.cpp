@@ -72,58 +72,23 @@ float Engine::GetSample(float phase) {
     return sample;
 }
 
-int16_t* Engine::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
-    //    float index = clamp(x, 0.0, 15.0);
-    //    uint8_t integral = floor(index);
-    //    float fractional = index - integral;
-    //
-    //    uint8_t nextIntegral = integral + ceil(fractional);
-    //
-    //    int16_t waveform_data[2048];
-    //    for (int i = 0 ; i < 2048; i++) {
-    //        int16_t data1 = Wavetable_harmonic_series[integral * 2048 + i];
-    //        int16_t data2 = Wavetable_harmonic_series[nextIntegral * 2048 + i];
-    //        waveform_data[i] = data1 * (1.0f - fractional) + data2 * fractional;
-    //    }
-    //    return waveform_data;
-    //    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
-    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-    //    float a = 440; //frequency of A (coomon value is 440Hz)
-//    int16_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
-    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-//    note = note - 24;
-//    float a = 440; //frequency of A (coomon value is 440Hz)
-//    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
-    //    float adjusted_phase = 0.0f;
-//    float phaseIncrement = frequency / 48000.0f;
-
+void Engine::GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
     float frequency = 23.4375;
-    //    float adjusted_phase = 0.0f;
+
     float phaseIncrement = frequency / 48000.0f;
     
-    //    float target = morph;
-    // convert 12 bit uint 0-4095 to 0...15 float
-    //    float morphTarget = morph * 15.0 / 4095.0;
-    //    float interpolatedFloat = interpolated16 / 32768.0f;
     float temp_phase = 0.0f;
-//    effect->Reset();
-    //    ParameterInterpolator xInterpolator(&x, morphTarget, size);
-//    int16_t waveform_data[2048];
     
     for(int i = 0; i < 2048; i++) {
         float thisX = x;
         thisX = clamp(thisX, 0.0, 15.0);
         
         float calculated_phase = effect_manager.RenderPhaseEffect(temp_phase, tune, fx_amount, fx, true);
-//        float calculated_phase = temp_phase;
-//        printf("%f\n", calculated_phase);
         
         float sample = GetSampleBetweenFrames(calculated_phase, thisX);
         
         sample = effect_manager.RenderSampleEffect(sample, temp_phase, tune, fx_amount, fx, true);
         
-//        sample = GetSample(temp_phase);
-//        if(calculated_phase < temp_phase) break;
         temp_phase += phaseIncrement;
         
         if(temp_phase >= 1.0f)
@@ -131,9 +96,9 @@ int16_t* Engine::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx,
         
         waveformData[i] = static_cast<int16_t>(sample * 32767.0f);
     }
-//    printf("done\n");
-    //      *out++ = sample;
-    //      *aux++ = sample;
+}
+
+int16_t* Engine::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
     return waveformData;
 }
 
@@ -211,6 +176,8 @@ void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16
         *out++ = sample;
         *aux++ = sample;
     }
+    
+    GenerateWaveformData(tune, fx_amount, fx, morph);
 }
 
 

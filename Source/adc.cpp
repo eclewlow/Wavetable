@@ -29,7 +29,7 @@ bool Adc::handleKeyPress() {
     //    if(juce::KeyPress::isKeyCurrentlyDown(PITCH_POT_CCW)) {
     //
     
-    int delta = 4;
+    int delta = 20;
     
     if(juce::KeyPress::isKeyCurrentlyDown(PITCH_POT_CCW)) {
         values_[0]-=delta;

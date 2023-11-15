@@ -25,6 +25,7 @@ public:
     float GetSampleBetweenFrames(float phase, float thisX);
 //    void SetX(float newX);
     bool handleKeyPress(const juce::KeyPress &key);
+    void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     float GetSample(float phase);
     //    void Reset();

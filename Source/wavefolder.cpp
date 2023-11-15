@@ -49,10 +49,7 @@ float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t f
             frequency *= (int(fx*25.0f/4095) - 9);
         }
     }
-
-    if(downsampling)
-        frequency /= 4.0f;
-
+    
     phaseIncrement = frequency / 48000.0f;
     
     float *target_phase;
