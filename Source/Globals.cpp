@@ -27,5 +27,6 @@ RingModulator ring_modulator;
 Wavefolder wavefolder;
 Wavewrapper wavewrapper;
 Bitcrush bitcrush;
+Drive drive;
 
 Adc adc;

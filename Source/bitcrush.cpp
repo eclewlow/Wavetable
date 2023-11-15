@@ -24,7 +24,7 @@ float Bitcrush::GetSample(float phase) {
     return sample;
 }
 
-float Bitcrush::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Bitcrush::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
     
     uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
@@ -43,6 +43,9 @@ float Bitcrush::RenderSampleEffect(float sample, float input_phase, uint16_t tun
             frequency *= (int(fx*25.0f/4095) - 9);
         }
     }
+    
+    if(downsampling)
+        frequency /= 4.0f;
     
     phaseIncrement = frequency / 48000.0f;
     
@@ -111,6 +114,6 @@ float Bitcrush::RenderSampleEffect(float sample, float input_phase, uint16_t tun
     return sample;
 }
 
-float Bitcrush::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Bitcrush::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return input_phase;
 }

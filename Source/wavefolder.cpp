@@ -26,11 +26,11 @@ float Wavefolder::GetSample(float phase) {
     return sample;
 }
 
-float Wavefolder::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Wavefolder::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return sample;
 }
 
-float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) {
+float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
 
     uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
@@ -49,7 +49,10 @@ float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t f
             frequency *= (int(fx*25.0f/4095) - 9);
         }
     }
-    
+
+    if(downsampling)
+        frequency /= 4.0f;
+
     phaseIncrement = frequency / 48000.0f;
     
     float *target_phase;

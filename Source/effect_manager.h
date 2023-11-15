@@ -49,8 +49,8 @@ public:
     inline void setEffect(Effect* newEffect) { effect_ = newEffect; effect_->triggerUpdate(); }
     inline Effect* getEffect() { return effect_; }
 
-    float RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false);
-    float RenderPhaseEffect(float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false);
+    float RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false, bool downsampling=false);
+    float RenderPhaseEffect(float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false, bool downsampling=false);
     float GetSample(float phase);
     
     inline ControlType getControlType() { return controlType; }

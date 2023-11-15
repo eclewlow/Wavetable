@@ -195,9 +195,9 @@ void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16
         thisX = clamp(thisX, 0.0, 15.0);
         
         for (size_t j = 0; j < kOversampling; ++j) {
-            float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase, tune, fx_amount, fx), thisX);
+            float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase, tune, fx_amount, fx, false, true), thisX);
             
-            sample = effect_manager.RenderSampleEffect(sample, phase, tune, fx_amount, fx);
+            sample = effect_manager.RenderSampleEffect(sample, phase, tune, fx_amount, fx, false, true);
             
             phase += phaseIncrement;
             

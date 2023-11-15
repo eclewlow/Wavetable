@@ -20,8 +20,8 @@ public:
     virtual ~Effect() {}
     virtual void Init() = 0;
     virtual void Reset() = 0;
-    virtual float RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) = 0;
-    virtual float RenderPhaseEffect(float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope) = 0;
+    virtual float RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
+    virtual float RenderPhaseEffect(float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
     float GetSine(float phase);
     float GetSawtooth(float phase, float phase_increment);
     float GetSquare(float phase, float phase_increment);

@@ -24,6 +24,7 @@
 #include "wavefolder.h"
 #include "wavewrapper.h"
 #include "bitcrush.h"
+#include "drive.h"
 
 #include "Context.h"
 #include "Engine.h"
@@ -47,6 +48,7 @@ extern RingModulator ring_modulator;
 extern Wavefolder wavefolder;
 extern Wavewrapper wavewrapper;
 extern Bitcrush bitcrush;
+extern Drive drive;
 
 extern Adc adc;
 

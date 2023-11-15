@@ -27,7 +27,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
-                    effect_manager.setEffect(&bitcrush);
+                    effect_manager.setEffect(&drive);
                 }
                 else if(effect_manager.getEffect() == &ring_modulator) {
                     effect_manager.setEffect(&fm);
@@ -43,6 +43,9 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 else if(effect_manager.getEffect() == &bitcrush) {
                     effect_manager.setEffect(&wavewrapper);
+                }
+                else if(effect_manager.getEffect() == &drive) {
+                    effect_manager.setEffect(&bitcrush);
                 }
                 break;
             case FX_MENU_LEFT_DEPTH:
@@ -71,6 +74,9 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                     effect_manager.setEffect(&bitcrush);
                 }
                 else if(effect_manager.getEffect() == &bitcrush) {
+                    effect_manager.setEffect(&drive);
+                }
+                else if(effect_manager.getEffect() == &drive) {
                     effect_manager.setEffect(&fm);
                 }
                 break;
@@ -241,10 +247,7 @@ void FxMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
     
     int y_offset = 4;
-    int x_offset = 64 - (23+2) * 2;
-    int row = 0;
-    int col = 0;
-    char *caption;
+    int x_offset;
     char *effectName;
     
     if(effect_manager.getEffect()==&fm)
@@ -270,6 +273,10 @@ void FxMenu::paint(juce::Graphics& g) {
     else if(effect_manager.getEffect()==&bitcrush)
     {
         effectName = (char*)"CRUSH";
+    }
+    else if(effect_manager.getEffect()==&drive)
+    {
+        effectName = (char*)"DRIVE";
     }
 
     int row_height = 9;
