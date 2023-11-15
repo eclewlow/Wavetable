@@ -14,6 +14,7 @@ MainMenu mainMenu;
 ModeMenu modeMenu;
 FxMenu fxMenu;
 Oscilloscope oscilloscope;
+ControlStatusMenu controlStatusMenu;
 DeviceConfigurationMenu deviceConfigurationMenu;
 
 Context context;
@@ -24,5 +25,6 @@ FM fm;
 PhaseDistortion phase_distortion;
 RingModulator ring_modulator;
 Wavefolder wavefolder;
+Wavewrapper wavewrapper;
 
 Adc adc;

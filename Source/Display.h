@@ -62,6 +62,7 @@ public:
     static void clear_screen();
     static void Put_Pixel(uint8_t x, uint8_t y, uint8_t set);
     static void Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, bool shade=false);
+    static void LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set);
     static void LCD_Line(uint8_t x0, uint8_t y0,
                   uint8_t x1, uint8_t y1,
                          uint8_t set);

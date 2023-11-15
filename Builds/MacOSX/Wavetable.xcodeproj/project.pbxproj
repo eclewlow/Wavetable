@@ -20,6 +20,7 @@
 		2485CB36FB363800D7C0D181 /* MainMenu.cpp */ = {isa = PBXBuildFile; fileRef = E1C7046B730C3C06FEE408B0; };
 		291BFF969B3969A4D8A6C3B3 /* Oscilloscope.cpp */ = {isa = PBXBuildFile; fileRef = 5B91C137AE2665F4CD2678D8; };
 		29EAF9BD60E54FC449DF3454 /* effect_manager.cpp */ = {isa = PBXBuildFile; fileRef = EED6C95E1A6E6695470DBD63; };
+		2A7BED8ADB9AF2308957DD34 /* bitcrush.cpp */ = {isa = PBXBuildFile; fileRef = F244BB238FCB159A616FECB8; };
 		30036A3431A50F54B8E95ABA /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = C8CD861EB0C193949B5290A7; };
 		360639B97082A4C1965FA861 /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = BAD69672F943AE131BDFBB3E; };
 		37FE368C5B255838D1EB5383 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = C6A3645CA5DC778E1259A961; };
@@ -64,7 +65,6 @@
 		CE94AF97C5E38153BBCEEF63 /* include_juce_audio_utils.mm */ = {isa = PBXBuildFile; fileRef = F0FBA0DF3BFDFE77B9A79E6A; };
 		D24D39F83CDAAC7C76EE6F3E /* include_juce_dsp.mm */ = {isa = PBXBuildFile; fileRef = 2FDA177E56012EC2E2EF5683; };
 		D57CA745531EF189F6D11125 /* App */ = {isa = PBXBuildFile; fileRef = 9811190B5243C0759852BBE8; };
-		D7505C8CA88E1C456D0B5BBF /* bitcrusher.cpp */ = {isa = PBXBuildFile; fileRef = 488D9A7DDA0B5EAE97F10BF7; };
 		DC8BE130BCC62F9309307FD2 /* AudioToolbox.framework */ = {isa = PBXBuildFile; fileRef = E495D2C0D5DB7155F14B887B; };
 		EB9E91DAB05E97D2ABE0BBF4 /* Display.cpp */ = {isa = PBXBuildFile; fileRef = 8D20F6D44136657534CF0296; };
 		ECAB79706E640B6C5DB83377 /* QuantizerMenu.cpp */ = {isa = PBXBuildFile; fileRef = 5E31C5A593CB6FFEA92CFB0D; };
@@ -113,10 +113,10 @@
 		3F66F2025D6CA01E6A216E3A /* Context.cpp */ /* Context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Context.cpp; path = ../../Source/Context.cpp; sourceTree = SOURCE_ROOT; };
 		46A7BFC0375227442070AC3C /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
 		46BD5B32830DC3F4E765545F /* OscilloscopeConfigurationMenu.cpp */ /* OscilloscopeConfigurationMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OscilloscopeConfigurationMenu.cpp; path = ../../Source/OscilloscopeConfigurationMenu.cpp; sourceTree = SOURCE_ROOT; };
-		488D9A7DDA0B5EAE97F10BF7 /* bitcrusher.cpp */ /* bitcrusher.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = bitcrusher.cpp; path = ../../Source/bitcrusher.cpp; sourceTree = SOURCE_ROOT; };
 		4D8B08DA73C4BA56C7E97697 /* ModeMenu.h */ /* ModeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModeMenu.h; path = ../../Source/ModeMenu.h; sourceTree = SOURCE_ROOT; };
 		4F05C10B30ACD995D4450020 /* drive.cpp */ /* drive.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = drive.cpp; path = ../../Source/drive.cpp; sourceTree = SOURCE_ROOT; };
 		50574715D6AA16E2DB76716B /* effect_manager.h */ /* effect_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = effect_manager.h; path = ../../Source/effect_manager.h; sourceTree = SOURCE_ROOT; };
+		513173F2DF5ECD0831D37BE0 /* bitcrush.h */ /* bitcrush.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bitcrush.h; path = ../../Source/bitcrush.h; sourceTree = SOURCE_ROOT; };
 		58F6F8D3E7B824C7B0F472D9 /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
 		5B91C137AE2665F4CD2678D8 /* Oscilloscope.cpp */ /* Oscilloscope.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Oscilloscope.cpp; path = ../../Source/Oscilloscope.cpp; sourceTree = SOURCE_ROOT; };
 		5CA7FF03816180D973D8FA99 /* graphics.h */ /* graphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = graphics.h; path = ../../Source/graphics.h; sourceTree = SOURCE_ROOT; };
@@ -188,12 +188,12 @@
 		F0FBA0DF3BFDFE77B9A79E6A /* include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		F16B6981CEBD543A1BF8E84E /* adc.cpp */ /* adc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = adc.cpp; path = ../../Source/adc.cpp; sourceTree = SOURCE_ROOT; };
 		F20EBE7C6BB0264FBEFDF1FD /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		F244BB238FCB159A616FECB8 /* bitcrush.cpp */ /* bitcrush.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = bitcrush.cpp; path = ../../Source/bitcrush.cpp; sourceTree = SOURCE_ROOT; };
 		F35C35DA1F2E1A08FFDD862C /* State.cpp */ /* State.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = State.cpp; path = ../../Source/State.cpp; sourceTree = SOURCE_ROOT; };
 		F685921BA9640C9F6390675B /* EnterNameMenu.cpp */ /* EnterNameMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EnterNameMenu.cpp; path = ../../Source/EnterNameMenu.cpp; sourceTree = SOURCE_ROOT; };
 		F71AD5DE6DACEDB96AD1BAE7 /* WaveEditor.h */ /* WaveEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WaveEditor.h; path = ../../Source/WaveEditor.h; sourceTree = SOURCE_ROOT; };
 		FA6B4ACE87E12738E6B5BA6F /* CalibrationMenu.h */ /* CalibrationMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CalibrationMenu.h; path = ../../Source/CalibrationMenu.h; sourceTree = SOURCE_ROOT; };
 		FE972401DF03BE6B5653FB1B /* fm.h */ /* fm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fm.h; path = ../../Source/fm.h; sourceTree = SOURCE_ROOT; };
-		FF4C2A66C34EDD34E192611E /* bitcrusher.h */ /* bitcrusher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bitcrusher.h; path = ../../Source/bitcrusher.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,8 +299,8 @@
 		95EDE64C53C6D810BEB06387 /* fx */ = {
 			isa = PBXGroup;
 			children = (
-				488D9A7DDA0B5EAE97F10BF7,
-				FF4C2A66C34EDD34E192611E,
+				F244BB238FCB159A616FECB8,
+				513173F2DF5ECD0831D37BE0,
 				4F05C10B30ACD995D4450020,
 				2D44DDAA80F737CD56E8D560,
 				92A0B00CDC376ACD8A908BBA,
@@ -528,7 +528,7 @@
 			files = (
 				6EC37FB8C3B8DE65E38E342B,
 				386626AC9E6E002BB1CA3272,
-				D7505C8CA88E1C456D0B5BBF,
+				2A7BED8ADB9AF2308957DD34,
 				7477B3F299AF70BDB972214C,
 				178C4C8089F471D37E9ABD7F,
 				29EAF9BD60E54FC449DF3454,

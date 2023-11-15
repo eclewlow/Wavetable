@@ -20,11 +20,6 @@ class Oscilloscope: public State
 public:
     enum OscilloscopeState {
         OSCILLOSCOPE_STATE_NONE,
-//        FX_MENU_EDIT_NONE,
-//        FX_MENU_EDIT_DEPTH,
-//        FX_MENU_EDIT_RATIO,
-//        FX_MENU_EDIT_SYNC,
-//        FX_MENU_EDIT_WAVE,
     };
     Oscilloscope();
     ~Oscilloscope();

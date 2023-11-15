@@ -14,6 +14,7 @@
 #include "ModeMenu.h"
 #include "FxMenu.h"
 #include "Oscilloscope.h"
+#include "ControlStatusMenu.h"
 #include "DeviceConfigurationMenu.h"
 
 #include "effect_manager.h"
@@ -21,6 +22,7 @@
 #include "phase_distortion.h"
 #include "ring_modulator.h"
 #include "wavefolder.h"
+#include "wavewrapper.h"
 
 #include "Context.h"
 #include "Engine.h"
@@ -31,6 +33,7 @@ extern MainMenu mainMenu;
 extern ModeMenu modeMenu;
 extern FxMenu fxMenu;
 extern Oscilloscope oscilloscope;
+extern ControlStatusMenu controlStatusMenu;
 extern DeviceConfigurationMenu deviceConfigurationMenu;
 
 extern Context context;
@@ -41,8 +44,7 @@ extern FM fm;
 extern PhaseDistortion phase_distortion;
 extern RingModulator ring_modulator;
 extern Wavefolder wavefolder;
-//extern Effect fx_engine;
-//extern Effect osc_fx_engine;
+extern Wavewrapper wavewrapper;
 extern Adc adc;
 
 

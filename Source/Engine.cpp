@@ -176,7 +176,7 @@ void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16
 {
     int16_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
     // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-//    note = note - 24;
+    note = note - 24;
     float a = 440; //frequency of A (coomon value is 440Hz)
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     //    float adjusted_phase = 0.0f;
@@ -194,7 +194,7 @@ void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16
         float thisX = xInterpolator.Next();
         thisX = clamp(thisX, 0.0, 15.0);
         
-//        for (size_t j = 0; j < kOversampling; ++j) {
+        for (size_t j = 0; j < kOversampling; ++j) {
             float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase, tune, fx_amount, fx), thisX);
             
             sample = effect_manager.RenderSampleEffect(sample, phase, tune, fx_amount, fx);
@@ -204,10 +204,10 @@ void Engine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16
             if(phase >= 1.0f)
                 phase -= 1.0f;
             
-//            carrier_downsampler.Accumulate(j, sample);
-//        }
+            carrier_downsampler.Accumulate(j, sample);
+        }
         
-//        float sample = carrier_downsampler.Read();
+        float sample = carrier_downsampler.Read();
         *out++ = sample;
         *aux++ = sample;
     }

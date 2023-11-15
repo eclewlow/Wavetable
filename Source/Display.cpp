@@ -47,6 +47,9 @@ void Display::clear_screen() {
 
 void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
     //2.48uS ~ 4.70uS
+    if(x >= 128 || y >= 64)
+        return;
+
     if(0 != set)
     {
         //Setting the bit
@@ -119,8 +122,7 @@ void Display::LCD_Line(uint8_t x0, uint8_t y0,
     
     for (;;)
     {
-        if(x0 < 128 && y0 < 64)
-            Display::Put_Pixel(x0, y0, set);
+        Display::Put_Pixel(x0, y0, set);
         if ((x0 == x1) && (y0 == y1))
             break;
         e2 = err;
@@ -498,4 +500,51 @@ void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t hei
     Display::LCD_Line(x1+1,y2,x2-1,y2,1);
     Display::LCD_Line(x1,y1,x1,y2,1);
     Display::LCD_Line(x2,y1,x2,y2,1);
+  }
+
+//============================================================================
+// From: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+void Display::LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set)
+  {
+  uint8_t
+    x;
+  uint8_t
+    y;
+  int8_t
+    radiusError;
+
+  x = radius;
+  y = 0;
+  radiusError = 1 - (int8_t) x;
+
+  while (x >= y)
+    {
+    //11 O'Clock
+    Put_Pixel(x0 - y, y0 + x, set);
+    //1 O'Clock
+    Put_Pixel(x0 + y, y0 + x, set);
+    //10 O'Clock
+    Put_Pixel(x0 - x, y0 + y, set);
+    //2 O'Clock
+    Put_Pixel(x0 + x, y0 + y, set);
+    //8 O'Clock
+    Put_Pixel(x0 - x, y0 - y, set);
+    //4 O'Clock
+    Put_Pixel(x0 + x, y0 - y, set);
+    //7 O'Clock
+    Put_Pixel(x0 - y, y0 - x, set);
+    //5 O'Clock
+    Put_Pixel(x0 + y, y0 - x, set);
+
+    y++;
+    if (radiusError < 0)
+      {
+      radiusError += (int16_t)(2 * y + 1);
+      }
+    else
+      {
+      x--;
+      radiusError += 2 * (((int16_t) y - (int16_t) x) + 1);
+      }
+    }
   }
