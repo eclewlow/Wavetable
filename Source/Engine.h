@@ -39,6 +39,7 @@ public:
     inline float ThisBlepSample(float t) { return 0.5f * t * t; }
     inline float NextBlepSample(float t) { t = 1.0f - t; return -0.5f * t * t; }
     float poly_blep(float t, float dt);
+    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }
 private:

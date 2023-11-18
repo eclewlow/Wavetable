@@ -29,6 +29,9 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == BACK_BUTTON) {
         context.setState(&mainMenu);
     }
+    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        engine.sync_suboscillator_phase();
+    }
     else if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case SUB_OSC_MENU_OFFSET:
