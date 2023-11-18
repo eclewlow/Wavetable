@@ -23,6 +23,8 @@
         <GROUP id="{A383232E-843A-150E-A217-239D65BAB750}" name="fx">
           <FILE id="oj5IL4" name="bitcrush.cpp" compile="1" resource="0" file="Source/bitcrush.cpp"/>
           <FILE id="eNbmLP" name="bitcrush.h" compile="0" resource="0" file="Source/bitcrush.h"/>
+          <FILE id="LEuwdt" name="bypass.cpp" compile="1" resource="0" file="Source/bypass.cpp"/>
+          <FILE id="BSWww7" name="bypass.h" compile="0" resource="0" file="Source/bypass.h"/>
           <FILE id="JnqCIr" name="drive.cpp" compile="1" resource="0" file="Source/drive.cpp"/>
           <FILE id="zSWkcq" name="drive.h" compile="0" resource="0" file="Source/drive.h"/>
           <FILE id="KQYpDJ" name="effect.cpp" compile="1" resource="0" file="Source/effect.cpp"/>

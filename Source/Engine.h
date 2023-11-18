@@ -28,6 +28,17 @@ public:
     void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     float GetSample(float phase);
+
+    float GetSine(float phase);
+    float GetSawtooth(float phase, float phase_increment);
+    float GetSquare(float phase, float phase_increment);
+    float GetTriangle(float phase);
+    float GetOscillatorSample(float phase, float phase_increment);
+    float GetSubOscillatorSample(float phase, float phase_increment, float morph);
+    double poly_blep(double t);
+    inline float ThisBlepSample(float t) { return 0.5f * t * t; }
+    inline float NextBlepSample(float t) { t = 1.0f - t; return -0.5f * t * t; }
+    float poly_blep(float t, float dt);
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }
 private:
@@ -35,8 +46,9 @@ private:
     int16_t* frame01;
     int16_t waveformData[2048];
     float phase;
-    float x;
-    float targetX;
+    float subosc_phase_;
+    float morph_;
+    float tune_;
     float carrier_fir_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Engine);

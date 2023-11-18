@@ -26,17 +26,13 @@ float Wavefolder::GetSample(float phase) {
     return sample;
 }
 
-float Wavefolder::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float Wavefolder::RenderSampleEffect(float sample, float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return sample;
 }
 
-float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
 
-    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
-
-    float a = 440; //frequency of A (coomon value is 440Hz)
-    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
         
@@ -65,14 +61,11 @@ float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t f
         case EffectManager::INTERNAL_MODULATOR: {
             
             
-            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                amount = amount * GetSine(*target_phase);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                amount = amount * GetSawtooth(*target_phase, phaseIncrement);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                amount = amount * GetSquare(*target_phase, phaseIncrement);
+            float oscillator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+
+            amount = amount * oscillator_sample;
             
-            adjusted_phase = 12 * amount * GetSine(input_phase);
+            adjusted_phase = 12 * amount * engine.GetSine(input_phase);
             
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)
@@ -88,7 +81,7 @@ float Wavefolder::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t f
         {
             amount = amount * (2.0f * fx / 4095.0f - 1.0f);
             
-            adjusted_phase = 12 * amount * GetSine(input_phase);
+            adjusted_phase = 12 * amount * engine.GetSine(input_phase);
 
             break;
         }

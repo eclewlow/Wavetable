@@ -19,6 +19,7 @@
 #include "InfoMenu.h"
 #include "DisplayConfigurationMenu.h"
 #include "OscilloscopeConfigurationMenu.h"
+#include "SubOscillatorMenu.h"
 
 #include "effect_manager.h"
 #include "fm.h"
@@ -28,6 +29,7 @@
 #include "wavewrapper.h"
 #include "bitcrush.h"
 #include "drive.h"
+#include "bypass.h"
 
 #include "Context.h"
 #include "Engine.h"
@@ -44,6 +46,7 @@ extern DeviceConfigurationMenu deviceConfigurationMenu;
 extern InfoMenu infoMenu;
 extern DisplayConfigurationMenu displayConfigurationMenu;
 extern OscilloscopeConfigurationMenu oscilloscopeConfigurationMenu;
+extern SubOscillatorMenu subOscillatorMenu;
 
 extern Context context;
 extern Engine engine;
@@ -57,6 +60,7 @@ extern Wavefolder wavefolder;
 extern Wavewrapper wavewrapper;
 extern Bitcrush bitcrush;
 extern Drive drive;
+extern Bypass bypass;
 
 extern Adc adc;
 

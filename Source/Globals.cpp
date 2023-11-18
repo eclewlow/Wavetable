@@ -19,6 +19,7 @@ DeviceConfigurationMenu deviceConfigurationMenu;
 InfoMenu infoMenu;
 DisplayConfigurationMenu displayConfigurationMenu;
 OscilloscopeConfigurationMenu oscilloscopeConfigurationMenu;
+SubOscillatorMenu subOscillatorMenu;
 
 Context context;
 Engine engine;
@@ -32,5 +33,6 @@ Wavefolder wavefolder;
 Wavewrapper wavewrapper;
 Bitcrush bitcrush;
 Drive drive;
+Bypass bypass;
 
 Adc adc;

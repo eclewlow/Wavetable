@@ -24,17 +24,13 @@ float FM::GetSample(float phase) {
     return sample;
 }
 
-float FM::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float FM::RenderSampleEffect(float sample, float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return sample;
 }
 
-float FM::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float FM::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
 
-    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
-    // frequency = from 8.18 hz to 8372 hz.  2^ x/12
-    float a = 440; //frequency of A (coomon value is 440Hz)
-    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
 
@@ -62,13 +58,8 @@ float FM::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount
         {
             float sample = 0.0f;
             
-            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                sample = GetSine(*target_phase);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                sample = GetSawtooth(*target_phase, phaseIncrement);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                sample = GetSquare(*target_phase, phaseIncrement);
-            
+            sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)
                 *target_phase -= 1.0;

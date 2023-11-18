@@ -24,13 +24,9 @@ float Wavewrapper::GetSample(float phase) {
     return sample;
 }
 
-float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float Wavewrapper::RenderSampleEffect(float sample, float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
     
-    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
-
-    float a = 440; //frequency of A (coomon value is 440Hz)
-    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
     
@@ -59,12 +55,7 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t 
             
             float modulator_sample = 0.0f;
             
-            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                modulator_sample = GetSine(*target_phase);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                modulator_sample = GetSawtooth(*target_phase, phaseIncrement);
-            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                modulator_sample = GetSquare(*target_phase, phaseIncrement);
+            modulator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
             
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)
@@ -107,6 +98,6 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, uint16_t 
     return sample;
 }
 
-float Wavewrapper::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float Wavewrapper::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return input_phase;
 }

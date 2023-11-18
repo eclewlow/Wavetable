@@ -15,5 +15,12 @@ UserSettings::UserSettings() {
     contrast_ = 100;
     invert_ = false;
     scope_setting_ = SETTING_SCOPE_LINE;
+    morph_setting_ = SETTING_MORPH_SMOOTH;
+    
+    suboscOffset_ = 0;
+    suboscDetune_ = 0;
+    suboscMix_ = 50;
+    suboscWave_ = SUBOSC_WAVE_SINE;
+
 }
 UserSettings::~UserSettings() {}

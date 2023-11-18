@@ -104,7 +104,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 //                getContext()->setState(new ModeMenu());
                 break;
             case SUBOSCILLATOR_CONFIG:
-//                setState(PLAYBACK_MONITORING);
+                context.setState(&subOscillatorMenu);
                 break;
             case SNAPSHOTS_LIST:
 //                setState(WAVETABLE_MANAGEMENT);

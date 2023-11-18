@@ -26,17 +26,13 @@ float PhaseDistortion::GetSample(float phase) {
     return sample;
 }
 
-float PhaseDistortion::RenderSampleEffect(float sample, float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float PhaseDistortion::RenderSampleEffect(float sample, float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     return sample;
 }
 
-float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
+float PhaseDistortion::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {
     float amount = effect_manager.getDepth() * (fx_amount / 4095.0f);
-    
-    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
 
-    float a = 440; //frequency of A (coomon value is 440Hz)
-    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     float adjusted_phase = 0.0f;
     float phaseIncrement = frequency / 48000.0f;
     
@@ -67,13 +63,9 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, uint16_t tune, uint1
     switch(effect_manager.getControlType()) {
         case EffectManager::INTERNAL_MODULATOR: {
             
-            
-            if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                x1 = (amount * GetSine(*target_phase) + 1.0f) / 2.0f;
-            else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                x1 = (amount * GetSawtooth(*target_phase, phaseIncrement) + 1.0f) / 2.0f;
-            else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                x1 = (amount * GetSquare(*target_phase, phaseIncrement) + 1.0f) / 2.0f;
+            float oscillator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+
+            x1 = (amount * oscillator_sample + 1.0f) / 2.0f;
             
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)

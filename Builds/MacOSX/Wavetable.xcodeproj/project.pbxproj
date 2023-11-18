@@ -36,6 +36,7 @@
 		59DAAD93958B48E65E01DFEF /* fm.cpp */ = {isa = PBXBuildFile; fileRef = BF31EB588EC6A97E8FF36216; };
 		59EB24CC4068C367F9135431 /* DiscRecording.framework */ = {isa = PBXBuildFile; fileRef = 46A7BFC0375227442070AC3C; };
 		5CB22F6F892450B5749D4875 /* DisplayConfigurationMenu.cpp */ = {isa = PBXBuildFile; fileRef = 128DA8FC99F3ED5D7D3CE464; };
+		60C3B23D7688856441FE746D /* bypass.cpp */ = {isa = PBXBuildFile; fileRef = 7133D639779721AC692BD739; };
 		634F9F1A5E9B762F5D614802 /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = 0C8BE7C5CA59336E7CB20AEC; };
 		64BFB44ED7CAB1ACB89DD457 /* UserSettings.cpp */ = {isa = PBXBuildFile; fileRef = D0034BEFBE1A78C5270F6872; };
 		651623F52A710514C4F385B5 /* FxMenu.cpp */ = {isa = PBXBuildFile; fileRef = 083EF92DEF8A60E20AFCD44B; };
@@ -128,8 +129,10 @@
 		60ED18482889F92B9E80A5AE /* encoder.h */ /* encoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = encoder.h; path = ../../Source/encoder.h; sourceTree = SOURCE_ROOT; };
 		62A0A71B4DA4492EE55CA173 /* Oscilloscope.h */ /* Oscilloscope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Oscilloscope.h; path = ../../Source/Oscilloscope.h; sourceTree = SOURCE_ROOT; };
 		640895EFCB80A7C5F5F06858 /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		6CFA3318364F90FDB25938EB /* bypass.h */ /* bypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bypass.h; path = ../../Source/bypass.h; sourceTree = SOURCE_ROOT; };
 		6E057E4CE79F8CCD260EB5EF /* 4x_downsampler.h */ /* 4x_downsampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = 4x_downsampler.h; path = ../../Source/4x_downsampler.h; sourceTree = SOURCE_ROOT; };
 		709BB3D49CF795A1A0ED5467 /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_graphics"; sourceTree = "<absolute>"; };
+		7133D639779721AC692BD739 /* bypass.cpp */ /* bypass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = bypass.cpp; path = ../../Source/bypass.cpp; sourceTree = SOURCE_ROOT; };
 		7C06D4B69B431FB84B7CC3A7 /* fnt09x09.cpp */ /* fnt09x09.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fnt09x09.cpp; path = ../../Source/fnt09x09.cpp; sourceTree = SOURCE_ROOT; };
 		7F48A71AEEE1A3B0DFA51103 /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_audio_formats"; sourceTree = "<absolute>"; };
 		7F55FD0AA71494DC73E1587D /* FxMenu.h */ /* FxMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FxMenu.h; path = ../../Source/FxMenu.h; sourceTree = SOURCE_ROOT; };
@@ -304,6 +307,8 @@
 			children = (
 				F244BB238FCB159A616FECB8,
 				513173F2DF5ECD0831D37BE0,
+				7133D639779721AC692BD739,
+				6CFA3318364F90FDB25938EB,
 				4F05C10B30ACD995D4450020,
 				2D44DDAA80F737CD56E8D560,
 				92A0B00CDC376ACD8A908BBA,
@@ -535,6 +540,7 @@
 				6EC37FB8C3B8DE65E38E342B,
 				386626AC9E6E002BB1CA3272,
 				2A7BED8ADB9AF2308957DD34,
+				60C3B23D7688856441FE746D,
 				7477B3F299AF70BDB972214C,
 				178C4C8089F471D37E9ABD7F,
 				29EAF9BD60E54FC449DF3454,

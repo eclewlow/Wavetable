@@ -20,16 +20,8 @@ public:
     virtual ~Effect() {}
     virtual void Init() = 0;
     virtual void Reset() = 0;
-    virtual float RenderSampleEffect(float sample, float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
-    virtual float RenderPhaseEffect(float phase, uint16_t tune, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
-    float GetSine(float phase);
-    float GetSawtooth(float phase, float phase_increment);
-    float GetSquare(float phase, float phase_increment);
-    float GetTriangle(float phase);
-    double poly_blep(double t);
-    inline float ThisBlepSample(float t) { return 0.5f * t * t; }
-    inline float NextBlepSample(float t) { t = 1.0f - t; return -0.5f * t * t; }
-    float poly_blep(float t, float dt);
+    virtual float RenderSampleEffect(float sample, float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
+    virtual float RenderPhaseEffect(float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) = 0;
     
     inline void triggerUpdate() { /*phase = 0.0f; oscilloscopePhase = 0.0f;*/ }
 protected:
