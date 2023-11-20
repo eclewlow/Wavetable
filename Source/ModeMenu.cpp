@@ -62,18 +62,22 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
     }
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
-                //            case MODE_AB:
-                //                setState(MODE_WAVETABLE);
-                //                break;
-                //            case MODE_WAVETABLE:
-                //                setState(MODE_MATRIX);
-                //                break;
-                //            case MODE_MATRIX:
-                //                setState(MODE_DRUM);
-                //                break;
-            case MODE_DRUM:
-                context.setState(&mainMenu);
+            case MODE_AB:
+                abModeMenu.setBackMenu(&modeMenu);
+                context.setState(&abModeMenu);
+                context.setEngine(&abEngine);
                 break;
+            case MODE_WAVETABLE:
+                wavetableModeMenu.setBackMenu(&modeMenu);
+                context.setState(&wavetableModeMenu);
+                context.setEngine(&wavetableEngine);
+                break;
+//            case MODE_MATRIX:
+//                setState(MODE_DRUM);
+//                break;
+//            case MODE_DRUM:
+//                context.setState(&mainMenu);
+//                break;
             default:
                 break;
                 

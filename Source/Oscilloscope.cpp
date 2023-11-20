@@ -72,12 +72,12 @@ void Oscilloscope::paint(juce::Graphics& g) {
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     
     int x = 0;
-    int width = 128-1;
+    int width = 128;
     int y = 2;
     int height = 40;
     Display::outline_rectangle(x, y, width, height);
     
-    Display::Draw_Wave(x, y, width, height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph), user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
+    Display::Draw_Wave(x+1, y+1, width-2, height-2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph), user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
     
     std::string note_letter = "C C#D D#E F F#G G#A A#B ";
     int note_index = note % 12;

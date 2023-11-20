@@ -48,14 +48,28 @@
           <FILE id="zcqjMS" name="wavewrapper.cpp" compile="1" resource="0" file="Source/wavewrapper.cpp"/>
           <FILE id="qAs4Tv" name="wavewrapper.h" compile="0" resource="0" file="Source/wavewrapper.h"/>
         </GROUP>
+        <FILE id="x7BF4e" name="ab_engine.cpp" compile="1" resource="0" file="Source/ab_engine.cpp"/>
+        <FILE id="DFsvkg" name="ab_engine.h" compile="0" resource="0" file="Source/ab_engine.h"/>
         <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
         <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
+        <FILE id="wyY8jj" name="matrix_engine.cpp" compile="1" resource="0"
+              file="Source/matrix_engine.cpp"/>
+        <FILE id="VJ6Cba" name="matrix_engine.h" compile="0" resource="0" file="Source/matrix_engine.h"/>
         <FILE id="ZRCmFE" name="ParameterInterpolator.h" compile="0" resource="0"
               file="Source/ParameterInterpolator.h"/>
+        <FILE id="IibOPE" name="suboscillator.cpp" compile="1" resource="0"
+              file="Source/suboscillator.cpp"/>
+        <FILE id="lijGXO" name="suboscillator.h" compile="0" resource="0" file="Source/suboscillator.h"/>
+        <FILE id="VwvXMg" name="wavetable_engine.cpp" compile="1" resource="0"
+              file="Source/wavetable_engine.cpp"/>
+        <FILE id="i5uVz5" name="wavetable_engine.h" compile="0" resource="0"
+              file="Source/wavetable_engine.h"/>
       </GROUP>
       <FILE id="K2JGe1" name="Globals.cpp" compile="1" resource="0" file="Source/Globals.cpp"/>
       <FILE id="kxXnUi" name="Globals.h" compile="0" resource="0" file="Source/Globals.h"/>
       <GROUP id="{93A38528-02C2-DD55-4098-2CDA7ED9CB25}" name="menu">
+        <FILE id="hrsybx" name="ABModeMenu.cpp" compile="1" resource="0" file="Source/ABModeMenu.cpp"/>
+        <FILE id="dRcBrG" name="ABModeMenu.h" compile="0" resource="0" file="Source/ABModeMenu.h"/>
         <FILE id="KI76Os" name="CalibrationMenu.cpp" compile="1" resource="0"
               file="Source/CalibrationMenu.cpp"/>
         <FILE id="ewJgMR" name="CalibrationMenu.h" compile="0" resource="0"
@@ -107,6 +121,10 @@
               file="Source/SubOscillatorMenu.h"/>
         <FILE id="sNgfFz" name="WaveEditor.cpp" compile="1" resource="0" file="Source/WaveEditor.cpp"/>
         <FILE id="KARpT5" name="WaveEditor.h" compile="0" resource="0" file="Source/WaveEditor.h"/>
+        <FILE id="WYPd4Z" name="WavetableModeMenu.cpp" compile="1" resource="0"
+              file="Source/WavetableModeMenu.cpp"/>
+        <FILE id="sHRE4c" name="WavetableModeMenu.h" compile="0" resource="0"
+              file="Source/WavetableModeMenu.h"/>
       </GROUP>
       <FILE id="bEvxIp" name="Context.cpp" compile="1" resource="0" file="Source/Context.cpp"/>
       <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>

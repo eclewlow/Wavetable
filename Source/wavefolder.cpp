@@ -8,8 +8,6 @@
   ==============================================================================
 */
 
-#include "wavefolder.h"
-
 #include "Effect.h"
 #include "Globals.h"
 
@@ -61,11 +59,11 @@ float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t
         case EffectManager::INTERNAL_MODULATOR: {
             
             
-            float oscillator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+            float oscillator_sample = context.getEngine()->GetOscillatorSample(*target_phase, phaseIncrement);
 
             amount = amount * oscillator_sample;
             
-            adjusted_phase = 12 * amount * engine.GetSine(input_phase);
+            adjusted_phase = 12 * amount * context.getEngine()->GetSine(input_phase);
             
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)
@@ -81,7 +79,7 @@ float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t
         {
             amount = amount * (2.0f * fx / 4095.0f - 1.0f);
             
-            adjusted_phase = 12 * amount * engine.GetSine(input_phase);
+            adjusted_phase = 12 * amount * context.getEngine()->GetSine(input_phase);
 
             break;
         }

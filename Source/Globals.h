@@ -20,6 +20,13 @@
 #include "DisplayConfigurationMenu.h"
 #include "OscilloscopeConfigurationMenu.h"
 #include "SubOscillatorMenu.h"
+#include "EnterNameMenu.h"
+#include "WavetableModeMenu.h"
+#include "ABModeMenu.h"
+
+#include "ab_engine.h"
+#include "wavetable_engine.h"
+#include "suboscillator.h"
 
 #include "effect_manager.h"
 #include "fm.h"
@@ -32,10 +39,12 @@
 #include "bypass.h"
 
 #include "Context.h"
-#include "Engine.h"
 #include "UserSettings.h"
 
 #include "adc.h"
+
+extern Context context;
+extern UserSettings user_settings;
 
 extern MainMenu mainMenu;
 extern ModeMenu modeMenu;
@@ -47,10 +56,13 @@ extern InfoMenu infoMenu;
 extern DisplayConfigurationMenu displayConfigurationMenu;
 extern OscilloscopeConfigurationMenu oscilloscopeConfigurationMenu;
 extern SubOscillatorMenu subOscillatorMenu;
+extern EnterNameMenu enterNameMenu;
+extern WavetableModeMenu wavetableModeMenu;
+extern ABModeMenu abModeMenu;
 
-extern Context context;
-extern Engine engine;
-extern UserSettings user_settings;
+extern ABEngine abEngine;
+extern WavetableEngine wavetableEngine;
+extern Suboscillator suboscillator;
 
 extern EffectManager effect_manager;
 extern FM fm;
@@ -63,6 +75,17 @@ extern Drive drive;
 extern Bypass bypass;
 
 extern Adc adc;
+
+extern int16_t BUF1[2048];
+extern int16_t BUF2[2048];
+extern int16_t BUF3[2048];
+extern int16_t BUF4[2048];
+extern int16_t BUF5[2048];
+extern int16_t BUF6[2048];
+extern int16_t BUF7[2048];
+extern int16_t BUF8[2048];
+extern int16_t BUF9[2048];
+extern int16_t BUF10[2048];
 
 
 inline double clamp(double input, double low, double high) {

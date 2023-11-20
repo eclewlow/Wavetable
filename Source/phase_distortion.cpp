@@ -8,8 +8,6 @@
  ==============================================================================
  */
 
-#include "phase_distortion.h"
-
 #include "Effect.h"
 #include "Globals.h"
 
@@ -63,7 +61,7 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, float frequency, uin
     switch(effect_manager.getControlType()) {
         case EffectManager::INTERNAL_MODULATOR: {
             
-            float oscillator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+            float oscillator_sample = context.getEngine()->GetOscillatorSample(*target_phase, phaseIncrement);
 
             x1 = (amount * oscillator_sample + 1.0f) / 2.0f;
             

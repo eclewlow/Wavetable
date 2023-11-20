@@ -88,7 +88,7 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
         int col = i + x;
 
         int center = y + height / 2;
-        int row = center + static_cast<int>((average / 32768.0) * (height / 2));
+        int row = center + static_cast<int>((average / 32768.0) * (height / 2) - (average < 0 ? 1:0));
         if(i == 0) {
             Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
         } else {
@@ -281,6 +281,7 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         //Write the eight columns of this character.
         for(column=0;column<5;column++)
         {
+            if(row > 7) continue;
             //Get the font data, convert it to a word and shift it down. Leave
             //one blank row of pixels above as a spacer.
             Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
@@ -505,8 +506,8 @@ void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t hei
   {
     uint8_t x1 = x;
     uint8_t y1 = y;
-    uint8_t x2 = x + width;
-    uint8_t y2 = y + height;
+    uint8_t x2 = x + width - 1;
+    uint8_t y2 = y + height - 1;
     Display::LCD_Line(x1+1,y1,x2-1,y1,1);
     Display::LCD_Line(x1+1,y2,x2-1,y2,1);
     Display::LCD_Line(x1,y1,x1,y2,1);

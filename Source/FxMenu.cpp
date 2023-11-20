@@ -124,17 +124,17 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 {
                     effect_manager.setOscillatorShape(EffectManager::SINE_SHAPE);
                 }
-                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
+                else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
                 {
                     effect_manager.setOscillatorShape(EffectManager::TRIANGLE_SHAPE);
                 }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
+                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
                 {
-                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
+                    effect_manager.setOscillatorShape(EffectManager::SAWTOOTH_SHAPE);
                 }
                 else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
                 {
-                    effect_manager.setOscillatorShape(EffectManager::SAWTOOTH_SHAPE);
+                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
                 }
                 else if(effect_manager.getOscillatorShape() == EffectManager::SNH_SHAPE)
                 {
@@ -174,13 +174,13 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 else if(effect_manager.getOscillatorShape() == EffectManager::TRIANGLE_SHAPE)
                 {
-                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
-                {
                     effect_manager.setOscillatorShape(EffectManager::SAWTOOTH_SHAPE);
                 }
                 else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
+                {
+                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
+                }
+                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
                 {
                     effect_manager.setOscillatorShape(EffectManager::SQUARE_SHAPE);
                 }
@@ -348,7 +348,7 @@ void FxMenu::paint(juce::Graphics& g) {
     
     Display::put_string_5x5(strlen("DEPTH:")*6 + 1, depth_y_offset, strlen(depth_string), depth_string, left_state_ == FX_MENU_LEFT_DEPTH);
 
-    Display::Draw_Wave(1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+    Display::Draw_Wave(1, graph_y_offset + 1, 64-3-2, graph_height - 2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph));
 
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
         char pot_value_string[4];
@@ -356,7 +356,7 @@ void FxMenu::paint(juce::Graphics& g) {
         Display::put_string_9x9(64 + (64-3) / 2 - strlen(pot_value_string) * 10 / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string);
     }
     else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
-        Display::Draw_Wave(64+1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+        Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph));
         
         char * waveName;
         if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)

@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "State.h"
 #include "effect.h"
+#include "Engine.h"
 
 class Context {
 public:
@@ -21,11 +22,15 @@ public:
     
     inline void setState(State* newState) { _state = newState; _state->triggerUpdate(); }
     inline State* getState() { return _state; }
+    
+    inline void setEngine(Engine* engine) { engine_ = engine; }
+    inline Engine* getEngine() { return engine_; }
 
     bool handleKeyPress(const juce::KeyPress &key);
     void paint(juce::Graphics& g);
 
 private:
     State* _state;
+    Engine* engine_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Context);
 };

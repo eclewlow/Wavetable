@@ -30,7 +30,8 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
         context.setState(&mainMenu);
     }
     else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
-        engine.sync_suboscillator_phase();
+        context.getEngine()->reset_phase();
+        suboscillator.reset_phase();
     }
     else if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(state_) {
@@ -50,8 +51,10 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SINE);
                 else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SAWTOOTH)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_TRIANGLE);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SQUARE)
+                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_RAMP)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SAWTOOTH);
+                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SQUARE)
+                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_RAMP);
                 else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_COPY)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SQUARE);
                 break;
@@ -76,6 +79,8 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_TRIANGLE)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SAWTOOTH);
                 else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SAWTOOTH)
+                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_RAMP);
+                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_RAMP)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SQUARE);
                 else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SQUARE)
                     user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_COPY);
@@ -171,6 +176,9 @@ void SubOscillatorMenu::paint(juce::Graphics& g) {
             break;
         case UserSettings::SUBOSC_WAVE_SAWTOOTH:
             wave_name=(char*)"SAW";
+            break;
+        case UserSettings::SUBOSC_WAVE_RAMP:
+            wave_name=(char*)"RAMP";
             break;
         case UserSettings::SUBOSC_WAVE_SQUARE:
             wave_name=(char*)"SQUARE";

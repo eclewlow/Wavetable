@@ -17,37 +17,34 @@ class Engine
 {
 public:
     Engine();
-    ~Engine();
-    void Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    float Render();
-    void Init();
-    float GetSample(int16_t* frame, float phase);
-    float GetSampleBetweenFrames(float phase, float thisX);
-//    void SetX(float newX);
-    bool handleKeyPress(const juce::KeyPress &key);
-    void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    float GetSample(float phase);
+    virtual ~Engine() {};
+    virtual void Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) = 0;
+//    float Render();
+//    void Init();
+//    float GetSample(int16_t* frame, float phase);
+//    float GetSampleBetweenFrames(float phase, float thisX);
+    virtual void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) = 0;
+    virtual int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) = 0;
+//    float GetSample(float phase);
+    virtual float GetSampleNoFX(float phase, float morph) = 0;
 
     float GetSine(float phase);
+    float GetRamp(float phase, float phase_increment);
     float GetSawtooth(float phase, float phase_increment);
     float GetSquare(float phase, float phase_increment);
     float GetTriangle(float phase);
     float GetOscillatorSample(float phase, float phase_increment);
-    float GetSubOscillatorSample(float phase, float phase_increment, float morph);
+//    float GetSubOscillatorSample(float phase, float phase_increment, float morph);
     double poly_blep(double t);
     inline float ThisBlepSample(float t) { return 0.5f * t * t; }
     inline float NextBlepSample(float t) { t = 1.0f - t; return -0.5f * t * t; }
     float poly_blep(float t, float dt);
-    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
+    inline void reset_phase() { phase_ = 0; }
+//    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }
-private:
-    int16_t* frame00;
-    int16_t* frame01;
-    int16_t waveformData[2048];
-    float phase;
-    float subosc_phase_;
+protected:
+    float phase_;
     float morph_;
     float tune_;
     float carrier_fir_;

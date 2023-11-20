@@ -75,6 +75,5 @@ private:
     int8_t suboscMix_;
     SubOscWave suboscWave_;
     
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);
 };

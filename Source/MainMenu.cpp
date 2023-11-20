@@ -101,6 +101,13 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 context.setState(&fxMenu);
                 break;
             case MAIN_WAVE_DESIGN:
+                if(context.getEngine() == &wavetableEngine) {
+                    wavetableModeMenu.setBackMenu(&mainMenu);
+                    context.setState(&wavetableModeMenu);
+                } else if(context.getEngine() == &abEngine) {
+                    abModeMenu.setBackMenu(&mainMenu);
+                    context.setState(&abModeMenu);
+                }
 //                getContext()->setState(new ModeMenu());
                 break;
             case SUBOSCILLATOR_CONFIG:
@@ -137,7 +144,12 @@ void MainMenu::paint(juce::Graphics& g) {
     
     switch(currentState) {
         case MAIN_WAVE_DESIGN:
-            caption = (char*)"AB WAVE";
+//            caption = (char*)"AB WAVE";
+            if(context.getEngine() == &wavetableEngine) {
+                caption = (char*)"WAVETABLE";
+            } else if(context.getEngine() == &abEngine) {
+                caption = (char*)"AB WAVE";
+            }
             break;
         case MODE_SELECT:
             caption = (char*)"MODE";
@@ -167,7 +179,11 @@ void MainMenu::paint(juce::Graphics& g) {
     
     Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
     
-    Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_ab);
+    if(false) {}
+    else if(context.getEngine() == &abEngine)
+        Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_ab);
+    else if(context.getEngine() == &wavetableEngine)
+        Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wavetable);
     
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);

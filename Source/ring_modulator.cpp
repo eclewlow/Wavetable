@@ -55,7 +55,7 @@ float RingModulator::RenderSampleEffect(float sample, float input_phase, float f
             
             float modulator_sample = 0.0f;
             
-            modulator_sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+            modulator_sample = context.getEngine()->GetOscillatorSample(*target_phase, phaseIncrement);
 
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)

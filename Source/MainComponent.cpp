@@ -23,14 +23,25 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
 //        setAudioChannels(1, 1);
     }
+
+//    context.setState(&mainMenu);
+//    context.setState(&wavetableModeMenu);
+//    enterNameMenu.setBackState(&fxMenu);
+    context.setState(&wavetableModeMenu);
+    wavetableEngine.Init();
+    context.setEngine(&wavetableEngine);
+
+    context.setState(&abModeMenu);
+    abEngine.Init();
+    context.setEngine(&abEngine);
     
-    context.setState(&mainMenu);
-    engine.Init();
+    
     effect_manager.Init();
     effect_manager.setEffect(&fm);
 //    fx_engine.Init();
     
-    startTimer(100);
+    startTimer(16); // 60 / second.  1000/60
+//    startTimer(10.666);
     
     setWantsKeyboardFocus(true);
     getTopLevelComponent()->addKeyListener(this);
@@ -73,6 +84,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     // map the block of audio frames stored in samplesInline to the audio output:
     int size = bufferToFill.numSamples;
     float out[size];
+    float subosc_out[size];
 
     adc.handleKeyPress();
 
@@ -81,7 +93,8 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
-    engine.Render(out, out, size, tune, fx_amount, fx, morph);
+    context.getEngine()->Render(out, out, size, tune, fx_amount, fx, morph);
+    suboscillator.Render(subosc_out, subosc_out, size, tune, fx_amount, fx, morph);
        
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {
@@ -92,7 +105,9 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
 //        buffer = out;
         for (auto a = 0 ; a < bufferToFill.numSamples ; a++)
         {
-            buffer[a] = out[a];
+            //            sample = (user_settings.getSubOscMix() / 100.0f) * sample + (1.0f - user_settings.getSubOscMix() / 100.0f) * GetSubOscillatorSample(subosc_phase_, subosc_phase_increment, interpolated_morph);
+            buffer[a] = (user_settings.getSubOscMix() / 100.0f) * out[a] + (1.0f - user_settings.getSubOscMix() / 100.0f) * subosc_out[a];
+//            buffer[a] = out[a];
 //            buffer[a] = engine.Render();
 //            buffer[a] = sin(2 * M_PI * temp_phase);
 

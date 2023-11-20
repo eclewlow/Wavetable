@@ -58,7 +58,7 @@ float FM::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amou
         {
             float sample = 0.0f;
             
-            sample = engine.GetOscillatorSample(*target_phase, phaseIncrement);
+            sample = context.getEngine()->GetOscillatorSample(*target_phase, phaseIncrement);
 
             *target_phase += phaseIncrement;
             if(*target_phase >= 1.0)
