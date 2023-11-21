@@ -18,6 +18,11 @@ class State;
 class WaveEditor: public State
 {
 public:
+    enum WaveEditorTargetState {
+        WAVE_TARGET_A,
+        WAVE_TARGET_B,
+        WAVE_TARGET_NEW
+    };
 //    enum ABMenuState {
 //        AB_NONE,
 //        AB_LOAD_HOVER,
@@ -46,8 +51,10 @@ public:
 //    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
 //    inline int GetRightWavetable() { return right_wavetable_; }
 //    inline int GetRightFrame() { return right_frame_; }
-
+    inline void setTargetState(WaveEditorTargetState state) { target_state_ = state; }
+    inline void setWavedata(int16_t * data) { wavedata_ = data; }
 private:
+    int16_t * wavedata_;
 //    int16_t left_wavetable_offset_;
 //    int16_t left_frame_offset_;
 //    int16_t right_wavetable_offset_;
@@ -59,5 +66,6 @@ private:
 //    int left_frame_;
 //    int right_wavetable_;
 //    int right_frame_;
+    WaveEditorTargetState target_state_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };
