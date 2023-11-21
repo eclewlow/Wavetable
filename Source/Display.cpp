@@ -508,8 +508,8 @@ void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t hei
     uint8_t y1 = y;
     uint8_t x2 = x + width - 1;
     uint8_t y2 = y + height - 1;
-    Display::LCD_Line(x1+1,y1,x2-1,y1,1);
-    Display::LCD_Line(x1+1,y2,x2-1,y2,1);
+    Display::LCD_Line(x1,y1,x2,y1,1);
+    Display::LCD_Line(x1,y2,x2,y2,1);
     Display::LCD_Line(x1,y1,x1,y2,1);
     Display::LCD_Line(x2,y1,x2,y2,1);
   }

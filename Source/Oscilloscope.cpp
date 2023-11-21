@@ -67,6 +67,8 @@ void Oscilloscope::paint(juce::Graphics& g) {
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
+    context.getEngine()->FillWaveform(BUF1, tune,  fx_amount,  fx,  morph);
+
     uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
     float a = 440; //frequency of A (coomon value is 440Hz)
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
@@ -77,7 +79,7 @@ void Oscilloscope::paint(juce::Graphics& g) {
     int height = 40;
     Display::outline_rectangle(x, y, width, height);
     
-    Display::Draw_Wave(x+1, y+1, width-2, height-2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph), user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
+    Display::Draw_Wave(x+1, y+1, width-2, height-2, BUF1, user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
     
     std::string note_letter = "C C#D D#E F F#G G#A A#B ";
     int note_index = note % 12;

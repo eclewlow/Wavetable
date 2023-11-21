@@ -24,22 +24,40 @@ public:
     virtual void Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     float Render();
     void Init();
-    float GetSample(int16_t* frame, float phase);
-    float GetSampleBetweenFrames(float phase, float thisX);
+    float GetSample(int16_t wavetable, int16_t frame, float phase);
+    float GetSample(int16_t wavetable, int16_t frame, float phase, bool isLeft);
+    float GetSampleBetweenFrames(float phase, float morph);
 //    void SetX(float newX);
     bool handleKeyPress(const juce::KeyPress &key);
-    void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
+    void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
+    void FillWaveform(int16_t * waveform, int16_t wavetable, int16_t frame);
     float GetSample(float phase);
     float GetSampleNoFX(float phase, float morph);
-    int16_t* GetWaveformDataNoFX(int index, uint16_t morph);
-    void LoadWave(int index, int wavetable, int wave);
-    void SwapBuf(int16_t * front_buf, int16_t * back_buf);
-    //    void Reset();
-    //    void LoadUserData(const uint8_t* user_data) { }
-private:
-    int16_t* left_wave_;
-    int16_t* right_wave_;
     
+    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, 15); }
+    inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }
+    inline int GetLeftWavetable() { return left_wavetable_; }
+    inline int GetLeftFrame() { return left_frame_; }
+
+    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, 15); }
+    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
+    inline int GetRightWavetable() { return right_wavetable_; }
+    inline int GetRightFrame() { return right_frame_; }
+
+    inline bool IsEditingLeft() { return is_editing_left_; }
+    inline bool IsEditingRight() { return is_editing_right_; }
+    inline void SetIsEditingLeft(bool is_editing_left) { is_editing_left_ = is_editing_left; }
+    inline void SetIsEditingRight(bool is_editing_right) { is_editing_right_ = is_editing_right; }
+
+private:
+    int left_wavetable_;
+    int left_frame_;
+    
+    int right_wavetable_;
+    int right_frame_;
+    
+    bool is_editing_left_;
+    bool is_editing_right_;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ABEngine);
 };

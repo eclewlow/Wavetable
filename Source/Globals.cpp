@@ -12,6 +12,7 @@
 
 Context context;
 UserSettings user_settings;
+Storage storage;
 
 MainMenu mainMenu;
 ModeMenu modeMenu;
@@ -26,6 +27,7 @@ SubOscillatorMenu subOscillatorMenu;
 EnterNameMenu enterNameMenu;
 WavetableModeMenu wavetableModeMenu;
 ABModeMenu abModeMenu;
+WaveEditor waveEditor;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
@@ -47,9 +49,3 @@ int16_t BUF1[2048];
 int16_t BUF2[2048];
 int16_t BUF3[2048];
 int16_t BUF4[2048];
-int16_t BUF5[2048];
-int16_t BUF6[2048];
-int16_t BUF7[2048];
-int16_t BUF8[2048];
-int16_t BUF9[2048];
-int16_t BUF10[2048];

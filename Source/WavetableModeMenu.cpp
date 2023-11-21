@@ -56,5 +56,4 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
     uint16_t morph = adc.getChannel(3);
 
     Display::clear_screen();
-    Display::Draw_Wave(0, 0, 128, 64, wavetableEngine.GetWaveformDataNoFX(morph));
 }

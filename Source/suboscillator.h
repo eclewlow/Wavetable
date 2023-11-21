@@ -24,14 +24,12 @@ public:
     virtual void Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
     float Render();
     void Init();
-    float GetSample(int16_t* frame, float phase);
+    float GetSample(int16_t wavetable, int16_t frame, float phase);
     float GetSampleBetweenFrames(float phase, float thisX);
 //    void SetX(float newX);
     bool handleKeyPress(const juce::KeyPress &key);
-    void GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    int16_t* GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph);
-    float GetSample(float phase);
     float GetSampleNoFX(float phase, float morph);
+    void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
 
 //    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
     //    void Reset();

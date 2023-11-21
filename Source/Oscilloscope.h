@@ -26,7 +26,7 @@ public:
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
     inline void setState(OscilloscopeState newState) { currentState = newState; }
-
+    
 private:
     OscilloscopeState currentState;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oscilloscope);

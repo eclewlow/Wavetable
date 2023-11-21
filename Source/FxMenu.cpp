@@ -299,6 +299,7 @@ void FxMenu::paint(juce::Graphics& g) {
     {
         effectName = (char*)"BYPASS";
     }
+    
 
     int row_height = 9;
     x_offset = 5;
@@ -339,6 +340,8 @@ void FxMenu::paint(juce::Graphics& g) {
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
 
+    context.getEngine()->FillWaveform(BUF1, tune,  fx_amount,  fx,  morph);
+
     int depth_y_offset = graph_y_offset + graph_height + 3;
     Display::put_string_5x5(1, depth_y_offset, strlen("DEPTH:"), "DEPTH:");
     
@@ -348,7 +351,7 @@ void FxMenu::paint(juce::Graphics& g) {
     
     Display::put_string_5x5(strlen("DEPTH:")*6 + 1, depth_y_offset, strlen(depth_string), depth_string, left_state_ == FX_MENU_LEFT_DEPTH);
 
-    Display::Draw_Wave(1, graph_y_offset + 1, 64-3-2, graph_height - 2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph));
+    Display::Draw_Wave(1, graph_y_offset + 1, 64-3-2, graph_height - 2, BUF1);
 
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
         char pot_value_string[4];
@@ -356,7 +359,7 @@ void FxMenu::paint(juce::Graphics& g) {
         Display::put_string_9x9(64 + (64-3) / 2 - strlen(pot_value_string) * 10 / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string);
     }
     else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
-        Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, context.getEngine()->GetWaveformData( tune,  fx_amount,  fx,  morph));
+        Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, BUF1);
         
         char * waveName;
         if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
@@ -424,7 +427,7 @@ void FxMenu::paint(juce::Graphics& g) {
     }
     else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR) {
         // TODO: draw incoming ADC FX CV value
-//        Display::Draw_Wave(64+1, graph_y_offset, 64-3-1, graph_height, engine.GetWaveformData( tune,  fx_amount,  fx,  morph));
+
         char line[20];
         snprintf(line, 20, "%d", effect_manager.getScale());
 

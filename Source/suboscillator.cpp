@@ -26,23 +26,29 @@ void Suboscillator::Init() {
     phase_ = 0.0f;
 }
 
-float Suboscillator::GetSampleNoFX(float phase, float morph) {
+float Suboscillator::GetSample(int16_t wavetable, int16_t frame, float phase){
     return 0.0f;
 }
 
 
-void Suboscillator::GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
+float Suboscillator::GetSampleNoFX(float phase, float morph) {
+    return 0.0f;
 }
 
-int16_t* Suboscillator::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
-    return NULL;
+void Suboscillator::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx)
+{
 }
 
 void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
     //    float target = morph;
     // convert 12 bit uint 0-4095 to 0...15 float
-    float morphTarget = morph * 15.0 / 4095.0;
+    float morphTarget;
+    if(context.getEngine() == &abEngine) {
+        morphTarget = morph / 4095.0;
+    } else {
+        morphTarget = morph * 15.0 / 4095.0;
+    }
     //    float interpolatedFloat = interpolated16 / 32768.0f;
     float tuneTarget = static_cast<float>(tune);
     
@@ -70,7 +76,11 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
         phase_increment = frequency / 48000.0f;
 
         float interpolated_morph = morph_interpolator.Next();
-        interpolated_morph = clamp(interpolated_morph, 0.0, 15.0);
+        if(context.getEngine() == &abEngine) {
+            interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
+        } else {
+            interpolated_morph = clamp(interpolated_morph, 0.0, 15.0);
+        }
         
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = 0.0f;

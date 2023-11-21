@@ -6,6 +6,8 @@
               defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1 ">
   <MAINGROUP id="QXUmXo" name="Wavetable">
     <GROUP id="{9D04F552-59D3-00B1-2D06-8231FD1F6C20}" name="Source">
+      <FILE id="inOHzX" name="Storage.cpp" compile="1" resource="0" file="Source/Storage.cpp"/>
+      <FILE id="SP67yr" name="Storage.h" compile="0" resource="0" file="Source/Storage.h"/>
       <FILE id="RBIL0J" name="UserSettings.cpp" compile="1" resource="0"
             file="Source/UserSettings.cpp"/>
       <FILE id="U2uLnx" name="UserSettings.h" compile="0" resource="0" file="Source/UserSettings.h"/>
@@ -130,6 +132,7 @@
       <FILE id="Zqh3KB" name="Context.h" compile="0" resource="0" file="Source/Context.h"/>
       <FILE id="Ve7Pwn" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
       <FILE id="ZLIk1q" name="State.h" compile="0" resource="0" file="Source/State.h"/>
+      <FILE id="nM2UUQ" name="wavetables.cpp" compile="1" resource="0" file="Source/wavetables.cpp"/>
       <FILE id="bZ3tiD" name="wavetables.h" compile="0" resource="0" file="Source/wavetables.h"/>
       <FILE id="A9RZky" name="graphics.h" compile="0" resource="0" file="Source/graphics.h"/>
       <FILE id="XJtos9" name="fnt09x09.cpp" compile="1" resource="0" file="Source/fnt09x09.cpp"/>
