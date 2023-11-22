@@ -26,6 +26,7 @@ public:
     virtual void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx = true) = 0;
     virtual float GetSample(int16_t wavetable, int16_t frame, float phase) = 0;
     virtual float GetSampleNoFX(float phase, float morph) = 0;
+    virtual void triggerUpdate() = 0;
     float GetSine(float phase);
     float GetRamp(float phase, float phase_increment);
     float GetSawtooth(float phase, float phase_increment);

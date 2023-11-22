@@ -20,10 +20,10 @@ public:
     Context();
     ~Context();
     
-    inline void setState(State* newState) { _state = newState; _state->triggerUpdate(); }
+    inline void setState(State* state) { if(_state == state) return; _state = state; _state->triggerUpdate(); }
     inline State* getState() { return _state; }
     
-    inline void setEngine(Engine* engine) { engine_ = engine; }
+    inline void setEngine(Engine* engine) { if(engine_ == engine) return; engine_ = engine; engine_->triggerUpdate(); }
     inline Engine* getEngine() { return engine_; }
 
     bool handleKeyPress(const juce::KeyPress &key);

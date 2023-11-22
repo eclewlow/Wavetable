@@ -39,6 +39,10 @@ void Suboscillator::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_
 {
 }
 
+void Suboscillator::triggerUpdate() {
+    
+}
+
 void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
     //    float target = morph;

@@ -49,6 +49,7 @@ public:
     inline void SetIsEditingLeft(bool is_editing_left) { is_editing_left_ = is_editing_left; }
     inline void SetIsEditingRight(bool is_editing_right) { is_editing_right_ = is_editing_right; }
 
+    void triggerUpdate();
 private:
     int left_wavetable_;
     int left_frame_;

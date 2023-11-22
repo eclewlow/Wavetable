@@ -109,16 +109,20 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
             case AB_EDIT_HOVER:
                 abEngine.FillWaveform(BUF3, left_wavetable_, left_frame_);
                 abEngine.SetIsEditingLeft(true);
-                waveEditor.setTargetState(WaveEditor::WAVE_TARGET_A);
+//                waveEditor.setTargetState(WaveEditor::WAVE_TARGET_A);
                 waveEditor.setWavedata(BUF3);
                 context.setState(&waveEditor);
                 break;
             case AB_SELECT_WAVETABLE:
                 setLeftState(AB_SELECT_FRAME);
-                if(GetLeftWavetable() != abEngine.GetLeftWavetable())
+                if(GetLeftWavetable() != abEngine.GetLeftWavetable()) {
                     left_frame_offset_ = 0;
-                else
+                    SetLeftFrame(0);
+                }
+                else {
                     left_frame_offset_ = std::clamp(abEngine.GetLeftFrame(), 0, 15-2);
+                    SetLeftFrame(abEngine.GetLeftFrame());
+                }
                 break;
             case AB_SELECT_FRAME:
                 abEngine.SetIsEditingLeft(false);

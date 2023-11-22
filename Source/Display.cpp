@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    Display.cpp
-    Created: 7 Nov 2023 2:29:42pm
-    Author:  Eugene Clewlow
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ Display.cpp
+ Created: 7 Nov 2023 2:29:42pm
+ Author:  Eugene Clewlow
+ 
+ ==============================================================================
+ */
 
 #include "Display.h"
 #include "Globals.h"
@@ -60,7 +60,7 @@ void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
     //2.48uS ~ 4.70uS
     if(x >= 128 || y >= 64)
         return;
-
+    
     if(0 != set)
     {
         //Setting the bit
@@ -77,42 +77,47 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
     uint8_t last_x = 0;
     uint8_t last_y = 0;
     for(int i = 0; i < width; i++) {
-
+        
         float average = 0;
-
+        
         for(int j = i * 2048 / width; j < i * 2048 / width + 2048 / width; j++) {
             average += waveform_data[j];
         }
         average /= (2048 / width);
         
+        average = std::clamp<float>(0 - average, -32768.0f, 32767.0f);
+        
         int col = i + x;
-
+        
         int center = y + height / 2;
         int row = center + static_cast<int>((average / 32768.0) * (height / 2) - (average < 0 ? 1:0));
         if(i == 0) {
-            Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+            if(row < 64 && col < 128)
+                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
         } else {
             Display::LCD_Line(last_x, last_y, i + x, row, true);
         }
         last_x = i + x;
         last_y = row;
-
+        
         if(shade) {
             while(row > center) {
                 row--;
-                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+                if(row < 64 && col < 128)
+                    Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
             }
             while(row < center) {
                 row++;
-                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+                if(row < 64 && col < 128)
+                    Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
             }
         }
     }
 }
 
-void Display::LCD_Line(uint8_t x0, uint8_t y0,
-              uint8_t x1, uint8_t y1,
-              uint8_t set) {
+void Display::LCD_Line(int x0, int y0,
+                       int x1, int y1,
+                       uint8_t set) {
     int8_t
     dx;
     int8_t
@@ -125,6 +130,7 @@ void Display::LCD_Line(uint8_t x0, uint8_t y0,
     err;
     int8_t
     e2;
+    
     dx = abs((int16_t )x1 - (int16_t )x0);
     sx = x0 < x1 ? 1 : -1;
     dy = abs((int16_t )y1 - (int16_t )y0);
@@ -149,6 +155,61 @@ void Display::LCD_Line(uint8_t x0, uint8_t y0,
         }
     }
     
+}
+
+void Display::LCD_DottedLine(uint8_t x0, uint8_t y0,
+                             uint8_t x1, uint8_t y1, int16_t dash_width, int16_t gap_width,
+                             uint8_t set) {
+    int8_t
+    dx;
+    int8_t
+    sx;
+    int8_t
+    dy;
+    int8_t
+    sy;
+    int8_t
+    err;
+    int8_t
+    e2;
+    dx = abs((int16_t )x1 - (int16_t )x0);
+    sx = x0 < x1 ? 1 : -1;
+    dy = abs((int16_t )y1 - (int16_t )y0);
+    sy = y0 < y1 ? 1 : -1;
+    err = (dx > dy ? dx : -dy) / 2;
+    
+    int counter = 0;
+    bool isDash = true;
+    for (;;)
+    {
+        if(isDash)
+            Display::Put_Pixel(x0, y0, set);
+        
+        counter++;
+        
+        if(isDash && counter >= dash_width) {
+            isDash = !isDash;
+            counter = 0;
+        }
+        else if(!isDash && counter >= gap_width) {
+            isDash = !isDash;
+            counter = 0;
+        }
+        
+        if ((x0 == x1) && (y0 == y1))
+            break;
+        e2 = err;
+        if (e2 > -dx)
+        {
+            err -= dy;
+            x0 = (uint16_t)((int16_t) x0 + sx);
+        }
+        if (e2 < dy)
+        {
+            err += dx;
+            y0 = (uint16_t)((int16_t) y0 + sy);
+        }
+    }
 }
 
 void Display::put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input)
@@ -233,7 +294,7 @@ void Display::put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *
     }
 }
 
-void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted)
+void Display::put_string_5x5(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted)
 {
     uint8_t
     Terminator_Found;
@@ -250,6 +311,14 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
     WORD_UNION
     Pixel_Data;
     
+    
+    int minus = 0;
+    
+    if(y < 0) {
+        minus = -y;
+        y = 0;
+    }
+
     //Get the first row of the display character.
     row=y>>3;
     //Calculate the address of the first uint8_t in display in LCD_Memory
@@ -286,7 +355,8 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
             //one blank row of pixels above as a spacer.
             Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
             Pixel_Data.as_word >>= 3;
-                            
+            Pixel_Data.as_word >>= minus;
+            
             //Set the correct bits in this row and the next row down.
             LCD_Memory[0]|=Pixel_Data.as_bytes[0];
             if(row<7)
@@ -295,7 +365,7 @@ void Display::put_string_5x5(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
             }
             LCD_Memory++;
         }
-            LCD_Memory++;
+        LCD_Memory++;
     }
     if(inverted)
         Display::invert_rectangle(x - 1, y - 1, 6 * Field_Width + 1, 7);
@@ -359,25 +429,33 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
     }
     if(inverted)
         Display::invert_rectangle(x - 1, y - 1, 10 * Field_Width + 1, 12);
-
+    
 }
 
-void Display::put_image_16bit(uint8_t x, uint8_t y, const uint8_t image[][2], uint8_t width)
+void Display::put_image_16bit(int8_t x, int8_t y, const uint8_t image[][2], uint8_t width)
 {
     uint8_t* LCD_Memory;
     DBLWORD_UNION Pixel_Data;
     
+    int minus = 0;
+    
+    if(y < 0) {
+        minus = -y;
+        y = 0;
+    }
+
     int row = y >> 3;
-
+    
     LCD_Memory=&Display::framebuffer[row][x];
-
-//    printf("%d %d %d\n", sizeof(image), sizeof(image[0]), sizeof(image[0][0]));
+    
+    //    printf("%d %d %d\n", sizeof(image), sizeof(image[0]), sizeof(image[0][0]));
     for(uint8_t column = 0; column < width; column++)
     {
         Pixel_Data.as_word=(((uint32_t)image[column][1])<<8) & 0xFF00;
         Pixel_Data.as_word|=((uint32_t)image[column][0]) & 0xFF;
         
         Pixel_Data.as_word <<= (y & 0x07);
+        Pixel_Data.as_word >>= minus;
         
         LCD_Memory[0]|=Pixel_Data.as_bytes[0];
         if (row < 7)
@@ -395,10 +473,10 @@ void Display::put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23])
     
     int row = y >> 3;
     int col = x;
-
+    
     LCD_Memory=&Display::framebuffer[row][x];
-
-//        LCD_Memory++;
+    
+    //        LCD_Memory++;
     for(uint8_t column = 0; column<23; column++)
     {
         Pixel_Data.as_word=(((uint32_t)image[2][column])<<16) & 0xFF0000;
@@ -419,21 +497,21 @@ void Display::put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23])
 }
 
 void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
-  {
-  uint8_t
+{
+    uint8_t
     *LCD_Memory;
-  uint8_t
+    uint8_t
     *LCD_Memory_1;
-  uint8_t
+    uint8_t
     *LCD_Memory_2;
-  uint8_t
+    uint8_t
     mask;
-  uint8_t
+    uint8_t
     column;
-
+    
     uint8_t x1 = x;
     uint8_t y1 = y;
-
+    
     uint8_t x2 = x+width-1;
     uint8_t y2 = y+height;
     
@@ -445,65 +523,146 @@ void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
         x2 = 127;
     if(x1 > 127)
         x1 = 127;
-  //Draw the last pixel too.
-//      y2++;
-  //Bail for bogus parametrers.
-  if((x2<x1)||
-     (y2<y1)||
-     (127<x1)||
-     (127<x2)||
-     (64<y1)||
-     (64<y2))
-    return;
-  //Calculate the address of the first ubyte in display in LCD_Memory
-  LCD_Memory_1=&Display::framebuffer[y1>>3][x1];
-  //Calculate the address of the last ubyte in display in LCD_Memory
-  LCD_Memory_2=&Display::framebuffer[y2>>3][x1];
-  //If they are the same, then this is a special case.
-  if(LCD_Memory_1==LCD_Memory_2)
+    //Draw the last pixel too.
+    //      y2++;
+    //Bail for bogus parametrers.
+    if((x2<x1)||
+       (y2<y1)||
+       (127<x1)||
+       (127<x2)||
+       (64<y1)||
+       (64<y2))
+        return;
+    //Calculate the address of the first ubyte in display in LCD_Memory
+    LCD_Memory_1=&Display::framebuffer[y1>>3][x1];
+    //Calculate the address of the last ubyte in display in LCD_Memory
+    LCD_Memory_2=&Display::framebuffer[y2>>3][x1];
+    //If they are the same, then this is a special case.
+    if(LCD_Memory_1==LCD_Memory_2)
     {
-    //The rectangle fits in one row.
-    mask=((0xFF<<(y1&0x07))&(~(0xFF<<(y2&0x07))));
-    for(column=x1;column<=x2;column++)
-      {
-      *LCD_Memory_1 ^= mask;
-      LCD_Memory_1++;
-      }
-    }
-  else
-    {
-    //This is the case where we need to loop over multiple
-    //(possibly 0) lines rows. Do the top ubyte.
-    mask=(0xFF<<(y1&0x07));
-    LCD_Memory=LCD_Memory_1;
-    for(column=x1;column<=x2;column++)
-      {
-      *LCD_Memory ^= mask;
-      LCD_Memory++;
-      }
-    //Do the bytes in the middle.
-    for(LCD_Memory_1+=128;LCD_Memory_1!=LCD_Memory_2;LCD_Memory_1+=128)
-      {
-      LCD_Memory=LCD_Memory_1;
-      for(column=x1;column<=x2;column++)
+        //The rectangle fits in one row.
+        mask=((0xFF<<(y1&0x07))&(~(0xFF<<(y2&0x07))));
+        for(column=x1;column<=x2;column++)
         {
-        *LCD_Memory ^= 0xFF;
-        LCD_Memory++;
+            *LCD_Memory_1 ^= mask;
+            LCD_Memory_1++;
         }
-      }
-    //Do the bottom ubyte.
-    mask=~(0xFF<<(y2&0x07));
-    for(column=x1;column<=x2;column++)
-      {
-      *LCD_Memory_2 ^= mask;
-      LCD_Memory_2++;
-      }
     }
-  }
+    else
+    {
+        //This is the case where we need to loop over multiple
+        //(possibly 0) lines rows. Do the top ubyte.
+        mask=(0xFF<<(y1&0x07));
+        LCD_Memory=LCD_Memory_1;
+        for(column=x1;column<=x2;column++)
+        {
+            *LCD_Memory ^= mask;
+            LCD_Memory++;
+        }
+        //Do the bytes in the middle.
+        for(LCD_Memory_1+=128;LCD_Memory_1!=LCD_Memory_2;LCD_Memory_1+=128)
+        {
+            LCD_Memory=LCD_Memory_1;
+            for(column=x1;column<=x2;column++)
+            {
+                *LCD_Memory ^= 0xFF;
+                LCD_Memory++;
+            }
+        }
+        //Do the bottom ubyte.
+        mask=~(0xFF<<(y2&0x07));
+        for(column=x1;column<=x2;column++)
+        {
+            *LCD_Memory_2 ^= mask;
+            LCD_Memory_2++;
+        }
+    }
+}
+
+void Display::clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height) {
+    for(int i = x; i < x + width; i++) {
+        for(int j = y; j < y + height; j++) {
+            Put_Pixel(i, j, false);
+        }
+    }
+}
+
+void Display::clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
+{
+    uint8_t
+    *LCD_Memory;
+    uint8_t
+    *LCD_Memory_1;
+    uint8_t
+    *LCD_Memory_2;
+    uint8_t
+    mask;
+    uint8_t
+    column;
+    
+    uint8_t x1 = x;
+    uint8_t y1 = y;
+    
+    uint8_t x2 = x+width-1;
+    uint8_t y2 = y+height;
+    
+    //Bail for bogus parametrers.
+    if((x2<x1)||
+       (y2<y1)||
+       (127<x1)||
+       (127<x2)||
+       (64<y1)||
+       (64<y2))
+        return;
+    //Calculate the address of the first ubyte in display in LCD_Memory
+    LCD_Memory_1=&framebuffer[y1>>3][x1];
+    //Calculate the address of the last ubyte in display in LCD_Memory
+    LCD_Memory_2=&framebuffer[y2>>3][x1];
+    //If they are the same, then this is a special case.
+    if(LCD_Memory_1==LCD_Memory_2)
+    {
+        //The rectangle fits in one row.
+        mask=~((0xFF<<(y1&0x07))&(~(0xFF<<(y2&0x07))));
+        for(column=x1;column<=x2;column++)
+        {
+            *LCD_Memory_1&=mask;
+            LCD_Memory_1++;
+        }
+    }
+    else
+    {
+        //This is the case where we need to loop over multiple
+        //(possibly 0) lines rows. Do the top ubyte.
+        mask=~(0xFF<<(y1&0x07));
+        LCD_Memory=LCD_Memory_1;
+        for(column=x1;column<=x2;column++)
+        {
+            *LCD_Memory&=mask;
+            LCD_Memory++;
+        }
+        //Do the bytes in the middle.
+        for(LCD_Memory_1+=128;LCD_Memory_1!=LCD_Memory_2;LCD_Memory_1+=128)
+        {
+            LCD_Memory=LCD_Memory_1;
+            for(column=x1;column<=x2;column++)
+            {
+                *LCD_Memory=0;
+                LCD_Memory++;
+            }
+        }
+        //Do the bottom ubyte.
+        mask=0xFF<<(y2&0x07);
+        for(column=x1;column<=x2;column++)
+        {
+            *LCD_Memory_2&=mask;
+            LCD_Memory_2++;
+        }
+    }
+}
 
 //============================================================================
 void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
-  {
+{
     uint8_t x1 = x;
     uint8_t y1 = y;
     uint8_t x2 = x + width - 1;
@@ -512,51 +671,51 @@ void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t hei
     Display::LCD_Line(x1,y2,x2,y2,1);
     Display::LCD_Line(x1,y1,x1,y2,1);
     Display::LCD_Line(x2,y1,x2,y2,1);
-  }
+}
 
 //============================================================================
 // From: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
 void Display::LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set)
-  {
-  uint8_t
+{
+    uint8_t
     x;
-  uint8_t
+    uint8_t
     y;
-  int8_t
+    int8_t
     radiusError;
-
-  x = radius;
-  y = 0;
-  radiusError = 1 - (int8_t) x;
-
-  while (x >= y)
+    
+    x = radius;
+    y = 0;
+    radiusError = 1 - (int8_t) x;
+    
+    while (x >= y)
     {
-    //11 O'Clock
-    Put_Pixel(x0 - y, y0 + x, set);
-    //1 O'Clock
-    Put_Pixel(x0 + y, y0 + x, set);
-    //10 O'Clock
-    Put_Pixel(x0 - x, y0 + y, set);
-    //2 O'Clock
-    Put_Pixel(x0 + x, y0 + y, set);
-    //8 O'Clock
-    Put_Pixel(x0 - x, y0 - y, set);
-    //4 O'Clock
-    Put_Pixel(x0 + x, y0 - y, set);
-    //7 O'Clock
-    Put_Pixel(x0 - y, y0 - x, set);
-    //5 O'Clock
-    Put_Pixel(x0 + y, y0 - x, set);
-
-    y++;
-    if (radiusError < 0)
-      {
-      radiusError += (int16_t)(2 * y + 1);
-      }
-    else
-      {
-      x--;
-      radiusError += 2 * (((int16_t) y - (int16_t) x) + 1);
-      }
+        //11 O'Clock
+        Put_Pixel(x0 - y, y0 + x, set);
+        //1 O'Clock
+        Put_Pixel(x0 + y, y0 + x, set);
+        //10 O'Clock
+        Put_Pixel(x0 - x, y0 + y, set);
+        //2 O'Clock
+        Put_Pixel(x0 + x, y0 + y, set);
+        //8 O'Clock
+        Put_Pixel(x0 - x, y0 - y, set);
+        //4 O'Clock
+        Put_Pixel(x0 + x, y0 - y, set);
+        //7 O'Clock
+        Put_Pixel(x0 - y, y0 - x, set);
+        //5 O'Clock
+        Put_Pixel(x0 + y, y0 - x, set);
+        
+        y++;
+        if (radiusError < 0)
+        {
+            radiusError += (int16_t)(2 * y + 1);
+        }
+        else
+        {
+            x--;
+            radiusError += 2 * (((int16_t) y - (int16_t) x) + 1);
+        }
     }
-  }
+}

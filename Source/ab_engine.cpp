@@ -146,6 +146,15 @@ float ABEngine::GetSampleNoFX(float phase, float morph) {
     return sample;
 }
 
+void ABEngine::triggerUpdate() {
+//    SetIsEditingLeft(false);
+//    SetIsEditingRight(false);
+//    SetLeftFrame(0);
+//    SetLeftWavetable(0);
+//    abModeMenu.SetLeftFrame(0);
+//    abModeMenu.SetLeftWavetable(0);
+}
+
 void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
     // convert 12 bit uint 0-4095 to 0...15 float

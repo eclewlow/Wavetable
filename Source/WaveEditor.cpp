@@ -24,6 +24,13 @@ WaveEditor::WaveEditor() {
 //    right_wavetable_offset_ = 0;
 //    right_frame_offset_ = 0;
 //    active_menu_ = NONE;
+    selection_x1_ = 10;
+    selection_x2_ = 30;
+    right_state_ = WAVE_EDITOR_RIGHT_ENCODER_DRAW;
+    shape_ = WAVE_EDITOR_SHAPE_SINE;
+    state_ = WAVE_EDITOR_STATE_EDITOR;
+    menu_offset_y_ = -30;
+    menu_target_offset_y_ = -30;
 }
 
 WaveEditor::~WaveEditor() {
@@ -36,29 +43,181 @@ WaveEditor::~WaveEditor() {
 //AB_SELECT_FRAME,
 
 bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(state_ == WAVE_EDITOR_STATE_EDITOR) {
+        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+            selection_x1_ = std::clamp(--selection_x1_, 0, 127);
+            selection_x2_ = std::clamp(--selection_x2_, 0, 127);
+            
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+            selection_x1_ = std::clamp(++selection_x1_, 0, 127);
+            selection_x2_ = std::clamp(++selection_x2_, 0, 127);
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+            if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
+                if(selection_x2_ - selection_x1_ > 2) {
+                    selection_x1_++;
+                    selection_x2_--;
+                    selection_x1_ = std::clamp(selection_x1_, 0, selection_x2_ - 2);
+                    selection_x2_ = std::clamp(selection_x2_, selection_x1_ + 2, 127);
+                }
+            } else {
+                int c = 0.0f;
+                int width = (selection_x2_ - selection_x1_) * 16;
+                // draw wave
+                for (int i = selection_x1_; i < selection_x2_; i++) {
+                    int integral = i * 16; // 16 = 2048 / 128
+                    for(int j = integral; j < integral + 16; j++) {
+                        switch(shape_) {
+                            case WAVE_EDITOR_SHAPE_SINE: {
+                                float sample = sin(M_PI * c / width);
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*4*sample, -32768, 32767);
+                                break;
+                            }
+                            default:
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*2, -32768, 32767);
+                                break;
+                        }
+                    }
+                }
+                
+            }
+            
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+            if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
+                selection_x1_--;
+                selection_x2_++;
+                selection_x1_ = std::clamp(selection_x1_, 0, selection_x2_ - 2);
+                selection_x2_ = std::clamp(selection_x2_, selection_x1_ + 2, 127);
+            } else {
+                // draw wave
+                int c = 0.0f;
+                int width = (selection_x2_ - selection_x1_) * 16;
+                
+                for (int i = selection_x1_; i < selection_x2_; i++) {
+                    int integral = i * 16; // 16 = 2048 / 128
+                    // add sine based on phase = PI / (x2 - x1) width
+                    for(int j = integral; j < integral + 16; j++) {
+                        switch(shape_) {
+                            case WAVE_EDITOR_SHAPE_SINE: {
+                                float sample = sin(M_PI * c / width);
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*4*sample, -32768, 32767);
+                                break;
+                            }
+                            default:
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*2, -32768, 32767);
+                                break;
+                        }
+                    }
+                }
+                
+            }
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+            right_state_ = right_state_ == WAVE_EDITOR_RIGHT_ENCODER_DRAW ? WAVE_EDITOR_RIGHT_ENCODER_EXPAND : WAVE_EDITOR_RIGHT_ENCODER_DRAW;
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+            state_ = WAVE_EDITOR_STATE_MENU;
+            menu_offset_y_ = -30;
+            menu_target_offset_y_ = 0;
+            timer_ = juce::Time::currentTimeMillis();
+        }
+        if(key.getKeyCode() == BACK_BUTTON) {
+            if(back_menu_)
+                context.setState(back_menu_);
+            else
+                context.setState(&abModeMenu);
+        }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(state_ == WAVE_EDITOR_STATE_MENU) {
+        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        }
+        if(key.getKeyCode() == BACK_BUTTON) {
+            state_ = WAVE_EDITOR_STATE_EDITOR;
+//            menu_offset_y_ = -32;
+            menu_target_offset_y_ = -30;
+            timer_ = juce::Time::currentTimeMillis();
+//            if(back_menu_)
+//                context.setState(back_menu_);
+//            else
+//                context.setState(&abModeMenu);
+        }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
-        for(int i = 0; i < 2048; i++)
-            BUF3[i] = 2048;
-    }
-    if(key.getKeyCode() == BACK_BUTTON) {
-        if(back_menu_)
-            context.setState(back_menu_);
-        else
-            context.setState(&abModeMenu);
-    }
-
     return true;
+}
+
+void WaveEditor::DrawTriangle(int x, int y, bool reversed) {
+    if(reversed) {
+        Display::Put_Pixel(x, y + 2, true);
+        Display::Put_Pixel(x + 1, y+1, true);
+        Display::Put_Pixel(x + 1, y+2, true);
+        Display::Put_Pixel(x + 1, y+3, true);
+        Display::Put_Pixel(x + 2, y, true);
+        Display::Put_Pixel(x + 2, y+1, true);
+        Display::Put_Pixel(x + 2, y+2, true);
+        Display::Put_Pixel(x + 2, y+3, true);
+        Display::Put_Pixel(x + 2, y+4, true);
+    } else {
+        Display::Put_Pixel(x + 2, y + 2, true);
+        Display::Put_Pixel(x + 1, y+1, true);
+        Display::Put_Pixel(x + 1, y+2, true);
+        Display::Put_Pixel(x + 1, y+3, true);
+        Display::Put_Pixel(x, y, true);
+        Display::Put_Pixel(x, y+1, true);
+        Display::Put_Pixel(x, y+2, true);
+        Display::Put_Pixel(x, y+3, true);
+        Display::Put_Pixel(x, y+4, true);
+    }
+}
+
+void WaveEditor::DrawMenu() {
+    if(menu_target_offset_y_ != menu_offset_y_ && juce::Time::currentTimeMillis() - timer_ > 1000) {
+        timer_ = juce::Time::currentTimeMillis();
+        if(menu_target_offset_y_ > menu_offset_y_)
+            menu_offset_y_++;
+        else if(menu_target_offset_y_ < menu_offset_y_)
+            menu_offset_y_--;
+    }
+    Display::clear_rectangle_simple(0, menu_offset_y_, 128, 26);
+    Display::LCD_Line(0, menu_offset_y_+26, 127, menu_offset_y_+26, true);
+    Display::put_image_16bit(5, menu_offset_y_ + 5, Graphic_icon_wave_ramp, 15);
+    Display::put_string_5x5(5, menu_offset_y_ + 21, strlen("SQUARE"), "SQUARE");
 }
 
 void WaveEditor::paint(juce::Graphics& g) {
     uint16_t morph = adc.getChannel(3);
 
     Display::clear_screen();
-//
+
+//    abEngine.FillWaveform(BUF1, left_wavetable_, left_frame_);
+    Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
+    Display::LCD_DottedLine(selection_x1_, 0, selection_x1_, 63, 1, 1, true);
+    Display::LCD_DottedLine(selection_x2_, 0, selection_x2_, 63, 1, 1, true);
+    if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
+        // draw triangles
+        DrawTriangle(selection_x1_ - 3, 64 - 5, false);
+        DrawTriangle(selection_x2_+1, 64 - 5, true);
+        DrawTriangle(selection_x1_ - 3, 0, false);
+        DrawTriangle(selection_x2_+1, 0, true);
+    }
+    if(wavedata_)
+        Display::Draw_Wave(0, 0, 128, 64, wavedata_);
+
+    DrawMenu();
+    //
 //    int graph_y_offset = 3;
 //    int graph_height = 32 - graph_y_offset;
 //    int gap = 1;

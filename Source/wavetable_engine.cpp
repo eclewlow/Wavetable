@@ -131,6 +131,10 @@ float WavetableEngine::GetSampleNoFX(float phase, float morph) {
     return sample;
 }
 
+void WavetableEngine::triggerUpdate() {
+    
+}
+
 void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
     //    float target = morph;

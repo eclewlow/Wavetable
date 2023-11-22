@@ -31,6 +31,7 @@ public:
     void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
     float GetSample(float phase);
     float GetSampleNoFX(float phase, float morph);
+    void triggerUpdate();
 //    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }

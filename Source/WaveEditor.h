@@ -18,18 +18,22 @@ class State;
 class WaveEditor: public State
 {
 public:
-    enum WaveEditorTargetState {
-        WAVE_TARGET_A,
-        WAVE_TARGET_B,
-        WAVE_TARGET_NEW
+    enum WaveEditorState {
+        WAVE_EDITOR_STATE_MENU,
+        WAVE_EDITOR_STATE_EDITOR,
     };
-//    enum ABMenuState {
-//        AB_NONE,
-//        AB_LOAD_HOVER,
-//        AB_EDIT_HOVER,
-//        AB_SELECT_WAVETABLE,
-//        AB_SELECT_FRAME,
-//    };
+    enum WaveEditorShape {
+        WAVE_EDITOR_SHAPE_SQUARE,
+        WAVE_EDITOR_SHAPE_TRIANGLE,
+        WAVE_EDITOR_SHAPE_SINE,
+        WAVE_EDITOR_SHAPE_RAMP,
+        WAVE_EDITOR_SHAPE_SAW,
+        WAVE_EDITOR_SHAPE_PEAK,
+    };
+    enum WaveEditorRightEncoderState {
+        WAVE_EDITOR_RIGHT_ENCODER_DRAW,
+        WAVE_EDITOR_RIGHT_ENCODER_EXPAND
+    };
 //    enum ABActiveMenuSide {
 //        LEFT,
 //        RIGHT,
@@ -51,21 +55,18 @@ public:
 //    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
 //    inline int GetRightWavetable() { return right_wavetable_; }
 //    inline int GetRightFrame() { return right_frame_; }
-    inline void setTargetState(WaveEditorTargetState state) { target_state_ = state; }
+    void DrawMenu();
+    void DrawTriangle(int x, int y, bool reversed);
     inline void setWavedata(int16_t * data) { wavedata_ = data; }
 private:
     int16_t * wavedata_;
-//    int16_t left_wavetable_offset_;
-//    int16_t left_frame_offset_;
-//    int16_t right_wavetable_offset_;
-//    int16_t right_frame_offset_;
-//    ABActiveMenuSide active_menu_;
-//    ABMenuState left_state_;
-//    ABMenuState right_state_;
-//    int left_wavetable_;
-//    int left_frame_;
-//    int right_wavetable_;
-//    int right_frame_;
-    WaveEditorTargetState target_state_;
+    WaveEditorRightEncoderState right_state_;
+    WaveEditorShape shape_;
+    WaveEditorState state_;
+    int16_t timer_;
+    int menu_target_offset_y_;
+    int menu_offset_y_;
+    int selection_x1_;
+    int selection_x2_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };
