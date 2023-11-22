@@ -22,13 +22,20 @@ public:
         WAVE_EDITOR_STATE_MENU,
         WAVE_EDITOR_STATE_EDITOR,
     };
-    enum WaveEditorShape {
-        WAVE_EDITOR_SHAPE_SQUARE,
-        WAVE_EDITOR_SHAPE_TRIANGLE,
-        WAVE_EDITOR_SHAPE_SINE,
-        WAVE_EDITOR_SHAPE_RAMP,
-        WAVE_EDITOR_SHAPE_SAW,
-        WAVE_EDITOR_SHAPE_PEAK,
+
+    enum WaveEditorSelection {
+        WAVE_EDITOR_SELECTION_SQUARE,
+        WAVE_EDITOR_SELECTION_TRIANGLE,
+        WAVE_EDITOR_SELECTION_SINE,
+        WAVE_EDITOR_SELECTION_RAMP,
+        WAVE_EDITOR_SELECTION_SAW,
+        WAVE_EDITOR_SELECTION_PEAK,
+        WAVE_EDITOR_SELECTION_PEN,
+        WAVE_EDITOR_SELECTION_LINE,
+        WAVE_EDITOR_SELECTION_SPECTRAL,
+        WAVE_EDITOR_SELECTION_CLEAR,
+        WAVE_EDITOR_SELECTION_SAVE,
+
     };
     enum WaveEditorRightEncoderState {
         WAVE_EDITOR_RIGHT_ENCODER_DRAW,
@@ -61,8 +68,10 @@ public:
 private:
     int16_t * wavedata_;
     WaveEditorRightEncoderState right_state_;
-    WaveEditorShape shape_;
+    WaveEditorSelection selection_;
     WaveEditorState state_;
+    WaveEditorSelection mode_;
+    int16_t menu_selection_offset_;
     int16_t timer_;
     int menu_target_offset_y_;
     int menu_offset_y_;

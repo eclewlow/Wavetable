@@ -107,9 +107,10 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 setLeftState(AB_SELECT_WAVETABLE);
                 break;
             case AB_EDIT_HOVER:
-                abEngine.FillWaveform(BUF3, left_wavetable_, left_frame_);
-                abEngine.SetIsEditingLeft(true);
-//                waveEditor.setTargetState(WaveEditor::WAVE_TARGET_A);
+                if(!abEngine.IsEditingLeft()) {
+                    abEngine.FillWaveform(BUF3, left_wavetable_, left_frame_);
+                    abEngine.SetIsEditingLeft(true);
+                }
                 waveEditor.setWavedata(BUF3);
                 context.setState(&waveEditor);
                 break;

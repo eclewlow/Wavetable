@@ -83,7 +83,7 @@ public:
     static void clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
     static void clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
     static void outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-    static void invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
+    static void invert_rectangle(int8_t x,int8_t y,uint8_t width,uint8_t height);
 
     typedef union
       {
@@ -93,7 +93,7 @@ public:
         as_word;
       }DBLWORD_UNION;
     
-    static void put_image_16bit(int8_t x, int8_t y, const uint8_t image[][2], uint8_t width);
+    static void put_image_16bit(int16_t x, int16_t y, const uint8_t image[][2], uint8_t width);
     static void put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23]);
 
 private:

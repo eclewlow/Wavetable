@@ -432,7 +432,7 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
     
 }
 
-void Display::put_image_16bit(int8_t x, int8_t y, const uint8_t image[][2], uint8_t width)
+void Display::put_image_16bit(int16_t x, int16_t y, const uint8_t image[][2], uint8_t width)
 {
     uint8_t* LCD_Memory;
     DBLWORD_UNION Pixel_Data;
@@ -451,6 +451,10 @@ void Display::put_image_16bit(int8_t x, int8_t y, const uint8_t image[][2], uint
     //    printf("%d %d %d\n", sizeof(image), sizeof(image[0]), sizeof(image[0][0]));
     for(uint8_t column = 0; column < width; column++)
     {
+        if(x + column >= 128) {
+            LCD_Memory++;
+            continue;
+        }
         Pixel_Data.as_word=(((uint32_t)image[column][1])<<8) & 0xFF00;
         Pixel_Data.as_word|=((uint32_t)image[column][0]) & 0xFF;
         
@@ -496,7 +500,7 @@ void Display::put_image_22x23(uint8_t x, uint8_t y, const uint8_t image[3][23])
     }
 }
 
-void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
+void Display::invert_rectangle(int8_t x, int8_t y,uint8_t width,uint8_t height)
 {
     uint8_t
     *LCD_Memory;
@@ -509,20 +513,20 @@ void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
     uint8_t
     column;
     
-    uint8_t x1 = x;
-    uint8_t y1 = y;
+    int8_t x1 = x;
+    int8_t y1 = y;
     
-    uint8_t x2 = x+width-1;
-    uint8_t y2 = y+height;
+    int8_t x2 = x+width-1;
+    int8_t y2 = y+height;
     
-    if(y2 > 64)
-        y2 = 64;
-    if(y1 > 64)
-        y1 = 64;
-    if(x2 > 127)
-        x2 = 127;
-    if(x1 > 127)
-        x1 = 127;
+    if(y2 > 63) y2 = 63;
+    if(y1 > 63) y1 = 63;
+    if(x2 > 127) x2 = 127;
+    if(x1 > 127) x1 = 127;
+    if(y1 < 0) y1 = 0;
+    if(x1 < 0) x1 = 0;
+    if(y2 < 0) y2 = 0;
+    if(x2 < 0) x2 = 0;
     //Draw the last pixel too.
     //      y2++;
     //Bail for bogus parametrers.
@@ -530,8 +534,8 @@ void Display::invert_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
        (y2<y1)||
        (127<x1)||
        (127<x2)||
-       (64<y1)||
-       (64<y2))
+       (63<y1)||
+       (63<y2))
         return;
     //Calculate the address of the first ubyte in display in LCD_Memory
     LCD_Memory_1=&Display::framebuffer[y1>>3][x1];

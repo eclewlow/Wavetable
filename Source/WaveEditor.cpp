@@ -27,8 +27,10 @@ WaveEditor::WaveEditor() {
     selection_x1_ = 10;
     selection_x2_ = 30;
     right_state_ = WAVE_EDITOR_RIGHT_ENCODER_DRAW;
-    shape_ = WAVE_EDITOR_SHAPE_SINE;
+    selection_ = WAVE_EDITOR_SELECTION_SINE;
+    mode_ = WAVE_EDITOR_SELECTION_SINE;
     state_ = WAVE_EDITOR_STATE_EDITOR;
+    menu_selection_offset_ = 0;
     menu_offset_y_ = -30;
     menu_target_offset_y_ = -30;
 }
@@ -45,13 +47,17 @@ WaveEditor::~WaveEditor() {
 bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
     if(state_ == WAVE_EDITOR_STATE_EDITOR) {
         if(key.getKeyCode() == LEFT_ENCODER_CCW) {
-            selection_x1_ = std::clamp(--selection_x1_, 0, 127);
-            selection_x2_ = std::clamp(--selection_x2_, 0, 127);
+            if(selection_x1_ > 0) {
+                selection_x1_ = std::clamp(--selection_x1_, 0, 127);
+                selection_x2_ = std::clamp(--selection_x2_, 0, 127);
+            }
             
         }
         if(key.getKeyCode() == LEFT_ENCODER_CW) {
-            selection_x1_ = std::clamp(++selection_x1_, 0, 127);
-            selection_x2_ = std::clamp(++selection_x2_, 0, 127);
+            if(selection_x2_ < 127) {
+                selection_x1_ = std::clamp(++selection_x1_, 0, 127);
+                selection_x2_ = std::clamp(++selection_x2_, 0, 127);
+            }
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
             if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
@@ -62,21 +68,48 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                     selection_x2_ = std::clamp(selection_x2_, selection_x1_ + 2, 127);
                 }
             } else {
-                int c = 0.0f;
-                int width = (selection_x2_ - selection_x1_) * 16;
+                float c = 0.0f;
+                float width = (selection_x2_ - selection_x1_) * 16.0f;
                 // draw wave
                 for (int i = selection_x1_; i < selection_x2_; i++) {
                     int integral = i * 16; // 16 = 2048 / 128
                     for(int j = integral; j < integral + 16; j++) {
-                        switch(shape_) {
-                            case WAVE_EDITOR_SHAPE_SINE: {
+                        switch(mode_) {
+                            case WAVE_EDITOR_SELECTION_SQUARE:
+                            {
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*2, -32768, 32767);
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_TRIANGLE:
+                            {
+                                float sample = c / width;
+                                if(sample >= 0.5) {
+                                    sample = 1.0f - sample;
+                                }
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*4*sample, -32768, 32767);
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_SINE:
+                            {
                                 float sample = sin(M_PI * c / width);
                                 c += 1.0f;
                                 wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*4*sample, -32768, 32767);
                                 break;
                             }
+                            case WAVE_EDITOR_SELECTION_RAMP:
+                            {
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_SAW:
+                            {
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_PEAK:
+                            {
+                                break;
+                            }
                             default:
-                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*2, -32768, 32767);
                                 break;
                         }
                     }
@@ -93,22 +126,49 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 selection_x2_ = std::clamp(selection_x2_, selection_x1_ + 2, 127);
             } else {
                 // draw wave
-                int c = 0.0f;
-                int width = (selection_x2_ - selection_x1_) * 16;
+                float c = 0.0f;
+                float width = (selection_x2_ - selection_x1_) * 16.0f;
                 
                 for (int i = selection_x1_; i < selection_x2_; i++) {
                     int integral = i * 16; // 16 = 2048 / 128
                     // add sine based on phase = PI / (x2 - x1) width
                     for(int j = integral; j < integral + 16; j++) {
-                        switch(shape_) {
-                            case WAVE_EDITOR_SHAPE_SINE: {
+                        switch(mode_) {
+                            case WAVE_EDITOR_SELECTION_SQUARE:
+                            {
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*2, -32768, 32767);
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_TRIANGLE:
+                            {
+                                float sample = c / width;
+                                if(sample >= 0.5) {
+                                    sample = 1.0f - sample;
+                                }
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*4*sample, -32768, 32767);
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_SINE:
+                            {
                                 float sample = sin(M_PI * c / width);
                                 c += 1.0f;
                                 wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*4*sample, -32768, 32767);
                                 break;
                             }
+                            case WAVE_EDITOR_SELECTION_RAMP:
+                            {
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_SAW:
+                            {
+                                break;
+                            }
+                            case WAVE_EDITOR_SELECTION_PEAK:
+                            {
+                                break;
+                            }
                             default:
-                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*2, -32768, 32767);
                                 break;
                         }
                     }
@@ -121,6 +181,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
+            selection_ = mode_;
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
             timer_ = juce::Time::currentTimeMillis();
@@ -134,8 +195,89 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
     }
     else if(state_ == WAVE_EDITOR_STATE_MENU) {
         if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+            int offset = 0;
+            switch(selection_) {
+                case WAVE_EDITOR_SELECTION_SQUARE:
+                    offset = 0;
+                    break;
+                case WAVE_EDITOR_SELECTION_TRIANGLE:
+                    selection_ = WAVE_EDITOR_SELECTION_SQUARE; offset = 0;
+                    break;
+                case WAVE_EDITOR_SELECTION_SINE:
+                    selection_ = WAVE_EDITOR_SELECTION_TRIANGLE; offset = 1;
+                    break;
+                case WAVE_EDITOR_SELECTION_RAMP:
+                    selection_ = WAVE_EDITOR_SELECTION_SINE; offset = 2;
+                    break;
+                case WAVE_EDITOR_SELECTION_SAW:
+                    selection_ = WAVE_EDITOR_SELECTION_RAMP; offset = 3;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEAK:
+                    selection_ = WAVE_EDITOR_SELECTION_SAW; offset = 4;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEN:
+                    selection_ = WAVE_EDITOR_SELECTION_PEAK; offset = 5;
+                    break;
+                case WAVE_EDITOR_SELECTION_LINE:
+                    selection_ = WAVE_EDITOR_SELECTION_PEN; offset = 6;
+                    break;
+                case WAVE_EDITOR_SELECTION_SPECTRAL:
+                    selection_ = WAVE_EDITOR_SELECTION_LINE; offset = 7;
+                    break;
+                case WAVE_EDITOR_SELECTION_CLEAR:
+                    selection_ = WAVE_EDITOR_SELECTION_SPECTRAL; offset = 8;
+                    break;
+                case WAVE_EDITOR_SELECTION_SAVE:
+                    selection_ = WAVE_EDITOR_SELECTION_CLEAR; offset = 9;
+                    break;
+                default:
+                    break;
+            }
+            if(menu_selection_offset_ > offset)
+                menu_selection_offset_ = offset;
+
         }
         if(key.getKeyCode() == LEFT_ENCODER_CW) {
+            int offset = 0;
+            switch(selection_) {
+                case WAVE_EDITOR_SELECTION_SQUARE:
+                    selection_ = WAVE_EDITOR_SELECTION_TRIANGLE; offset = 1;
+                    break;
+                case WAVE_EDITOR_SELECTION_TRIANGLE:
+                    selection_ = WAVE_EDITOR_SELECTION_SINE; offset = 2;
+                    break;
+                case WAVE_EDITOR_SELECTION_SINE:
+                    selection_ = WAVE_EDITOR_SELECTION_RAMP; offset = 3;
+                    break;
+                case WAVE_EDITOR_SELECTION_RAMP:
+                    selection_ = WAVE_EDITOR_SELECTION_SAW; offset = 4;
+                    break;
+                case WAVE_EDITOR_SELECTION_SAW:
+                    selection_ = WAVE_EDITOR_SELECTION_PEAK; offset = 5;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEAK:
+                    selection_ = WAVE_EDITOR_SELECTION_PEN; offset = 6;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEN:
+                    selection_ = WAVE_EDITOR_SELECTION_LINE; offset = 7;
+                    break;
+                case WAVE_EDITOR_SELECTION_LINE:
+                    selection_ = WAVE_EDITOR_SELECTION_SPECTRAL; offset = 8;
+                    break;
+                case WAVE_EDITOR_SELECTION_SPECTRAL:
+                    selection_ = WAVE_EDITOR_SELECTION_CLEAR; offset = 9;
+                    break;
+                case WAVE_EDITOR_SELECTION_CLEAR:
+                    selection_ = WAVE_EDITOR_SELECTION_SAVE; offset = 10;
+                    break;
+                case WAVE_EDITOR_SELECTION_SAVE:
+                    offset = 10;
+                    break;
+                default:
+                    break;
+            }
+            if(menu_selection_offset_ <= offset - 5)
+                menu_selection_offset_ = offset - 5;
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         }
@@ -144,10 +286,17 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
         }
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+            if(selection_ == WAVE_EDITOR_SELECTION_CLEAR) {
+                memset(wavedata_, 0, 2048*2);
+            } else {
+                mode_ = selection_;
+                state_ = WAVE_EDITOR_STATE_EDITOR;
+                menu_target_offset_y_ = -30;
+                timer_ = juce::Time::currentTimeMillis();
+            }
         }
         if(key.getKeyCode() == BACK_BUTTON) {
             state_ = WAVE_EDITOR_STATE_EDITOR;
-//            menu_offset_y_ = -32;
             menu_target_offset_y_ = -30;
             timer_ = juce::Time::currentTimeMillis();
 //            if(back_menu_)
@@ -193,8 +342,114 @@ void WaveEditor::DrawMenu() {
     }
     Display::clear_rectangle_simple(0, menu_offset_y_, 128, 26);
     Display::LCD_Line(0, menu_offset_y_+26, 127, menu_offset_y_+26, true);
-    Display::put_image_16bit(5, menu_offset_y_ + 5, Graphic_icon_wave_ramp, 15);
-    Display::put_string_5x5(5, menu_offset_y_ + 21, strlen("SQUARE"), "SQUARE");
+
+    int x_offset = 64 - (15 * 6 + 2 * 5) / 2;
+    int gap = 2;
+    
+    const uint8_t * list[] = {
+        &Graphic_icon_wave_square[0][0],
+        &Graphic_icon_wave_triangle[0][0],
+        &Graphic_icon_wave_hump[0][0],
+        &Graphic_icon_wave_ramp[0][0],
+        &Graphic_icon_wave_reverse_ramp[0][0],
+        &Graphic_icon_wave_spike[0][0],
+        &Graphic_icon_edit_15x15[0][0],
+        &Graphic_icon_line_15x15[0][0],
+        &Graphic_icon_spectral_15x15[0][0],
+        &Graphic_icon_delete_15x15[0][0],
+        &Graphic_icon_load_15x15[0][0],
+    };
+//    list[0]
+    for(int i = menu_selection_offset_; i < menu_selection_offset_ + 6; i++) {
+        Display::put_image_16bit(x_offset, menu_offset_y_ + 3, (const unsigned char (*)[2])list[i], 15);
+
+        int offset = 0;
+        switch(selection_) {
+            case WAVE_EDITOR_SELECTION_SQUARE:
+                offset = 0;
+                break;
+            case WAVE_EDITOR_SELECTION_TRIANGLE:
+                offset = 1;
+                break;
+            case WAVE_EDITOR_SELECTION_SINE:
+                offset = 2;
+                break;
+            case WAVE_EDITOR_SELECTION_RAMP:
+                offset = 3;
+                break;
+            case WAVE_EDITOR_SELECTION_SAW:
+                offset = 4;
+                break;
+            case WAVE_EDITOR_SELECTION_PEAK:
+                offset = 5;
+                break;
+            case WAVE_EDITOR_SELECTION_PEN:
+                offset = 6;
+                break;
+            case WAVE_EDITOR_SELECTION_LINE:
+                offset = 7;
+                break;
+            case WAVE_EDITOR_SELECTION_SPECTRAL:
+                offset = 8;
+                break;
+            case WAVE_EDITOR_SELECTION_CLEAR:
+                offset = 9;
+                break;
+            case WAVE_EDITOR_SELECTION_SAVE:
+                offset = 10;
+                break;
+            default:
+                break;
+        }
+        if(offset == i) {
+            Display::invert_rectangle(x_offset+1, menu_offset_y_+4, 13, 13);
+        }
+        x_offset += 15 + gap;
+    }
+    if(menu_selection_offset_ > 0) {
+        Display::put_image_16bit(0+1, menu_offset_y_ + 6, Graphic_icon_arrow_left_9x9, 9);
+    }
+    if(menu_selection_offset_ < 5) {
+        Display::put_image_16bit(128-9-1, menu_offset_y_ + 6, Graphic_icon_arrow_right_9x9, 9);
+    }
+    
+    char *line;
+    switch(selection_) {
+        case WAVE_EDITOR_SELECTION_SQUARE:
+            line = (char*)"SQUARE";
+            break;
+        case WAVE_EDITOR_SELECTION_TRIANGLE:
+            line = (char*)"TRIANGLE";
+            break;
+        case WAVE_EDITOR_SELECTION_SINE:
+            line = (char*)"SINE";
+            break;
+        case WAVE_EDITOR_SELECTION_RAMP:
+            line = (char*)"RAMP";
+            break;
+        case WAVE_EDITOR_SELECTION_SAW:
+            line = (char*)"SAW";
+            break;
+        case WAVE_EDITOR_SELECTION_PEAK:
+            line = (char*)"LOG";
+            break;
+        case WAVE_EDITOR_SELECTION_PEN:
+            line = (char*)"PEN";
+            break;
+        case WAVE_EDITOR_SELECTION_LINE:
+            line = (char*)"LINE";
+            break;
+        case WAVE_EDITOR_SELECTION_SPECTRAL:
+            line = (char*)"SPECTRAL";
+            break;
+        case WAVE_EDITOR_SELECTION_CLEAR:
+            line = (char*)"CLEAR";
+            break;
+        case WAVE_EDITOR_SELECTION_SAVE:
+            line = (char*)"SAVE";
+            break;
+    }
+    Display::put_string_5x5(64 - strlen(line)*6 / 2, menu_offset_y_ + 20, strlen(line), line);
 }
 
 void WaveEditor::paint(juce::Graphics& g) {
