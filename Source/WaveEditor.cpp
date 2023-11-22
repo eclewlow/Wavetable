@@ -99,14 +99,29 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                             }
                             case WAVE_EDITOR_SELECTION_RAMP:
                             {
+                                float sample = c / width;
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*4*sample, -32768, 32767);
                                 break;
                             }
                             case WAVE_EDITOR_SELECTION_SAW:
                             {
+                                float sample = c / width;
+                                sample = 1.0f - sample;
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*4*sample, -32768, 32767);
                                 break;
                             }
                             case WAVE_EDITOR_SELECTION_PEAK:
                             {
+                                float sample;
+                                float index = c / width;
+                                if(index >= 0.5f)
+                                    sample = -log(sin(M_PI * (0.5f + (1.0f - c/width))));
+                                else
+                                    sample = -log(sin(M_PI * (0.5f + c/width)));
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]-512*2*sample, -32768, 32767);
                                 break;
                             }
                             default:
@@ -158,14 +173,29 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                             }
                             case WAVE_EDITOR_SELECTION_RAMP:
                             {
+                                float sample = c / width;
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*4*sample, -32768, 32767);
                                 break;
                             }
                             case WAVE_EDITOR_SELECTION_SAW:
                             {
+                                float sample = c / width;
+                                sample = 1.0f - sample;
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*4*sample, -32768, 32767);
                                 break;
                             }
                             case WAVE_EDITOR_SELECTION_PEAK:
                             {
+                                float sample;
+                                float index = c / width;
+                                if(index >= 0.5f)
+                                    sample = -log(sin(M_PI * (0.5f + (1.0f - c/width))));
+                                else
+                                    sample = -log(sin(M_PI * (0.5f + c/width)));
+                                c += 1.0f;
+                                wavedata_[j] = std::clamp<int32_t>(wavedata_[j]+512*2*sample, -32768, 32767);
                                 break;
                             }
                             default:
