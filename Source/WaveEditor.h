@@ -20,24 +20,26 @@ class WaveEditor: public State
 {
 public:
     enum WaveEditorState {
-        WAVE_EDITOR_STATE_MENU,
-        WAVE_EDITOR_STATE_EDITOR,
-        WAVE_EDITOR_STATE_SPECTRAL,
+        WAVE_EDITOR_STATE_MENU = 0,
+        WAVE_EDITOR_STATE_EDITOR = 1,
+        WAVE_EDITOR_STATE_PEN = 2,
+        WAVE_EDITOR_STATE_LINE = 3,
+        WAVE_EDITOR_STATE_SPECTRAL = 4,
     };
 
     enum WaveEditorSelection {
-        WAVE_EDITOR_SELECTION_SQUARE,
-        WAVE_EDITOR_SELECTION_TRIANGLE,
-        WAVE_EDITOR_SELECTION_SINE,
-        WAVE_EDITOR_SELECTION_RAMP,
-        WAVE_EDITOR_SELECTION_SAW,
-        WAVE_EDITOR_SELECTION_PEAK,
-        WAVE_EDITOR_SELECTION_PEN,
-        WAVE_EDITOR_SELECTION_LINE,
-        WAVE_EDITOR_SELECTION_SPECTRAL,
-        WAVE_EDITOR_SELECTION_CLEAR,
-        WAVE_EDITOR_SELECTION_SAVE,
-
+        WAVE_EDITOR_SELECTION_SQUARE    = 0,
+        WAVE_EDITOR_SELECTION_TRIANGLE  = 1,
+        WAVE_EDITOR_SELECTION_SINE      = 2,
+        WAVE_EDITOR_SELECTION_RAMP      = 3,
+        WAVE_EDITOR_SELECTION_SAW       = 4,
+        WAVE_EDITOR_SELECTION_PEAK      = 5,
+        WAVE_EDITOR_SELECTION_PEN       = 6,
+        WAVE_EDITOR_SELECTION_LINE      = 7,
+        WAVE_EDITOR_SELECTION_SPECTRAL  = 8,
+        WAVE_EDITOR_SELECTION_CLEAR     = 9,
+        WAVE_EDITOR_SELECTION_LOAD      = 10,
+        WAVE_EDITOR_SELECTION_SAVE      = 11,
     };
     enum WaveEditorRightEncoderState {
         WAVE_EDITOR_RIGHT_ENCODER_DRAW,
@@ -73,9 +75,9 @@ public:
 private:
     int16_t * wavedata_;
     WaveEditorRightEncoderState right_state_;
-    WaveEditorSelection selection_;
+    int8_t selection_;
+    int8_t mode_;
     WaveEditorState state_;
-    WaveEditorSelection mode_;
     int16_t menu_selection_offset_;
     int16_t timer_;
     int menu_target_offset_y_;
@@ -86,5 +88,9 @@ private:
     float spectral_gain_[32];
     FFT::COMPLEX_NUMBER spectral_phasors_[2048];
     float spectral_angles_[32];
+    uint16_t pen_x_;
+    uint16_t pen_y_;
+    uint16_t line_x_;
+    uint16_t line_y_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };

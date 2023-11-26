@@ -146,12 +146,12 @@ void Display::LCD_Line(int x0, int y0,
         if (e2 > -dx)
         {
             err -= dy;
-            x0 = (uint16_t)((int16_t) x0 + sx);
+            x0 = (int16_t)((int16_t) x0 + sx);
         }
         if (e2 < dy)
         {
             err += dx;
-            y0 = (uint16_t)((int16_t) y0 + sy);
+            y0 = (int16_t)((int16_t) y0 + sy);
         }
     }
     
