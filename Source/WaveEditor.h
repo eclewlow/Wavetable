@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "State.h"
+#include "fft.h"
 
 class State;
 
@@ -21,6 +22,7 @@ public:
     enum WaveEditorState {
         WAVE_EDITOR_STATE_MENU,
         WAVE_EDITOR_STATE_EDITOR,
+        WAVE_EDITOR_STATE_SPECTRAL,
     };
 
     enum WaveEditorSelection {
@@ -50,6 +52,7 @@ public:
     ~WaveEditor();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
+    virtual void triggerUpdate();
 //    inline void setLeftState(ABMenuState state) { left_state_ = state; }
 //    inline void setRightState(ABMenuState state) { right_state_ = state; }
 //
@@ -62,6 +65,8 @@ public:
 //    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
 //    inline int GetRightWavetable() { return right_wavetable_; }
 //    inline int GetRightFrame() { return right_frame_; }
+    void CalculateFFT();
+    void CalculateIFFT();
     void DrawMenu();
     void DrawTriangle(int x, int y, bool reversed);
     inline void setWavedata(int16_t * data) { wavedata_ = data; }
@@ -77,5 +82,9 @@ private:
     int menu_offset_y_;
     int selection_x1_;
     int selection_x2_;
+    int spectral_cursor_;
+    float spectral_gain_[32];
+    FFT::COMPLEX_NUMBER spectral_phasors_[2048];
+    float spectral_angles_[32];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };

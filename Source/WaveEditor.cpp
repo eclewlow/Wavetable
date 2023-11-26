@@ -11,6 +11,7 @@
 #include "Display.h"
 #include "graphics.h"
 #include "Globals.h"
+#include "fft.h"
 
 WaveEditor::WaveEditor() {
 //    setLeftState(AB_LOAD_HOVER);
@@ -33,6 +34,7 @@ WaveEditor::WaveEditor() {
     menu_selection_offset_ = 0;
     menu_offset_y_ = -30;
     menu_target_offset_y_ = -30;
+    spectral_cursor_ = 0;
 }
 
 WaveEditor::~WaveEditor() {
@@ -318,7 +320,15 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
             if(selection_ == WAVE_EDITOR_SELECTION_CLEAR) {
                 memset(wavedata_, 0, 2048*2);
-            } else {
+            } else if(selection_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
+                mode_ = selection_;
+                state_ = WAVE_EDITOR_STATE_SPECTRAL;
+                menu_target_offset_y_ = -30;
+                timer_ = juce::Time::currentTimeMillis();
+
+                CalculateFFT();
+            }
+            else {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_EDITOR;
                 menu_target_offset_y_ = -30;
@@ -335,7 +345,48 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
 //                context.setState(&abModeMenu);
         }
     }
+    else if(state_ == WAVE_EDITOR_STATE_SPECTRAL) {
+        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+            spectral_cursor_ = std::clamp(--spectral_cursor_, 0, 31);
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+            spectral_cursor_ = std::clamp(++spectral_cursor_, 0, 31);
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+            spectral_gain_[spectral_cursor_] = std::clamp(spectral_gain_[spectral_cursor_] - 0.1f, 0.0f, 1.0f);
+            CalculateIFFT();
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+            spectral_gain_[spectral_cursor_] = std::clamp(spectral_gain_[spectral_cursor_] + 0.1f, 0.0f, 1.0f);
+            CalculateIFFT();
+        }
+        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        }
+        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+            state_ = WAVE_EDITOR_STATE_MENU;
+            selection_ = mode_;
+            menu_offset_y_ = -30;
+            menu_target_offset_y_ = 0;
+            timer_ = juce::Time::currentTimeMillis();
+        }
+        if(key.getKeyCode() == BACK_BUTTON) {
+            if(back_menu_)
+                context.setState(back_menu_);
+            else
+                context.setState(&abModeMenu);
+        }
+    }
     return true;
+}
+
+void WaveEditor::triggerUpdate() {
+    if(mode_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
+        state_ = WAVE_EDITOR_STATE_SPECTRAL;
+        menu_target_offset_y_ = -30;
+        timer_ = juce::Time::currentTimeMillis();
+
+        CalculateFFT();
+    }
 }
 
 void WaveEditor::DrawTriangle(int x, int y, bool reversed) {
@@ -359,6 +410,39 @@ void WaveEditor::DrawTriangle(int x, int y, bool reversed) {
         Display::Put_Pixel(x, y+2, true);
         Display::Put_Pixel(x, y+3, true);
         Display::Put_Pixel(x, y+4, true);
+    }
+}
+
+void WaveEditor::CalculateFFT() {
+    float wavedata[2048];
+    for (int i = 0; i < 2048; i++) {
+        wavedata[i] = wavedata_[i] / 32768.0f;
+    }
+    FFT::fft(wavedata, 2048, spectral_phasors_);
+    for(int i = 0; i < 32; i++) {
+        spectral_gain_[i] = FFT::complexMagnitude(spectral_phasors_[i+1]) / 1024.0f;
+        if(spectral_phasors_[i + 1].imag == 0)
+            spectral_angles_[i] = M_PI_2;
+        else
+            spectral_angles_[i] = atan(spectral_phasors_[i + 1].real / spectral_phasors_[i + 1].imag);
+    }
+}
+
+void WaveEditor::CalculateIFFT() {
+    FFT::COMPLEX_NUMBER waveoutput[2048];
+
+    float angle;
+    angle = spectral_angles_[spectral_cursor_];
+    spectral_phasors_[spectral_cursor_ + 1].real = -sin(angle) * 1024 * spectral_gain_[spectral_cursor_];
+    spectral_phasors_[spectral_cursor_ + 1].imag = -cos(angle) * 1024 * spectral_gain_[spectral_cursor_];
+    
+    spectral_phasors_[2048 - (spectral_cursor_ + 1)].real = sin(angle) * 1024 * spectral_gain_[spectral_cursor_];
+    spectral_phasors_[2048 - (spectral_cursor_ + 1)].imag = cos(angle) * 1024 * spectral_gain_[spectral_cursor_];
+
+    FFT::ifft(spectral_phasors_, 2048, waveoutput);
+    
+    for(int i = 0; i < 2048; i++) {
+        wavedata_[i] = std::clamp(waveoutput[i].real * 32767.0f, -32768.0f, 32767.0f);
     }
 }
 
@@ -487,19 +571,37 @@ void WaveEditor::paint(juce::Graphics& g) {
 
     Display::clear_screen();
 
-//    abEngine.FillWaveform(BUF1, left_wavetable_, left_frame_);
-    Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
-    Display::LCD_DottedLine(selection_x1_, 0, selection_x1_, 63, 1, 1, true);
-    Display::LCD_DottedLine(selection_x2_, 0, selection_x2_, 63, 1, 1, true);
-    if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
-        // draw triangles
-        DrawTriangle(selection_x1_ - 3, 64 - 5, false);
-        DrawTriangle(selection_x2_+1, 64 - 5, true);
-        DrawTriangle(selection_x1_ - 3, 0, false);
-        DrawTriangle(selection_x2_+1, 0, true);
+    if(mode_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
+        Display::LCD_DottedLine(0, 16, 127, 16, 4, 2, true);
+//        Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
+        Display::LCD_Line(0, 32, 127, 32, true);
+        if(wavedata_)
+            Display::Draw_Wave(0, 0, 128, 32, wavedata_);
+        for(int i = 0; i < 32; i++) {
+            if(i == spectral_cursor_) {
+                Display::LCD_Line(i*4 + 2, 32, i*4 + 2, 62, true);
+            }
+            
+            Display::LCD_Line(i*4 + 1, 62 - spectral_gain_[i] * 30.0f, i*4 + 1, 62, true);
+            Display::LCD_Line(i*4 + 2, 62 - spectral_gain_[i] * 30.0f, i*4 + 2, 62, true);
+            Display::LCD_Line(i*4 + 3, 62 - spectral_gain_[i] * 30.0f, i*4 + 3, 62, true);
+
+            Display::LCD_Line(i*4 + 1, 62, i*4 + 3, 62, true);
+        }
+    } else {
+        Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
+        Display::LCD_DottedLine(selection_x1_, 0, selection_x1_, 63, 1, 1, true);
+        Display::LCD_DottedLine(selection_x2_, 0, selection_x2_, 63, 1, 1, true);
+        if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
+            // draw triangles
+            DrawTriangle(selection_x1_ - 3, 64 - 5, false);
+            DrawTriangle(selection_x2_+1, 64 - 5, true);
+            DrawTriangle(selection_x1_ - 3, 0, false);
+            DrawTriangle(selection_x2_+1, 0, true);
+        }
+        if(wavedata_)
+            Display::Draw_Wave(0, 0, 128, 64, wavedata_);
     }
-    if(wavedata_)
-        Display::Draw_Wave(0, 0, 128, 64, wavedata_);
 
     DrawMenu();
     //

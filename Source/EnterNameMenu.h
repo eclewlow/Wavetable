@@ -25,6 +25,7 @@ public:
     ~EnterNameMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
+    void triggerUpdate() {};
     inline void setState(EnterNameMenuState newState) { currentState = newState; }
     inline void setExecFunc(void (* func)(char* param)) { exec_func = func; }
     inline void setBackState(State* state) { back_state = state; }

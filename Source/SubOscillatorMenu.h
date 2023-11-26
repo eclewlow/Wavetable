@@ -29,6 +29,7 @@ public:
     ~SubOscillatorMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
+    void triggerUpdate() {};
     inline void setState(SubOscillatorMenuState state) { state_ = state; }
 
 private:

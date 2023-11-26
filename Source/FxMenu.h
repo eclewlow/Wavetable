@@ -35,6 +35,7 @@ public:
     ~FxMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
+    void triggerUpdate() {};
     inline void setLeftState(FxMenuLeftState left_state) { left_state_ = left_state; }
     inline void setRightState(FxMenuRightState right_state) { right_state_ = right_state; }
 

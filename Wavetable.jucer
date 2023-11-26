@@ -18,6 +18,10 @@
         <FILE id="V0KABH" name="encoder.h" compile="0" resource="0" file="Source/encoder.h"/>
       </GROUP>
       <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="dsp">
+        <GROUP id="{A7B8A86C-7CEC-2EA9-58F0-0BEB21A1FF0B}" name="fft">
+          <FILE id="lv0A5f" name="fft.cpp" compile="1" resource="0" file="Source/fft.cpp"/>
+          <FILE id="iTewL7" name="fft.h" compile="0" resource="0" file="Source/fft.h"/>
+        </GROUP>
         <GROUP id="{15594671-89C5-0E50-D89C-5FE77C83BE2D}" name="downsampler">
           <FILE id="aNA7wn" name="4x_downsampler.h" compile="0" resource="0"
                 file="Source/4x_downsampler.h"/>

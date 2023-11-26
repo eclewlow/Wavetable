@@ -35,6 +35,7 @@ public:
     ~ABModeMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
+    void triggerUpdate() {};
     inline void setLeftState(ABMenuState state) { left_state_ = state; }
     inline void setRightState(ABMenuState state) { right_state_ = state; }
 
