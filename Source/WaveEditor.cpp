@@ -320,6 +320,9 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
             if(selection_ == WAVE_EDITOR_SELECTION_CLEAR) {
                 memset(wavedata_, 0, 2048*2);
+                if(mode_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
+                    CalculateFFT();
+                }
             } else if(selection_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_SPECTRAL;
