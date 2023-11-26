@@ -422,6 +422,8 @@ void WaveEditor::CalculateFFT() {
     for(int i = 0; i < 32; i++) {
         spectral_gain_[i] = FFT::complexMagnitude(spectral_phasors_[i+1]) / 1024.0f;
         if(spectral_phasors_[i + 1].imag == 0)
+            spectral_angles_[i] = 0;
+        else if(spectral_phasors_[i + 1].real == 0)
             spectral_angles_[i] = M_PI_2;
         else
             spectral_angles_[i] = atan(spectral_phasors_[i + 1].real / spectral_phasors_[i + 1].imag);
