@@ -13,7 +13,7 @@
 #include "Globals.h"
 
 LoadWaveMenu::LoadWaveMenu() {
-    setState(LOAD_WAVE_MENU_NONE);
+    setState(LOAD_WAVE_MENU_SELECT_WAVETABLE);
 }
 
 LoadWaveMenu::~LoadWaveMenu() {
@@ -21,49 +21,85 @@ LoadWaveMenu::~LoadWaveMenu() {
 }
 
 bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(back_menu_)
-        context.setState(back_menu_);
-    else
-        context.setState(&mainMenu);
+    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        switch(state_) {
+            case LOAD_WAVE_MENU_SELECT_WAVETABLE:
+                wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, 15);
+                
+                if(wavetable_ < wavetable_offset_) {
+                    wavetable_offset_ = wavetable_;
+                }
+                
+//                if(abEngine.GetLeftWavetable() == GetLeftWavetable())
+//                    SetFrame(abEngine.GetLeftFrame());
+//                else
+//                    SetFrame(0);
+                break;
+            case LOAD_WAVE_MENU_SELECT_FRAME:
+                frame_ = std::clamp<int16_t>(frame_ - 1, 0, 15);
+
+                if(frame_ < frame_offset_) {
+                    frame_offset_ = frame_;
+                }
+
+                break;
+            default:
+                break;
+        }    }
+    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    }
+    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    }
+    if(key.getKeyCode() == BACK_BUTTON) {
+        if(back_menu_)
+            context.setState(back_menu_);
+        else
+            context.setState(&mainMenu);
+    }
+
     return true;
 }
 
 void LoadWaveMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
-    
-    int y_offset = 5;
-    
-    Display::put_string_9x9(128 / 2 - strlen("INFO") * 10 / 2, y_offset, strlen("INFO"), "INFO");
+    if(state_ == LOAD_WAVE_MENU_SELECT_WAVETABLE) {
 
-    y_offset += 10 + 5;
-    
-    char line[20];
+        char * title = (char *) "SELECT WAVETABLE";
 
-    int wavetable_count = 32;
-    int snapshot_count = 4;
-    
-    int center = 128 / 2 - 6 / 2;
-//    snprintf(line, 20, "   VERSION; %s", "0.07");
-    Display::put_string_5x5(center, y_offset, 1, ";");
-    Display::put_string_5x5(center - strlen("VERSION") * 6, y_offset, strlen("VERSION"), "VERSION");
-    snprintf(line, 20, "%s", "0.07");
-    Display::put_string_5x5(center + 2 * 6, y_offset, strlen(line), line);
+        int y_offset = 5;
+        int x_offset = 1 + 2 * 4;
 
-    y_offset += 8;
-    Display::put_string_5x5(center, y_offset, 1, ";");
-    Display::put_string_5x5(center - strlen("WAVETABLES") * 6, y_offset, strlen("WAVETABLES"), "WAVETABLES");
-    snprintf(line, 20, "%d/64", wavetable_count);
-    Display::put_string_5x5(center + 2 * 6, y_offset, strlen(line), line);
+        Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
+        
+        Display::invert_rectangle(0, 0, 128, 15);
+        
+        x_offset = 64 - 5;
+        y_offset += 15;
 
-    y_offset += 8;
-    Display::put_string_5x5(center, y_offset, 1, ";");
-    Display::put_string_5x5(center - strlen("WAVES") * 6, y_offset, strlen("WAVES"), "WAVES");
-    snprintf(line, 20, "%d/1024", wavetable_count * 16);
-    Display::put_string_5x5(center + 2 * 6, y_offset, strlen(line), line);
+        for(int i = 0; i < 6; i++)
+        {
+            char line[20];
+            snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
+            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            
+            char * line2 = storage.getWavetable(i + wavetable_offset_).name;
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+wavetable_offset_ == wavetable_);
+        }
 
-    y_offset += 8;
-    Display::put_string_5x5(center, y_offset, 1, ";");
-    Display::put_string_5x5(center - strlen("SNAPSHOTS") * 6, y_offset, strlen("SNAPSHOTS"), "SNAPSHOTS");
-    snprintf(line, 20, "%d/64", snapshot_count);
-    Display::put_string_5x5(center + 2 * 6, y_offset, strlen(line), line);
+        int y_shift = 2;
+        int bar_height = 64 - y_offset - 1;
+        int y_cursor_offset = ((bar_height-3/2) * wavetable_offset_) / 15;
+        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
+
+//        for (int i = 0; )
+    } else {
+        
+    }
 }

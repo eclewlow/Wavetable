@@ -202,13 +202,13 @@ void ABModeMenu::paint(juce::Graphics& g) {
             
             char * line2 = storage.getWavetable(i + left_wavetable_offset_).name;
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+left_wavetable_offset_ == left_wavetable_);
-
-            int y_shift = 2;
-            int bar_height = 3 * 7 + y_shift * 2;
-            int y_cursor_offset = ((bar_height-3/2) * left_wavetable_offset_) / 15;
-            Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
-            Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
         }
+        int y_shift = 2;
+        int bar_height = 3 * 7 + y_shift * 2;
+        int y_cursor_offset = ((bar_height-3/2) * left_wavetable_offset_) / 15;
+        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
+
     } else if (left_state_ == AB_SELECT_FRAME) {
         for(int i = 0; i < 3; i++)
         {
@@ -220,12 +220,12 @@ void ABModeMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%02d", i + left_frame_offset_);
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line), line, i+left_frame_offset_ == left_frame_);
 
-            int y_shift = 2;
-            int bar_height = 3 * 7 + y_shift * 2;
-            int y_cursor_offset = ((bar_height-3/2) * left_frame_offset_) / 15;
-            Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
-            Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
         }
+        int y_shift = 2;
+        int bar_height = 3 * 7 + y_shift * 2;
+        int y_cursor_offset = ((bar_height-3/2) * left_frame_offset_) / 15;
+        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
     }
     else if(left_state_ == AB_LOAD_HOVER || left_state_ == AB_EDIT_HOVER) {
         int y_offset = graph_y_offset + graph_height + 5;

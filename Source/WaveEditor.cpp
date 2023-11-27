@@ -12,6 +12,7 @@
 #include "graphics.h"
 #include "Globals.h"
 #include "fft.h"
+#include <cmath>
 
 WaveEditor::WaveEditor() {
 //    setLeftState(AB_LOAD_HOVER);
@@ -502,13 +503,19 @@ void WaveEditor::CalculateFFT() {
     FFT::fft(wavedata, 2048, spectral_phasors_);
     for(int i = 0; i < 32; i++) {
         spectral_gain_[i] = FFT::complexMagnitude(spectral_phasors_[i+1]) / 1024.0f;
-        if(spectral_phasors_[i + 1].imag == 0)
-            spectral_angles_[i] = 0;
-        else if(spectral_phasors_[i + 1].real == 0)
-            spectral_angles_[i] = M_PI_2;
-        else
-            spectral_angles_[i] = atan(spectral_phasors_[i + 1].real / spectral_phasors_[i + 1].imag);
+//        if(spectral_phasors_[i + 1].imag == 0) {
+//            spectral_angles_[i] = 0;
+//            spectral_angles_[64 - (i+1)] = 0;
+//        }
+//        else if(spectral_phasors_[i + 1].real == 0)
+//            spectral_angles_[i] = M_PI_2;
+//        else {
+            //        atan2(1.0f / 1.0f)
+            spectral_angles_[i] = atan2(spectral_phasors_[i + 1].real, spectral_phasors_[i + 1].imag);
+            spectral_angles_[64 - (i+1)] = atan2(spectral_phasors_[2048 - (i + 1)].real, spectral_phasors_[2048 - (i + 1)].imag);
+//        }
     }
+
     CalculateIFFT();
 }
 
@@ -518,9 +525,10 @@ void WaveEditor::CalculateIFFT() {
     float angle;
     for(int i = 0; i < 32; i++) {
         angle = spectral_angles_[i];
-        spectral_phasors_[i + 1].real = -sin(angle) * 1024 * spectral_gain_[i];
-        spectral_phasors_[i + 1].imag = -cos(angle) * 1024 * spectral_gain_[i];
+        spectral_phasors_[i + 1].real = sin(angle) * 1024 * spectral_gain_[i];
+        spectral_phasors_[i + 1].imag = cos(angle) * 1024 * spectral_gain_[i];
         
+        angle = spectral_angles_[64 - (i + 1)];
         spectral_phasors_[2048 - (i + 1)].real = sin(angle) * 1024 * spectral_gain_[i];
         spectral_phasors_[2048 - (i + 1)].imag = cos(angle) * 1024 * spectral_gain_[i];
     }

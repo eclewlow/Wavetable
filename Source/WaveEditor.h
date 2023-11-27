@@ -88,7 +88,7 @@ private:
     int spectral_cursor_;
     float spectral_gain_[32];
     FFT::COMPLEX_NUMBER spectral_phasors_[2048];
-    float spectral_angles_[32];
+    float spectral_angles_[64];
     int16_t pen_x_;
     int16_t pen_y_;
     int16_t line_x_;
