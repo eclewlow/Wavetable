@@ -296,20 +296,13 @@ void Display::put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *
 
 void Display::put_string_5x5(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted)
 {
-    uint8_t
-    Terminator_Found;
-    uint8_t
-    Characters_Placed;
-    uint8_t
-    this_character;
-    uint8_t
-    *LCD_Memory;
-    uint8_t
-    column;
-    uint8_t
-    row;
-    WORD_UNION
-    Pixel_Data;
+    uint8_t Terminator_Found;
+    uint8_t Characters_Placed;
+    uint8_t this_character;
+    uint8_t *LCD_Memory;
+    uint8_t column;
+    uint8_t row;
+    WORD_UNION Pixel_Data;
     
     
     int minus = 0;
@@ -354,6 +347,76 @@ void Display::put_string_5x5(uint8_t x, int8_t y, uint8_t Field_Width, const cha
             //Get the font data, convert it to a word and shift it down. Leave
             //one blank row of pixels above as a spacer.
             Pixel_Data.as_word=((uint16_t)Font_05x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
+            Pixel_Data.as_word >>= 3;
+            Pixel_Data.as_word >>= minus;
+            
+            //Set the correct bits in this row and the next row down.
+            LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+            if(row<7)
+            {
+                LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+            }
+            LCD_Memory++;
+        }
+        LCD_Memory++;
+    }
+    if(inverted)
+        Display::invert_rectangle(x - 1, y - 1, 6 * Field_Width + 1, 7);
+}
+
+void Display::put_string_3x5(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted)
+{
+    uint8_t Terminator_Found;
+    uint8_t Characters_Placed;
+    uint8_t this_character;
+    uint8_t *LCD_Memory;
+    uint8_t column;
+    uint8_t row;
+    WORD_UNION Pixel_Data;
+    
+    
+    int minus = 0;
+    
+    if(y < 0) {
+        minus = -y;
+        y = 0;
+    }
+
+    //Get the first row of the display character.
+    row=y>>3;
+    //Calculate the address of the first uint8_t in display in LCD_Memory
+    LCD_Memory=&Display::framebuffer[row][x];
+    
+    //Initialize Terminator_Found.
+    Terminator_Found=0;
+    //Move across the field. We will either put the character or a blank
+    //in every position of Field_Width.
+    for(Characters_Placed=0;Characters_Placed<Field_Width;Characters_Placed++)
+    {
+        //If we have not passed the terminator, then get the next
+        //character in the string. If we find the terminator,
+        //remember that we are out of characters.
+        if(!Terminator_Found)
+        {
+            this_character=*input++;
+            if(!this_character)
+            {
+                Terminator_Found=1;
+                this_character=' ';
+            }
+        }
+        else
+            this_character=' ';
+        //Get a pointer into the font information for this
+        //character.
+        
+        //Write the eight columns of this character.
+        for(column=0;column<3;column++)
+        {
+            if(row > 7) continue;
+            //Get the font data, convert it to a word and shift it down. Leave
+            //one blank row of pixels above as a spacer.
+            Pixel_Data.as_word=((uint16_t)Font_03x05[(this_character-FONT_05X05_BASE)][column])<<(y&0x07);
             Pixel_Data.as_word >>= 3;
             Pixel_Data.as_word >>= minus;
             

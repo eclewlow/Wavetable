@@ -196,9 +196,12 @@ void ABModeMenu::paint(juce::Graphics& g) {
     if(left_state_ == AB_SELECT_WAVETABLE) {
         for(int i = 0; i < 3; i++)
         {
-            char * line = storage.getWavetable(i + left_wavetable_offset_).name;
-//            snprintf(line, 20, storage.getWavetable(i + left_wavetable_offset_).name);
-            Display::put_string_5x5(5, y_offset + i * 7, strlen(line), line, i+left_wavetable_offset_ == left_wavetable_);
+            char line[20];
+            snprintf(line, 20, "%*d", 2, i + left_wavetable_offset_ + 1);
+            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            
+            char * line2 = storage.getWavetable(i + left_wavetable_offset_).name;
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+left_wavetable_offset_ == left_wavetable_);
 
             int y_shift = 2;
             int bar_height = 3 * 7 + y_shift * 2;
@@ -210,8 +213,12 @@ void ABModeMenu::paint(juce::Graphics& g) {
         for(int i = 0; i < 3; i++)
         {
             char line[20];
-            snprintf(line, 20, "%d", i + left_frame_offset_);
-            Display::put_string_5x5(5, y_offset + i * 7, strlen(line), line, i+left_frame_offset_ == left_frame_);
+
+            snprintf(line, 20, "%*d", 2, i + left_frame_offset_ + 1);
+            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+
+            snprintf(line, 20, "%02d", i + left_frame_offset_);
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line), line, i+left_frame_offset_ == left_frame_);
 
             int y_shift = 2;
             int bar_height = 3 * 7 + y_shift * 2;

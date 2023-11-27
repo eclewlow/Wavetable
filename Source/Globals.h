@@ -24,6 +24,7 @@
 #include "WavetableModeMenu.h"
 #include "ABModeMenu.h"
 #include "WaveEditor.h"
+#include "LoadWaveMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -63,6 +64,7 @@ extern EnterNameMenu enterNameMenu;
 extern WavetableModeMenu wavetableModeMenu;
 extern ABModeMenu abModeMenu;
 extern WaveEditor waveEditor;
+extern LoadWaveMenu loadWaveMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;

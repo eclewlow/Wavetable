@@ -272,16 +272,15 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_PEN;
                 menu_target_offset_y_ = -30;
-//                pen_x_ = 32;
-//                pen_y_ = 48;
                 timer_ = juce::Time::currentTimeMillis();
             } else if(selection_ == WAVE_EDITOR_SELECTION_LINE) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_LINE;
-//                line_x_ = 32;
-//                line_y_ = 48;
                 menu_target_offset_y_ = -30;
                 timer_ = juce::Time::currentTimeMillis();
+            } else if (selection_ == WAVE_EDITOR_SELECTION_LOAD) {
+                context.setState(&loadWaveMenu);
+                loadWaveMenu.setBackMenu(&waveEditor);
             }
             else {
                 mode_ = selection_;
@@ -578,7 +577,7 @@ void WaveEditor::DrawMenu() {
     if(menu_selection_offset_ > 0) {
         Display::put_image_16bit(0+1, menu_offset_y_ + 6, Graphic_icon_arrow_left_9x9, 9);
     }
-    if(menu_selection_offset_ < 5) {
+    if(menu_selection_offset_ < 6) {
         Display::put_image_16bit(128-9-1, menu_offset_y_ + 6, Graphic_icon_arrow_right_9x9, 9);
     }
     

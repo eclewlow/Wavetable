@@ -103,6 +103,9 @@
               file="Source/IOConfigurationMenu.cpp"/>
         <FILE id="jmFLht" name="IOConfigurationMenu.h" compile="0" resource="0"
               file="Source/IOConfigurationMenu.h"/>
+        <FILE id="LCNG9L" name="LoadWaveMenu.cpp" compile="1" resource="0"
+              file="Source/LoadWaveMenu.cpp"/>
+        <FILE id="nWCjDy" name="LoadWaveMenu.h" compile="0" resource="0" file="Source/LoadWaveMenu.h"/>
         <FILE id="KQ3d6h" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
         <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
         <FILE id="ZaqZt6" name="MemoryClearMenu.cpp" compile="1" resource="0"
@@ -121,6 +124,9 @@
         <FILE id="ugKjzB" name="QuantizerMenu.cpp" compile="1" resource="0"
               file="Source/QuantizerMenu.cpp"/>
         <FILE id="t7CjOl" name="QuantizerMenu.h" compile="0" resource="0" file="Source/QuantizerMenu.h"/>
+        <FILE id="g8jMOc" name="SaveWaveMenu.cpp" compile="1" resource="0"
+              file="Source/SaveWaveMenu.cpp"/>
+        <FILE id="MlAvOH" name="SaveWaveMenu.h" compile="0" resource="0" file="Source/SaveWaveMenu.h"/>
         <FILE id="hLMHxy" name="SubOscillatorMenu.cpp" compile="1" resource="0"
               file="Source/SubOscillatorMenu.cpp"/>
         <FILE id="IpUQAK" name="SubOscillatorMenu.h" compile="0" resource="0"
@@ -145,6 +151,8 @@
       <FILE id="RnN6wF" name="fnt05x05.h" compile="0" resource="0" file="Source/fnt05x05.h"/>
       <FILE id="pt7O3K" name="fnt08x08.cpp" compile="1" resource="0" file="Source/fnt08x08.cpp"/>
       <FILE id="eiGYzT" name="fnt08x08.h" compile="0" resource="0" file="Source/fnt08x08.h"/>
+      <FILE id="XZnJHW" name="fnt03x05.cpp" compile="1" resource="0" file="Source/fnt03x05.cpp"/>
+      <FILE id="D1O352" name="fnt03x05.h" compile="0" resource="0" file="Source/fnt03x05.h"/>
       <FILE id="Ar7qiJ" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="Js6MCa" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="w30ZL2" name="MainComponent.cpp" compile="1" resource="0"

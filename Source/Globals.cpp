@@ -28,6 +28,7 @@ EnterNameMenu enterNameMenu;
 WavetableModeMenu wavetableModeMenu;
 ABModeMenu abModeMenu;
 WaveEditor waveEditor;
+LoadWaveMenu loadWaveMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
