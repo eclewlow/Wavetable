@@ -92,7 +92,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
-                morph_ = std::clamp<float>(morph_ - 0.02, 0.0f, 1.0f);
+                morph_ = std::clamp<float>(morph_ - 1.0f / 15.0f, 0.0f, 1.0f);
                 break;
             default:
                 break;
@@ -101,7 +101,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == RIGHT_ENCODER_CW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
-                morph_ = std::clamp<float>(morph_ + 0.02, 0.0f, 1.0f);
+                morph_ = std::clamp<float>(morph_ + 1.0f / 15.0f, 0.0f, 1.0f);
                 break;
             default:
                 break;
@@ -145,7 +145,6 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 setState(LOAD_WAVE_MENU_SELECT_WAVETABLE);
                 wavetable_ = 0;
                 frame_ = 0;
-                
 
                 if(back_menu_)
                     context.setState(back_menu_);

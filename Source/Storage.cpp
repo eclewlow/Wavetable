@@ -17,11 +17,12 @@ int16_t Storage::LoadWaveSample(int table, int frame, int index) {
     return wavetable.waves[frame][index];
 }
 
-int16_t Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
-    for(int i = 0; i < 2048; i++) {
-        float sample = LoadWaveSample(wavetable, frame, i);
-        waveform[i] = sample;
-    }
+void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
+//    for(int i = 0; i < 2048; i++) {
+//        float sample = LoadWaveSample(wavetable, frame, i);
+//        waveform[i] = sample;
+//    }
+    memcpy(waveform, getWavetable(wavetable).waves[frame], 2048 * 2);
 }
 
 
