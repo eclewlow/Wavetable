@@ -69,6 +69,7 @@ public:
 //    inline int GetRightFrame() { return right_frame_; }
     void CalculateFFT();
     void CalculateIFFT();
+    void LineToWavedata(int x0, int y0, int x1, int y1);
     void DrawMenu();
     void DrawTriangle(int x, int y, bool reversed);
     inline void setWavedata(int16_t * data) { wavedata_ = data; }
@@ -88,9 +89,10 @@ private:
     float spectral_gain_[32];
     FFT::COMPLEX_NUMBER spectral_phasors_[2048];
     float spectral_angles_[32];
-    uint16_t pen_x_;
-    uint16_t pen_y_;
-    uint16_t line_x_;
-    uint16_t line_y_;
+    int16_t pen_x_;
+    int16_t pen_y_;
+    int16_t line_x_;
+    int16_t line_y_;
+    bool pen_drawing_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };

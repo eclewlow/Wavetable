@@ -35,10 +35,11 @@ WaveEditor::WaveEditor() {
     menu_offset_y_ = -30;
     menu_target_offset_y_ = -30;
     spectral_cursor_ = 0;
-    pen_x_ = 64;
-    pen_y_ = 32;
-    line_x_ = 64;
-    line_y_ = 32;
+    pen_drawing_ = false;
+    pen_x_ = 32;
+    pen_y_ = 48;
+    line_x_ = 32;
+    line_y_ = 48;
 }
 
 WaveEditor::~WaveEditor() {
@@ -271,10 +272,14 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_PEN;
                 menu_target_offset_y_ = -30;
+//                pen_x_ = 32;
+//                pen_y_ = 48;
                 timer_ = juce::Time::currentTimeMillis();
             } else if(selection_ == WAVE_EDITOR_SELECTION_LINE) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_LINE;
+//                line_x_ = 32;
+//                line_y_ = 48;
                 menu_target_offset_y_ = -30;
                 timer_ = juce::Time::currentTimeMillis();
             }
@@ -328,23 +333,43 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
     }
     else if(state_ == WAVE_EDITOR_STATE_PEN) {
         if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+            pen_y_ = std::clamp<int16_t>(--pen_y_, 0, 63);
+            if(pen_drawing_)
+                for (int i = 0; i < 16; i++)
+                    wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
         if(key.getKeyCode() == LEFT_ENCODER_CW) {
+            pen_y_ = std::clamp<int16_t>(++pen_y_, 0, 63);
+            if(pen_drawing_)
+                for (int i = 0; i < 16; i++)
+                    wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+            if(!pen_drawing_)
+                pen_x_ = std::clamp<int16_t>(--pen_x_, 0, 127);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+            pen_x_ = std::clamp<int16_t>(++pen_x_, 0, 127);
+            if(pen_drawing_)
+                for (int i = 0; i < 16; i++)
+                    wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+            pen_drawing_ = !pen_drawing_;
+            if(pen_drawing_)
+                for (int i = 0; i < 16; i++)
+                    wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
+            pen_drawing_ = false;
             timer_ = juce::Time::currentTimeMillis();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
+            pen_drawing_ = false;
             if(back_menu_)
                 context.setState(back_menu_);
             else
@@ -352,24 +377,46 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_LINE) {
+        int pen_increment = 5;
         if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+            pen_y_ = std::clamp<int16_t>(pen_y_ - pen_increment, 0, 63);
+            if(pen_drawing_)
+                LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
         if(key.getKeyCode() == LEFT_ENCODER_CW) {
+            pen_y_ = std::clamp<int16_t>(pen_y_ + pen_increment, 0, 63);
+            if(pen_drawing_)
+                LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+            pen_x_ = std::clamp<int16_t>(pen_x_ - pen_increment, 0, 127);
+            if(pen_drawing_)
+                LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+            pen_x_ = std::clamp<int16_t>(pen_x_ + pen_increment, 0, 127);
+            if(pen_drawing_)
+                LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
         if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+            if(pen_drawing_) {
+                // draw line onto wavedata buffer
+            } else {
+            }
+            line_x_ = pen_x_;
+            line_y_ = pen_y_;
+            pen_drawing_ = !pen_drawing_;
         }
         if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
+            pen_drawing_ = false;
             timer_ = juce::Time::currentTimeMillis();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
+            pen_drawing_ = false;
             if(back_menu_)
                 context.setState(back_menu_);
             else
@@ -377,6 +424,41 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     return true;
+}
+
+void WaveEditor::LineToWavedata(int x0, int y0, int x1, int y1) {
+    int8_t dx;
+    int8_t sx;
+    int8_t dy;
+    int8_t sy;
+    int8_t err;
+    int8_t e2;
+    
+    dx = abs((int16_t )x1 - (int16_t )x0);
+    sx = x0 < x1 ? 1 : -1;
+    dy = abs((int16_t )y1 - (int16_t )y0);
+    sy = y0 < y1 ? 1 : -1;
+    err = (dx > dy ? dx : -dy) / 2;
+    
+    for (;;)
+    {
+//        Display::Put_Pixel(x0, y0, set);
+        for(int i = 0; i < 16; i++)
+            wavedata_[x0 * 16 + i] = (-y0 + 32) * 1024 + (y0 < 32 ? -1 : 0);
+        if ((x0 == x1) && (y0 == y1))
+            break;
+        e2 = err;
+        if (e2 > -dx)
+        {
+            err -= dy;
+            x0 = (int16_t)((int16_t) x0 + sx);
+        }
+        if (e2 < dy)
+        {
+            err += dx;
+            y0 = (int16_t)((int16_t) y0 + sy);
+        }
+    }
 }
 
 void WaveEditor::triggerUpdate() {
@@ -428,18 +510,21 @@ void WaveEditor::CalculateFFT() {
         else
             spectral_angles_[i] = atan(spectral_phasors_[i + 1].real / spectral_phasors_[i + 1].imag);
     }
+    CalculateIFFT();
 }
 
 void WaveEditor::CalculateIFFT() {
     FFT::COMPLEX_NUMBER waveoutput[2048];
 
     float angle;
-    angle = spectral_angles_[spectral_cursor_];
-    spectral_phasors_[spectral_cursor_ + 1].real = -sin(angle) * 1024 * spectral_gain_[spectral_cursor_];
-    spectral_phasors_[spectral_cursor_ + 1].imag = -cos(angle) * 1024 * spectral_gain_[spectral_cursor_];
-    
-    spectral_phasors_[2048 - (spectral_cursor_ + 1)].real = sin(angle) * 1024 * spectral_gain_[spectral_cursor_];
-    spectral_phasors_[2048 - (spectral_cursor_ + 1)].imag = cos(angle) * 1024 * spectral_gain_[spectral_cursor_];
+    for(int i = 0; i < 32; i++) {
+        angle = spectral_angles_[i];
+        spectral_phasors_[i + 1].real = -sin(angle) * 1024 * spectral_gain_[i];
+        spectral_phasors_[i + 1].imag = -cos(angle) * 1024 * spectral_gain_[i];
+        
+        spectral_phasors_[2048 - (i + 1)].real = sin(angle) * 1024 * spectral_gain_[i];
+        spectral_phasors_[2048 - (i + 1)].imag = cos(angle) * 1024 * spectral_gain_[i];
+    }
 
     FFT::ifft(spectral_phasors_, 2048, waveoutput);
     
@@ -563,21 +648,23 @@ void WaveEditor::paint(juce::Graphics& g) {
         }
     } else if (mode_ == WAVE_EDITOR_SELECTION_PEN){
         Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
-//        Display::LCD_DottedLine(selection_x1_, 0, selection_x1_, 63, 1, 1, true);
-//        Display::LCD_DottedLine(selection_x2_, 0, selection_x2_, 63, 1, 1, true);
-//        if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
-            // draw triangles
-        Display::Put_Pixel(pen_x_, pen_y_, true);
-        Display::Put_Pixel(pen_x_, pen_y_, true);
-        Display::Put_Pixel(pen_x_, pen_y_, true);
-        Display::Put_Pixel(pen_x_, pen_y_, true);
-        Display::Put_Pixel(pen_x_, pen_y_, true);
 
-//            DrawTriangle(selection_x1_ - 3, 64 - 5, false);
-//            DrawTriangle(selection_x2_+1, 64 - 5, true);
-//            DrawTriangle(selection_x1_ - 3, 0, false);
-//            DrawTriangle(selection_x2_+1, 0, true);
-//        }
+        // draw plus sign
+        Display::LCD_Line(pen_x_-2, pen_y_, pen_x_+2, pen_y_, true);
+        Display::LCD_Line(pen_x_, pen_y_-2, pen_x_, pen_y_+2, true);
+
+        if(wavedata_)
+            Display::Draw_Wave(0, 0, 128, 64, wavedata_);
+    } else if (mode_ == WAVE_EDITOR_SELECTION_LINE){
+        Display::LCD_DottedLine(0, 32, 127, 32, 4, 2, true);
+
+        // draw circle
+        
+        Display::LCD_Circle(pen_x_, pen_y_, 2, true);
+        if(pen_drawing_)
+            Display::LCD_Line(line_x_, line_y_, pen_x_, pen_y_, true);
+//        Display::LCD_Line(line_x_, line_y_-2, pen_x_, line_y_+2, true);
+
         if(wavedata_)
             Display::Draw_Wave(0, 0, 128, 64, wavedata_);
     } else {
