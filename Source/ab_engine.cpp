@@ -119,25 +119,8 @@ void ABEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amoun
 }
 
 void ABEngine::FillWaveform(int16_t * waveform, int16_t wavetable, int16_t frame) {
-    float frequency = 23.4375;
-
-    float phaseIncrement = frequency / 48000.0f;
-    
-    float phase = 0.0f;
-    
     for(int i = 0; i < 2048; i++) {
-        float index = 0.0f;
-        uint8_t integral = floor(index);
-        float fractional = index - integral;
-        
-        float sample = GetSample(wavetable, frame, phase);
-                
-        phase += phaseIncrement;
-        
-        if(phase >= 1.0f)
-            phase -= 1.0f;
-        
-        waveform[i] = static_cast<int16_t>(sample * 32767.0f);
+        waveform[i] = storage.LoadWaveSample(wavetable, frame, i);
     }
 }
 

@@ -282,6 +282,23 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             } else if (selection_ == WAVE_EDITOR_SELECTION_LOAD) {
                 context.setState(&loadWaveMenu);
                 loadWaveMenu.setBackMenu(&waveEditor);
+                loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_A);
+                menu_target_offset_y_ = -30;
+                switch(selection_) {
+                    case WAVE_EDITOR_SELECTION_SPECTRAL:
+                        state_ = WAVE_EDITOR_STATE_SPECTRAL;
+                        break;
+                    case WAVE_EDITOR_SELECTION_PEN:
+                        state_ = WAVE_EDITOR_STATE_PEN;
+                        break;
+                    case WAVE_EDITOR_SELECTION_LINE:
+                        state_ = WAVE_EDITOR_STATE_LINE;
+                        break;
+                    default:
+                        state_ = WAVE_EDITOR_STATE_EDITOR;
+                        break;
+                }
+                timer_ = juce::Time::currentTimeMillis();
             }
             else {
                 mode_ = selection_;
@@ -291,13 +308,22 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             }
         }
         if(key.getKeyCode() == BACK_BUTTON) {
-            state_ = WAVE_EDITOR_STATE_EDITOR;
+            switch(selection_) {
+                case WAVE_EDITOR_SELECTION_SPECTRAL:
+                    state_ = WAVE_EDITOR_STATE_SPECTRAL;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEN:
+                    state_ = WAVE_EDITOR_STATE_PEN;
+                    break;
+                case WAVE_EDITOR_SELECTION_LINE:
+                    state_ = WAVE_EDITOR_STATE_LINE;
+                    break;
+                default:
+                    state_ = WAVE_EDITOR_STATE_EDITOR;
+                    break;
+            }
             menu_target_offset_y_ = -30;
             timer_ = juce::Time::currentTimeMillis();
-//            if(back_menu_)
-//                context.setState(back_menu_);
-//            else
-//                context.setState(&abModeMenu);
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_SPECTRAL) {

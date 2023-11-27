@@ -18,11 +18,16 @@ public:
     Storage() {};
     ~Storage() {};
     int16_t LoadWaveSample(int table, int frame, int index);
+    int16_t LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph);
+    int16_t LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame);
+    
     typedef struct {
         char name[9];
         const int16_t * waves[16];
     } WAVETABLE;
+        
     inline WAVETABLE getWavetable(int i) { return WaveTables[i]; }
+        
 private:
     WAVETABLE WaveTables[16] = {
         {
