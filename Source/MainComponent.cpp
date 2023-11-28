@@ -34,7 +34,7 @@ MainComponent::MainComponent()
     context.setState(&abModeMenu);
     abEngine.Init();
     context.setEngine(&abEngine);
-    
+    context.setState(&mainMenu);
     
     effect_manager.Init();
     effect_manager.setEffect(&fm);

@@ -31,62 +31,10 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
     //    MODULE_SETUP_CONFIG
     
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
-        switch(currentState) {
-            case MAIN_WAVE_DESIGN:
-                break;
-            case MODE_SELECT:
-                setState(MAIN_WAVE_DESIGN);
-                break;
-            case FX_MANAGEMENT:
-                setState(MODE_SELECT);
-                break;
-            case SUBOSCILLATOR_CONFIG:
-                setState(FX_MANAGEMENT);
-                break;
-            case PLAYBACK_MONITORING:
-                setState(SUBOSCILLATOR_CONFIG);
-                break;
-            case SNAPSHOTS_LIST:
-                setState(PLAYBACK_MONITORING);
-                break;
-            case WAVETABLE_MANAGEMENT:
-                setState(SNAPSHOTS_LIST);
-                break;
-            case MODULE_SETUP_CONFIG:
-                setState(WAVETABLE_MANAGEMENT);
-                break;
-            default:
-                break;
-        }
+        currentState = std::clamp<int8_t>(currentState - 1, MAIN_WAVE_DESIGN, MODULE_SETUP_CONFIG);
     }
     if(key.getKeyCode() == LEFT_ENCODER_CW) {
-        switch(currentState) {
-            case MAIN_WAVE_DESIGN:
-                setState(MODE_SELECT);
-                break;
-            case MODE_SELECT:
-                setState(FX_MANAGEMENT);
-                break;
-            case FX_MANAGEMENT:
-                setState(SUBOSCILLATOR_CONFIG);
-                break;
-            case SUBOSCILLATOR_CONFIG:
-                setState(PLAYBACK_MONITORING);
-                break;
-            case PLAYBACK_MONITORING:
-                setState(SNAPSHOTS_LIST);
-                break;
-            case SNAPSHOTS_LIST:
-                setState(WAVETABLE_MANAGEMENT);
-                break;
-            case WAVETABLE_MANAGEMENT:
-                setState(MODULE_SETUP_CONFIG);
-                break;
-            case MODULE_SETUP_CONFIG:
-                break;
-            default:
-                break;
-        }
+        currentState = std::clamp<int8_t>(currentState + 1, MAIN_WAVE_DESIGN, MODULE_SETUP_CONFIG);
     }
     //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
@@ -208,40 +156,8 @@ void MainMenu::paint(juce::Graphics& g) {
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_setup);
     
-    switch(currentState) {
-        case MAIN_WAVE_DESIGN:
-            col = 0; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case MODE_SELECT:
-            col = 1; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case FX_MANAGEMENT:
-            col = 2; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case SUBOSCILLATOR_CONFIG:
-            col = 3; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case PLAYBACK_MONITORING:
-            col = 0; row = 1;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case SNAPSHOTS_LIST:
-            col = 1; row = 1;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case WAVETABLE_MANAGEMENT:
-            col = 2; row = 1;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case MODULE_SETUP_CONFIG:
-            col = 3; row = 1;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        default:
-            break;
-    }
+    col = currentState % 4;
+    row = currentState / 4;
+    Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
+
 }

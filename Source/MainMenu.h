@@ -19,14 +19,14 @@ class MainMenu: public State
 {
 public:
     enum MainMenuState {
-        MAIN_WAVE_DESIGN,
-        MODE_SELECT,
-        FX_MANAGEMENT,
-        SUBOSCILLATOR_CONFIG,
-        PLAYBACK_MONITORING,
-        SNAPSHOTS_LIST,
-        WAVETABLE_MANAGEMENT,
-        MODULE_SETUP_CONFIG
+        MAIN_WAVE_DESIGN        = 0,
+        MODE_SELECT             = 1,
+        FX_MANAGEMENT           = 2,
+        SUBOSCILLATOR_CONFIG    = 3,
+        PLAYBACK_MONITORING     = 4,
+        SNAPSHOTS_LIST          = 5,
+        WAVETABLE_MANAGEMENT    = 6,
+        MODULE_SETUP_CONFIG     = 7,
     };
     MainMenu();
     ~MainMenu();
@@ -37,7 +37,7 @@ public:
 
 private:
     
-    MainMenuState currentState;
+    int8_t currentState;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainMenu);
 };

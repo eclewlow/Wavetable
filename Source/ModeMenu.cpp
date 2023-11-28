@@ -25,40 +25,11 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
     //    MODE_WAVETABLE,
     //    MODE_MATRIX,
     //    MODE_DRUM,
-    
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
-        switch(currentState) {
-            case MODE_AB:
-                break;
-            case MODE_WAVETABLE:
-                setState(MODE_AB);
-                break;
-            case MODE_MATRIX:
-                setState(MODE_WAVETABLE);
-                break;
-            case MODE_DRUM:
-                setState(MODE_MATRIX);
-                break;
-            default:
-                break;
-        }
+        currentState = std::clamp<int8_t>(currentState - 1, MODE_AB, MODE_DRUM);
     }
     if(key.getKeyCode() == LEFT_ENCODER_CW) {
-        switch(currentState) {
-            case MODE_AB:
-                setState(MODE_WAVETABLE);
-                break;
-            case MODE_WAVETABLE:
-                setState(MODE_MATRIX);
-                break;
-            case MODE_MATRIX:
-                setState(MODE_DRUM);
-                break;
-            case MODE_DRUM:
-                break;
-            default:
-                break;
-        }
+        currentState = std::clamp<int8_t>(currentState + 1, MODE_AB, MODE_DRUM);
     }
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
@@ -136,24 +107,7 @@ void ModeMenu::paint(juce::Graphics& g) {
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_drum);
     
-    
-    switch(currentState) {
-        case MODE_AB:
-            col = 0; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case MODE_WAVETABLE:
-            col = 1; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case MODE_MATRIX:
-            col = 2; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-            break;
-        case MODE_DRUM:
-            col = 3; row = 0;
-            Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
-        default:
-            break;
-    }
+    col = currentState;
+    row = 0;
+    Display::invert_rectangle(col*(23+2)+x_offset, row*(22+2)+y_offset, 23, 22);
 }

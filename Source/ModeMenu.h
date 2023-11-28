@@ -19,10 +19,10 @@ class ModeMenu: public State
 {
 public:
     enum ModeMenuState {
-        MODE_AB,
-        MODE_WAVETABLE,
-        MODE_MATRIX,
-        MODE_DRUM,
+        MODE_AB         = 0,
+        MODE_WAVETABLE  = 1,
+        MODE_MATRIX     = 2,
+        MODE_DRUM       = 3,
     };
     ModeMenu();
     ~ModeMenu();
@@ -33,7 +33,7 @@ public:
 
 private:
     
-    ModeMenuState currentState;
+    int8_t currentState;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModeMenu);
 };

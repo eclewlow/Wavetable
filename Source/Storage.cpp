@@ -12,21 +12,16 @@
 #include "wavetables.h"
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
-//    return ROM[table * (2048 * 16) + frame * 2048 + index];
     WAVETABLE wavetable = getWavetable(table);
     return wavetable.waves[frame][index];
 }
 
 void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
-//    for(int i = 0; i < 2048; i++) {
-//        float sample = LoadWaveSample(wavetable, frame, i);
-//        waveform[i] = sample;
-//    }
     memcpy(waveform, getWavetable(wavetable).waves[frame], 2048 * 2);
 }
 
 
-int16_t Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph) {
+void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph) {
     float frequency = 23.4375;
 
     float phaseIncrement = frequency / 48000.0f;
@@ -66,7 +61,7 @@ int16_t Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float mor
             
             interpolatedFloat = interpolated16 / 32768.0f;
             
-            sample = frame_fractional * sample + (1 - frame_fractional) * interpolatedFloat;
+            sample = (1 - frame_fractional) * sample + frame_fractional * interpolatedFloat;
 
         } else {
             // just do the phase morph
