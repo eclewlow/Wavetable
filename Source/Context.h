@@ -20,7 +20,7 @@ public:
     Context();
     ~Context();
     
-    inline void setState(State* state) { if(_state == state) return; _state = state; _state->triggerUpdate(); }
+    inline void setState(State* state, bool back_pressed = false) { if(_state == state) return; _state = state; _state->triggerUpdate(back_pressed); }
     inline State* getState() { return _state; }
     
     inline void setEngine(Engine* engine) { if(engine_ == engine) return; engine_ = engine; engine_->triggerUpdate(); }

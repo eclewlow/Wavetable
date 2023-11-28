@@ -22,7 +22,7 @@ public:
     ~OscilloscopeConfigurationMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate() {};
+    void triggerUpdate(bool back_pressed) {};
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscilloscopeConfigurationMenu);
 };

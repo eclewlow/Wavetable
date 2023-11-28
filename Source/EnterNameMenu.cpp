@@ -15,10 +15,9 @@
 #include "Globals.h"
 
 EnterNameMenu::EnterNameMenu() {
-    setState(CONTROL_STATUS_STATE_NONE);
     char_index = 0;
     name_index = 0;
-    memset(name_chars,0,8);
+    memset(name_chars,0,9);
 //    name_chars[name_index] = char_list[char_index];
 }
 
@@ -56,9 +55,12 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
             }
         }
         else if(char_index == num_of_chars - 1) {
-            setExecFunc(EnterNameMenu::test);
-            if(exec_func)
-                (*exec_func)(name_chars);
+            if(name_index > 0) {
+                if(exec_func)
+                    (*exec_func)(name_chars);
+                if(back_state)
+                    context.setState(back_state);
+            }
         }
         else {
             name_chars[name_index] = char_list[char_index];
@@ -68,14 +70,16 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
     }
     if(key.getKeyCode() == BACK_BUTTON) {
         if(back_state)
-            context.setState(back_state);
+            context.setState(back_state, true);
     }
 
     return true;
 }
 
-void EnterNameMenu::test(char* param) {
-    context.setState(&mainMenu);
+void EnterNameMenu::triggerUpdate(bool back_pressed) {
+    char_index = 0;
+    name_index = 0;
+    memset(name_chars,0,9);
 }
 
 void EnterNameMenu::paint(juce::Graphics& g) {

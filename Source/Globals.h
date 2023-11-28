@@ -18,7 +18,7 @@
 #define FACTORY_SNAPSHOT_COUNT  0
     
 #define USER_WAVETABLE_COUNT    32
-#define FACTORY_WAVETABLE_COUNT 32
+#define FACTORY_WAVETABLE_COUNT 16
     
 
 #define KEYCODE_A   65
@@ -87,6 +87,7 @@
 #include "ABModeMenu.h"
 #include "WaveEditor.h"
 #include "LoadWaveMenu.h"
+#include "SaveWaveMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -127,6 +128,7 @@ extern WavetableModeMenu wavetableModeMenu;
 extern ABModeMenu abModeMenu;
 extern WaveEditor waveEditor;
 extern LoadWaveMenu loadWaveMenu;
+extern SaveWaveMenu saveWaveMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;

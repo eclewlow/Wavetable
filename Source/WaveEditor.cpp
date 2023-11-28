@@ -283,22 +283,10 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 context.setState(&loadWaveMenu);
                 loadWaveMenu.setBackMenu(&waveEditor);
                 loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_A);
-                menu_target_offset_y_ = -30;
-                switch(selection_) {
-                    case WAVE_EDITOR_SELECTION_SPECTRAL:
-                        state_ = WAVE_EDITOR_STATE_SPECTRAL;
-                        break;
-                    case WAVE_EDITOR_SELECTION_PEN:
-                        state_ = WAVE_EDITOR_STATE_PEN;
-                        break;
-                    case WAVE_EDITOR_SELECTION_LINE:
-                        state_ = WAVE_EDITOR_STATE_LINE;
-                        break;
-                    default:
-                        state_ = WAVE_EDITOR_STATE_EDITOR;
-                        break;
-                }
-                timer_ = juce::Time::currentTimeMillis();
+            } else if (selection_ == WAVE_EDITOR_SELECTION_SAVE) {
+                context.setState(&saveWaveMenu);
+                saveWaveMenu.setWavedata(wavedata_);
+                saveWaveMenu.setBackMenu(&waveEditor);
             }
             else {
                 mode_ = selection_;
@@ -487,14 +475,34 @@ void WaveEditor::LineToWavedata(int x0, int y0, int x1, int y1) {
     }
 }
 
-void WaveEditor::triggerUpdate() {
+void WaveEditor::triggerUpdate(bool back_pressed) {
+    if(!back_pressed) {
+        if(state_ == WAVE_EDITOR_STATE_MENU) {
+            menu_target_offset_y_ = -30;
+            switch(mode_) {
+                case WAVE_EDITOR_SELECTION_SPECTRAL:
+                    state_ = WAVE_EDITOR_STATE_SPECTRAL;
+                    break;
+                case WAVE_EDITOR_SELECTION_PEN:
+                    state_ = WAVE_EDITOR_STATE_PEN;
+                    break;
+                case WAVE_EDITOR_SELECTION_LINE:
+                    state_ = WAVE_EDITOR_STATE_LINE;
+                    break;
+                default:
+                    state_ = WAVE_EDITOR_STATE_EDITOR;
+                    break;
+            }
+        }
+    }
     if(mode_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
-        state_ = WAVE_EDITOR_STATE_SPECTRAL;
-        menu_target_offset_y_ = -30;
-        timer_ = juce::Time::currentTimeMillis();
+//        state_ = WAVE_EDITOR_STATE_SPECTRAL;
+//        menu_target_offset_y_ = -30;
+//        timer_ = juce::Time::currentTimeMillis();
 
         CalculateFFT();
     }
+
 }
 
 void WaveEditor::DrawTriangle(int x, int y, bool reversed) {

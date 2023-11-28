@@ -29,6 +29,7 @@ WavetableModeMenu wavetableModeMenu;
 ABModeMenu abModeMenu;
 WaveEditor waveEditor;
 LoadWaveMenu loadWaveMenu;
+SaveWaveMenu saveWaveMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

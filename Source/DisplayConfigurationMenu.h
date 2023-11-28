@@ -30,7 +30,7 @@ public:
     ~DisplayConfigurationMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate() {};
+    void triggerUpdate(bool back_pressed) {};
     inline void setState(DisplayConfigurationMenuState state) { state_ = state; }
 
 private:

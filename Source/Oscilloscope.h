@@ -25,7 +25,7 @@ public:
     ~Oscilloscope();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate() {};
+    void triggerUpdate(bool back_pressed) {};
     inline void setState(OscilloscopeState newState) { currentState = newState; }
     
 private:

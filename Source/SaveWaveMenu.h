@@ -9,3 +9,38 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+#include "State.h"
+
+class State;
+
+class SaveWaveMenu: public State
+{
+public:
+    enum SaveWaveMenuState {
+        SAVE_WAVE_MENU_NONE,
+        SAVE_WAVE_MENU_SELECT_WAVETABLE,
+        SAVE_WAVE_MENU_SELECT_FRAME,
+    };
+    SaveWaveMenu();
+    ~SaveWaveMenu();
+    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual void paint(juce::Graphics& g);
+    void triggerUpdate(bool back_pressed);
+    inline void setState(SaveWaveMenuState state) { state_ = state; }
+    static void SaveWavetable(char* param);
+    static void SaveWave(char* param);
+
+    inline void setWavedata(int16_t * data) { wavedata_ = data; }
+
+private:
+    int16_t * wavedata_;
+    SaveWaveMenuState state_;
+    int16_t wavetable_offset_;
+    int16_t frame_offset_;
+    int16_t wavetable_;
+    int16_t frame_;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SaveWaveMenu);
+};

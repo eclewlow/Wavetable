@@ -35,6 +35,7 @@ public:
     bool SaveWave(const char * name, int16_t * data, int table, int frame);
     bool DeleteWavetable(int table);
     bool WaveDoesExist(int table, int frame);
+    int8_t GetNumberOfWavesInTable(int16_t table);
     inline WAVETABLE GetWavetable(int8_t table) { return WaveTables[table]; }
     inline WAVETABLE* GetWavetables() { return WaveTables; }
     //    int16_t NumAvailableWaveSlots();

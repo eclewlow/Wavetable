@@ -22,7 +22,7 @@ LoadWaveMenu::~LoadWaveMenu() {
     
 }
 
-void LoadWaveMenu::triggerUpdate() {
+void LoadWaveMenu::triggerUpdate(bool back_pressed) {
     if(wavetable_ < wavetable_offset_) {
         wavetable_offset_ = wavetable_;
     }
@@ -164,7 +164,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 if(back_menu_)
-                    context.setState(back_menu_);
+                    context.setState(back_menu_, true);
                 else
                     context.setState(&mainMenu);
                 break;
@@ -244,7 +244,7 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
             char * line2;
-            if(storage.GetWavetable(wavetable_).waves[frame_offset_].name[0] == '\0')
+            if(storage.GetWavetable(wavetable_).waves[i + frame_offset_].name[0] == '\0')
                 line2 = (char*)"-------";
             else
                 line2 = storage.GetWavetable(wavetable_).waves[i + frame_offset_].name;

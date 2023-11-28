@@ -106,6 +106,22 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
     }
 }
 
+int8_t Storage::GetNumberOfWavesInTable(int16_t table) {
+    int8_t count = 0;
+    
+//    if(table < FACTORY_WAVETABLE_COUNT)
+//        return 16;
+    if(WaveTables[table].name[0] == '\0')
+        return 0;
+    
+    for(int8_t i = 0; i < 16; i++) {
+        if(WaveTables[table].waves[i].name[0] != '\0')
+            count++;
+    }
+    
+    return count;
+}
+
 bool Storage::SaveWavetable(char * name, int table) {
     // make sure wavetable is not in factory memory
     if(table < FACTORY_WAVETABLE_COUNT)
@@ -122,8 +138,11 @@ bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) 
 
     std::strncpy(WaveTables[table].waves[frame].name, name, 9);
     
-    WaveTables[table].waves[frame].memory_location = 2048 * (table + frame);
+    WaveTables[table].waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
     
+    printf("saving wave table=%d, frame=%d\n", table, frame);
+    printf("saving wave memory_location=%d\n", WaveTables[table].waves[frame].memory_location);
+//    ROM[WaveTables[table].waves[frame].memory_location] = 1;
     std::memcpy((void*)&ROM[WaveTables[table].waves[frame].memory_location], data, 2048 * 2);
     // TODO: save wave in ROM and set data pointer
 //    Waves[slot].data = ROM data pointer

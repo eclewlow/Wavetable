@@ -54,7 +54,7 @@ public:
     ~WaveEditor();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    virtual void triggerUpdate();
+    virtual void triggerUpdate(bool back_pressed);
 //    inline void setLeftState(ABMenuState state) { left_state_ = state; }
 //    inline void setRightState(ABMenuState state) { right_state_ = state; }
 //
