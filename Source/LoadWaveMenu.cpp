@@ -44,7 +44,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
-                wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, 15);
+                wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
                 
                 if(wavetable_ < wavetable_offset_) {
                     wavetable_offset_ = wavetable_;
@@ -68,7 +68,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == LEFT_ENCODER_CW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
-                wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, 15);
+                wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
                 
                 if(wavetable_ > wavetable_offset_ + 5) {
                     wavetable_offset_ = wavetable_ - 5;
@@ -130,27 +130,32 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 setState(LOAD_WAVE_MENU_SELECT_FRAME);
                 frame_ = 0;
+                frame_offset_ = 0;
                 break;
-            case LOAD_WAVE_MENU_SELECT_FRAME:
+            case LOAD_WAVE_MENU_SELECT_FRAME: {
+                bool success = false;
                 if(target_ == AB_ENGINE_A) {
-                    abEngine.SetLeftWavetable(wavetable_);
-                    abEngine.SetLeftFrame(frame_);
-                    abEngine.FillWaveform(BUF3, wavetable_, frame_);
+                    success = abEngine.SetLeftWave(wavetable_, frame_);
+                    if(success)
+                        abEngine.FillWaveform(BUF3, wavetable_, frame_);
                 } else if(target_ == AB_ENGINE_B) {
-                    abEngine.SetRightWavetable(wavetable_);
-                    abEngine.SetRightFrame(frame_);
-                    abEngine.FillWaveform(BUF4, wavetable_, frame_);
+                    success = abEngine.SetRightWave(wavetable_, frame_);
+                    if(success)
+                        abEngine.FillWaveform(BUF4, wavetable_, frame_);
                 }
-
-                setState(LOAD_WAVE_MENU_SELECT_WAVETABLE);
-                wavetable_ = 0;
-                frame_ = 0;
-
-                if(back_menu_)
-                    context.setState(back_menu_);
-                else
-                    context.setState(&mainMenu);
+                
+                if(success) {
+                    setState(LOAD_WAVE_MENU_SELECT_WAVETABLE);
+                    wavetable_ = 0;
+                    frame_ = 0;
+                    
+                    if(back_menu_)
+                        context.setState(back_menu_);
+                    else
+                        context.setState(&mainMenu);
+                }
                 break;
+            }
             default:
                 break;
         }
@@ -197,13 +202,17 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2 = storage.GetWavetable(i + wavetable_offset_).name;
+            char * line2;
+            if(storage.GetWavetable(i + wavetable_offset_).name[0] == '\0')
+                line2 = (char*)"-------";
+            else
+                line2 = storage.GetWavetable(i + wavetable_offset_).name;
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+wavetable_offset_ == wavetable_);
         }
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / 11;
+        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 
@@ -234,13 +243,18 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + frame_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            snprintf(line, 20, "%02d", i + frame_offset_);
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line), 7), line, i+frame_offset_ == frame_);
+            char * line2;
+            if(storage.GetWavetable(wavetable_).waves[frame_offset_].name[0] == '\0')
+                line2 = (char*)"-------";
+            else
+                line2 = storage.GetWavetable(wavetable_).waves[i + frame_offset_].name;
+            
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+frame_offset_ == frame_);
         }
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / 11;
+        int y_cursor_offset = ((bar_height-1) * frame_offset_) / 11;
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 

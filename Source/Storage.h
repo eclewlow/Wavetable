@@ -12,16 +12,7 @@
 
 #include <JuceHeader.h>
 #include "wavetables.h"
-
-#define USER_WAVE_COUNT         512
-#define FACTORY_WAVE_COUNT      512
-    
-#define USER_SNAPSHOT_COUNT     64
-#define FACTORY_SNAPSHOT_COUNT  0
-    
-#define USER_WAVETABLE_COUNT    32
-#define FACTORY_WAVETABLE_COUNT 32
-    
+#include "Globals.h"
 
 class Storage {
 public:
@@ -43,7 +34,9 @@ public:
     bool SaveWavetable(char * name, int table);
     bool SaveWave(const char * name, int16_t * data, int table, int frame);
     bool DeleteWavetable(int table);
+    bool WaveDoesExist(int table, int frame);
     inline WAVETABLE GetWavetable(int8_t table) { return WaveTables[table]; }
+    inline WAVETABLE* GetWavetables() { return WaveTables; }
     //    int16_t NumAvailableWaveSlots();
     //    int16_t NextAvailableWaveSlot();
 private:

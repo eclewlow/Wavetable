@@ -8,12 +8,15 @@
   ==============================================================================
 */
 
-#include "Storage.h"
 #include "wavetables.h"
+#include "Globals.h"
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
+    if(!WaveDoesExist(table, frame))
+        return 0;
+
     WAVETABLE wavetable = WaveTables[table];
-    
+        
     // TODO: this should be a read to ROM data
     // the wavetable struct data exists in MCU flash
     // and the wave struct data exists in MCU flash
@@ -22,12 +25,25 @@ int16_t Storage::LoadWaveSample(int table, int frame, int index) {
 }
 
 void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
+    if(!WaveDoesExist(wavetable, frame))
+    {
+        memset(waveform, 0, 2048 * 2);
+        return;
+    }
+
     const int16_t * data = &ROM[WaveTables[wavetable].waves[frame].memory_location];
     memcpy(waveform, data, 2048 * 2);
 }
 
 
 void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph) {
+    
+    if(WaveTables[wavetable].name[0] == '\0')
+    {
+        memset(waveform, 0, 2048 * 2);
+        return;
+    }
+    
     float frequency = 23.4375;
 
     float phaseIncrement = frequency / 48000.0f;
@@ -145,3 +161,10 @@ bool Storage::DeleteWavetable(int table) {
 //    }
 //    return -1;
 //}
+
+bool Storage::WaveDoesExist(int table, int frame) {
+    if(table < FACTORY_WAVETABLE_COUNT)
+        return true;
+
+    return WaveTables[table].name[0] != '\0' && WaveTables[table].waves[frame].name[0] != '\0';
+}

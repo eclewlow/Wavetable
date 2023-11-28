@@ -13,8 +13,8 @@
 #include "Globals.h"
 
 ABModeMenu::ABModeMenu() {
-    setLeftState(AB_LOAD_HOVER);
-    setRightState(AB_LOAD_HOVER);
+    left_state_ = AB_LOAD_HOVER;
+    right_state_ = AB_LOAD_HOVER;
     left_wavetable_ = 0;
     left_frame_ = 0;
     right_wavetable_ = 0;
@@ -42,25 +42,25 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
             case AB_LOAD_HOVER:
                 break;
             case AB_EDIT_HOVER:
-                setLeftState(AB_LOAD_HOVER);
+                left_state_ = AB_LOAD_HOVER;
                 break;
             case AB_SELECT_WAVETABLE:
-                SetLeftWavetable(GetLeftWavetable()-1);
+                left_wavetable_ = std::clamp(left_wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
                 
-                if(GetLeftWavetable() < left_wavetable_offset_) {
-                    left_wavetable_offset_ = GetLeftWavetable();
+                if(left_wavetable_ < left_wavetable_offset_) {
+                    left_wavetable_offset_ = left_wavetable_;
                 }
                 
-                if(abEngine.GetLeftWavetable() == GetLeftWavetable())
-                    SetLeftFrame(abEngine.GetLeftFrame());
+                if(abEngine.GetLeftWavetable() == left_wavetable_)
+                    left_frame_ = abEngine.GetLeftFrame();
                 else
-                    SetLeftFrame(0);
+                    left_frame_ = 0;
                 break;
             case AB_SELECT_FRAME:
-                SetLeftFrame(GetLeftFrame()-1);
+                left_frame_ = std::clamp(left_frame_ - 1, 0, 15);
 
-                if(GetLeftFrame() < left_frame_offset_) {
-                    left_frame_offset_ = GetLeftFrame();
+                if(left_frame_ < left_frame_offset_) {
+                    left_frame_offset_ = left_frame_;
                 }
 
                 break;
@@ -72,27 +72,27 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
         active_menu_ = LEFT;
         switch(left_state_) {
             case AB_LOAD_HOVER:
-                setLeftState(AB_EDIT_HOVER);
+                left_state_ = AB_EDIT_HOVER;
                 break;
             case AB_EDIT_HOVER:
                 break;
             case AB_SELECT_WAVETABLE:
-                SetLeftWavetable(GetLeftWavetable()+1);
-                
-                if(GetLeftWavetable() > left_wavetable_offset_ + 2) {
-                    left_wavetable_offset_ = GetLeftWavetable() - 2;
+                left_wavetable_ = std::clamp(left_wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+
+                if(left_wavetable_ > left_wavetable_offset_ + 2) {
+                    left_wavetable_offset_ = left_wavetable_ - 2;
                 }
                 
-                if(abEngine.GetLeftWavetable() == GetLeftWavetable())
-                    SetLeftFrame(abEngine.GetLeftFrame());
+                if(abEngine.GetLeftWavetable() == left_wavetable_)
+                    left_frame_ = abEngine.GetLeftFrame();
                 else
-                    SetLeftFrame(0);
+                    left_frame_ = 0;
                 break;
             case AB_SELECT_FRAME:
-                SetLeftFrame(GetLeftFrame()+1);
+                left_frame_ = std::clamp(left_frame_ + 1, 0, 15);
 
-                if(GetLeftFrame() > left_frame_offset_ + 2) {
-                    left_frame_offset_ = GetLeftFrame() - 2;
+                if(left_frame_ > left_frame_offset_ + 2) {
+                    left_frame_offset_ = left_frame_ - 2;
                 }
 
                 break;
@@ -104,7 +104,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
         active_menu_ = LEFT;
         switch(left_state_) {
             case AB_LOAD_HOVER:
-                setLeftState(AB_SELECT_WAVETABLE);
+                left_state_ = AB_SELECT_WAVETABLE;
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingLeft()) {
@@ -115,20 +115,19 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 context.setState(&waveEditor);
                 break;
             case AB_SELECT_WAVETABLE:
-                setLeftState(AB_SELECT_FRAME);
-                if(GetLeftWavetable() != abEngine.GetLeftWavetable()) {
+                left_state_ = AB_SELECT_FRAME;
+                if(left_wavetable_ != abEngine.GetLeftWavetable()) {
                     left_frame_offset_ = 0;
-                    SetLeftFrame(0);
+                    left_frame_ = 0;
                 }
                 else {
                     left_frame_offset_ = std::clamp(abEngine.GetLeftFrame(), 0, 15-2);
-                    SetLeftFrame(abEngine.GetLeftFrame());
+                    left_frame_ = abEngine.GetLeftFrame();
                 }
                 break;
             case AB_SELECT_FRAME:
                 abEngine.SetIsEditingLeft(false);
-                abEngine.SetLeftWavetable(GetLeftWavetable());
-                abEngine.SetLeftFrame(GetLeftFrame());
+                abEngine.SetLeftWave(left_wavetable_, left_frame_);
                 break;
             default:
                 break;
@@ -150,10 +149,10 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                         context.setState(&mainMenu);
                     break;
                 case AB_SELECT_WAVETABLE:
-                    setLeftState(AB_LOAD_HOVER);
+                    left_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
-                    setLeftState(AB_SELECT_WAVETABLE);
+                    left_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
                     break;
@@ -200,12 +199,16 @@ void ABModeMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + left_wavetable_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2 = storage.GetWavetable(i + left_wavetable_offset_).name;
+            char * line2;
+            if(storage.GetWavetable(i + left_wavetable_offset_).name[0] == '\0')
+                line2 = (char*)"-------";
+            else
+                line2 = storage.GetWavetable(i + left_wavetable_offset_).name;
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+left_wavetable_offset_ == left_wavetable_);
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
-        int y_cursor_offset = ((bar_height-3/2) * left_wavetable_offset_) / 15;
+        int y_cursor_offset = ((bar_height-3) * left_wavetable_offset_) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 
@@ -217,7 +220,10 @@ void ABModeMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + left_frame_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
 
-            snprintf(line, 20, "%02d", i + left_frame_offset_);
+            if(storage.GetWavetable(left_wavetable_).waves[i].name[0] == '\0')
+                strncpy(line, "-------", 7);
+            else
+                snprintf(line, 20, "%02d", i + left_frame_offset_);
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line), line, i+left_frame_offset_ == left_frame_);
 
         }

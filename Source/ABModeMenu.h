@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "State.h"
+#include "Globals.h"
 
 class State;
 
@@ -36,18 +37,18 @@ public:
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
     void triggerUpdate() {};
-    inline void setLeftState(ABMenuState state) { left_state_ = state; }
-    inline void setRightState(ABMenuState state) { right_state_ = state; }
-
-    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, 15); }
-    inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }
-    inline int GetLeftWavetable() { return left_wavetable_; }
-    inline int GetLeftFrame() { return left_frame_; }
-
-    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, 15); }
-    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
-    inline int GetRightWavetable() { return right_wavetable_; }
-    inline int GetRightFrame() { return right_frame_; }
+//    inline void setLeftState(ABMenuState state) { left_state_ = state; }
+//    inline void setRightState(ABMenuState state) { right_state_ = state; }
+//
+//    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
+//    inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }
+//    inline int GetLeftWavetable() { return left_wavetable_; }
+//    inline int GetLeftFrame() { return left_frame_; }
+//
+//    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
+//    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
+//    inline int GetRightWavetable() { return right_wavetable_; }
+//    inline int GetRightFrame() { return right_frame_; }
 
 private:
     int16_t left_wavetable_offset_;

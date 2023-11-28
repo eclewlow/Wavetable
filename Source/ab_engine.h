@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "effect.h"
 #include "Engine.h"
+#include "Globals.h"
 
 class Engine;
 
@@ -34,15 +35,18 @@ public:
     float GetSample(float phase);
     float GetSampleNoFX(float phase, float morph);
     
-    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, 15); }
+    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
     inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }
     inline int GetLeftWavetable() { return left_wavetable_; }
     inline int GetLeftFrame() { return left_frame_; }
 
-    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, 15); }
+    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
     inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
     inline int GetRightWavetable() { return right_wavetable_; }
     inline int GetRightFrame() { return right_frame_; }
+
+    bool SetLeftWave(int table, int frame);
+    bool SetRightWave(int table, int frame);
 
     inline bool IsEditingLeft() { return is_editing_left_; }
     inline bool IsEditingRight() { return is_editing_right_; }

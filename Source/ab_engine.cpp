@@ -119,9 +119,7 @@ void ABEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amoun
 }
 
 void ABEngine::FillWaveform(int16_t * waveform, int16_t wavetable, int16_t frame) {
-    for(int i = 0; i < 2048; i++) {
-        waveform[i] = storage.LoadWaveSample(wavetable, frame, i);
-    }
+    storage.LoadWaveSample(waveform, wavetable, frame);
 }
 
 float ABEngine::GetSampleNoFX(float phase, float morph) {
@@ -181,3 +179,20 @@ void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint
     }
 }
 
+bool ABEngine::SetLeftWave(int table, int frame) {
+    if(storage.WaveDoesExist(table, frame)) {
+        left_wavetable_ = table;
+        left_frame_ = frame;
+        return true;
+    }
+    return false;
+}
+
+bool ABEngine::SetRightWave(int table, int frame) {
+    if(storage.WaveDoesExist(table, frame)) {
+        right_wavetable_ = table;
+        right_frame_ = frame;
+        return true;
+    }
+    return false;
+}
