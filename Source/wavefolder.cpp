@@ -63,7 +63,7 @@ float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t
 
             amount = amount * oscillator_sample;
             
-            adjusted_phase = 12 * context.getEngine()->GetSine(input_phase);
+            adjusted_phase = 6 * context.getEngine()->GetSine(input_phase);
             
             adjusted_phase = (1 - amount) * input_phase + amount * adjusted_phase;
             
@@ -81,7 +81,7 @@ float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t
         {
             amount = amount * (2.0f * fx / 4095.0f - 1.0f);
             
-            adjusted_phase = 12 * context.getEngine()->GetSine(input_phase);
+            adjusted_phase = 6 * context.getEngine()->GetSine(input_phase);
 
             adjusted_phase = (1 - amount) * input_phase + amount * adjusted_phase;
 

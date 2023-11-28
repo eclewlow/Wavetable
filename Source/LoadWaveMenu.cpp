@@ -197,7 +197,7 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2 = storage.getWavetable(i + wavetable_offset_).name;
+            char * line2 = storage.GetWavetable(i + wavetable_offset_).name;
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+wavetable_offset_ == wavetable_);
         }
 

@@ -12,12 +12,18 @@
 #include "wavetables.h"
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
-    WAVETABLE wavetable = getWavetable(table);
-    return wavetable.waves[frame][index];
+    WAVETABLE wavetable = WaveTables[table];
+    
+    // TODO: this should be a read to ROM data
+    // the wavetable struct data exists in MCU flash
+    // and the wave struct data exists in MCU flash
+    // but the wave struct data field points to a memory location in ROM.
+    return ROM[wavetable.waves[frame].memory_location + index];
 }
 
 void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
-    memcpy(waveform, getWavetable(wavetable).waves[frame], 2048 * 2);
+    const int16_t * data = &ROM[WaveTables[wavetable].waves[frame].memory_location];
+    memcpy(waveform, data, 2048 * 2);
 }
 
 
@@ -83,3 +89,59 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
         waveform[i] = static_cast<int16_t>(sample * 32767.0f);
     }
 }
+
+bool Storage::SaveWavetable(char * name, int table) {
+    // make sure wavetable is not in factory memory
+    if(table < FACTORY_WAVETABLE_COUNT)
+        return false;
+    
+    memcpy(WaveTables[table].name, name, 9);
+    
+    return true;
+}
+
+bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) {
+    if(table < FACTORY_WAVETABLE_COUNT)
+        return false;
+
+    std::strncpy(WaveTables[table].waves[frame].name, name, 9);
+    
+    WaveTables[table].waves[frame].memory_location = 2048 * (table + frame);
+    
+    std::memcpy((void*)&ROM[WaveTables[table].waves[frame].memory_location], data, 2048 * 2);
+    // TODO: save wave in ROM and set data pointer
+//    Waves[slot].data = ROM data pointer
+//    memcpy(&USER_ROM[slot * 2048], data, 2048 * 2);
+//    Waves[slot].data = &USER_ROM[slot * 2048];
+
+//    WaveTables[table].waves[frame] = &Waves[slot];
+    return true;
+}
+
+bool Storage::DeleteWavetable(int table) {
+    if(table < FACTORY_WAVETABLE_COUNT)
+        return false;
+
+    for (int8_t i = 0; i < 16; i++) {
+        memset(WaveTables[table].waves[i].name, 0, 9);
+    }
+    memset(WaveTables[table].name, 0, 9);
+    return true;
+}
+//
+//int16_t Storage::NumAvailableWaveSlots() {
+//    int16_t count = 0;
+//    for(int i = 0; i < FACTORY_WAVE_COUNT + USER_WAVE_COUNT; i ++) {
+//        if(Waves[i].name[0] != '\0')
+//            count ++;
+//    }
+//    return count;
+//}
+//
+//int16_t Storage::NextAvailableWaveSlot() {
+//    for(int i = 0; i < FACTORY_WAVE_COUNT + USER_WAVE_COUNT; i ++) {
+//        if(Waves[i].name[0] != '\0')
+//            return i;
+//    }
+//    return -1;
+//}
