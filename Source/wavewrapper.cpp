@@ -62,7 +62,7 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, float fre
                 *target_phase -= 1.0;
             
             // add gain.. fx_amount * sample
-            modulator_sample = 24 * sample * modulator_sample;
+            modulator_sample = 6 * sample * modulator_sample;
             //  if sample > 1.0  wrap around
             while(modulator_sample > 1.0) modulator_sample -= 2.0f;
             while(modulator_sample < -1.0) modulator_sample += 2.0f;
@@ -80,7 +80,7 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, float fre
         {
             float modulator_sample = 2.0 * fx / 4095.0 - 1.0;
             
-            modulator_sample = 24 * sample * modulator_sample;
+            modulator_sample = 6 * sample * modulator_sample;
             
             while(modulator_sample > 1.0) modulator_sample -= 2.0f;
             while(modulator_sample < -1.0) modulator_sample += 2.0f;

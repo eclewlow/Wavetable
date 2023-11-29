@@ -27,15 +27,13 @@ MainComponent::MainComponent()
 //    context.setState(&mainMenu);
 //    context.setState(&wavetableModeMenu);
 //    enterNameMenu.setBackState(&fxMenu);
-    context.setState(&wavetableModeMenu);
+
+    abEngine.Init();
     wavetableEngine.Init();
+
+    context.setState(&wavetableModeMenu);
     context.setEngine(&wavetableEngine);
 
-    context.setState(&abModeMenu);
-    abEngine.Init();
-    context.setEngine(&abEngine);
-    context.setState(&mainMenu);
-    
     effect_manager.Init();
     effect_manager.setEffect(&fm);
 //    fx_engine.Init();

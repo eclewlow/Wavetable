@@ -45,18 +45,17 @@ float WavetableEngine::GetSample(int16_t wavetable, int16_t frame, float phase) 
     return interpolatedFloat;
 }
 
-float WavetableEngine::GetSampleBetweenFrames(float phase, float thisX) {
-    float index = thisX;
-    uint8_t integral = floor(index);
-    float fractional = index - integral;
+float WavetableEngine::GetSampleBetweenFrames(float phase, float morph) {
+    float frame = morph * 15.0f;
+    uint16_t frame_integral = floor(frame);
+    float frame_fractional = frame - frame_integral;
     
-    uint8_t nextIntegral = integral + ceil(fractional);
+    uint16_t next_frame_integral = (frame_integral + 1) % 16;
+
+    float frame1sample = GetSample(wavetable_, frame_integral, phase);
+    float frame2sample = GetSample(wavetable_, next_frame_integral, phase);
     
-//    float frame1sample = GetSample((int16_t*)&Wavetable_harmonic_series[integral * 2048], phase);
-//    float frame2sample = GetSample((int16_t*)&Wavetable_harmonic_series[nextIntegral * 2048], phase);
-    
-//    float sample = frame1sample * (1.0f - fractional) + frame2sample * fractional;
-    float sample = 0.0f;
+    float sample = frame1sample * (1.0f - frame_fractional) + frame2sample * frame_fractional;
     return sample;
 }
 
@@ -91,40 +90,6 @@ void WavetableEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t f
         waveform[i] = static_cast<int16_t>(sample * 32767.0f);
     }
 }
-//
-//
-//void WavetableEngine::GenerateWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
-//    float frequency = 23.4375;
-//
-//    float phaseIncrement = frequency / 48000.0f;
-//    
-//    float temp_phase = 0.0f;
-//    
-//    effect_manager.getEffect()->Sync_phases();
-//    
-//    for(int i = 0; i < 2048; i++) {
-//        float thisX = morph_;
-//        thisX = clamp(thisX, 0.0, 15.0);
-//        
-//        float calculated_phase = effect_manager.RenderPhaseEffect(temp_phase, frequency, fx_amount, fx, true);
-//        
-//        float sample = GetSampleBetweenFrames(calculated_phase, thisX);
-//        
-//        sample = effect_manager.RenderSampleEffect(sample, temp_phase, frequency, fx_amount, fx, true);
-//        
-//        temp_phase += phaseIncrement;
-//        
-//        if(temp_phase >= 1.0f)
-//            temp_phase -= 1.0f;
-//        
-//        BUF9[i] = static_cast<int16_t>(sample * 32767.0f);
-//    }
-//}
-
-//int16_t* WavetableEngine::GetWaveformData(uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph) {
-//    GenerateWaveformData(tune, fx_amount, fx, morph);
-//    return BUF9;
-//}
 
 float WavetableEngine::GetSampleNoFX(float phase, float morph) {
     float sample = GetSampleBetweenFrames(phase, morph);
@@ -139,7 +104,7 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
 {
     //    float target = morph;
     // convert 12 bit uint 0-4095 to 0...15 float
-    float morphTarget = morph * 15.0 / 4095.0;
+    float morphTarget = morph * 1.0 / 4095.0;
     //    float interpolatedFloat = interpolated16 / 32768.0f;
     float tuneTarget = static_cast<float>(tune);
     
@@ -147,13 +112,6 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);
     
-//    float note = (120.0f * tune)/4095.0;
-
-//    float a = 440; //frequency of A (coomon value is 440Hz)
-//    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
-//    float adjusted_phase = 0.0f;
-//    float phaseIncrement = frequency / 48000.0f;
-
     while (size--) {
         float note = (120.0f * tune_interpolator.Next()) / 4095.0;
         note = clamp(note, 0.0f, 120.0f);
@@ -164,7 +122,7 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
         float phaseIncrement = frequency / 48000.0f;
         
         float interpolated_morph = morph_interpolator.Next();
-        interpolated_morph = clamp(interpolated_morph, 0.0, 15.0);
+        interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
         
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase_, frequency, fx_amount, fx, false, true), interpolated_morph);
@@ -184,7 +142,5 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
         *out++ = sample;
         *aux++ = sample;
     }
-    
-//    GenerateWaveformData(tune, fx_amount, fx, morph);
 }
 

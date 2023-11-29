@@ -48,11 +48,7 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
     //    float target = morph;
     // convert 12 bit uint 0-4095 to 0...15 float
     float morphTarget;
-    if(context.getEngine() == &abEngine) {
-        morphTarget = morph / 4095.0;
-    } else {
-        morphTarget = morph * 15.0 / 4095.0;
-    }
+    morphTarget = morph / 4095.0;
     //    float interpolatedFloat = interpolated16 / 32768.0f;
     float tuneTarget = static_cast<float>(tune);
     
@@ -80,11 +76,7 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
         phase_increment = frequency / 48000.0f;
 
         float interpolated_morph = morph_interpolator.Next();
-        if(context.getEngine() == &abEngine) {
-            interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
-        } else {
-            interpolated_morph = clamp(interpolated_morph, 0.0, 15.0);
-        }
+        interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
         
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = 0.0f;

@@ -23,7 +23,7 @@ ABModeMenu::ABModeMenu() {
     left_frame_offset_ = 0;
     right_wavetable_offset_ = 0;
     right_frame_offset_ = 0;
-    active_menu_ = NONE;
+    active_menu_ = LEFT;
 }
 
 ABModeMenu::~ABModeMenu() {

@@ -36,7 +36,6 @@ public:
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }
 private:
-    int16_t* frame00;
-    int16_t* frame01;
+    int wavetable_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavetableEngine);
 };
