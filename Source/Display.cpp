@@ -115,21 +115,15 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
     }
 }
 
-void Display::LCD_Line(int x0, int y0,
-                       int x1, int y1,
+void Display::LCD_Line(int16_t x0, int16_t y0,
+                       int16_t x1, int16_t y1,
                        uint8_t set) {
-    int8_t
-    dx;
-    int8_t
-    sx;
-    int8_t
-    dy;
-    int8_t
-    sy;
-    int8_t
-    err;
-    int8_t
-    e2;
+    int16_t dx;
+    int16_t sx;
+    int16_t dy;
+    int16_t sy;
+    int16_t err;
+    int16_t e2;
     
     dx = abs((int16_t )x1 - (int16_t )x0);
     sx = x0 < x1 ? 1 : -1;
@@ -728,12 +722,12 @@ void Display::clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height)
 }
 
 //============================================================================
-void Display::outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+void Display::outline_rectangle(int16_t x, int16_t y, int16_t width, int16_t height)
 {
-    uint8_t x1 = x;
-    uint8_t y1 = y;
-    uint8_t x2 = x + width - 1;
-    uint8_t y2 = y + height - 1;
+    int16_t x1 = x;
+    int16_t y1 = y;
+    int16_t x2 = x + width - 1;
+    int16_t y2 = y + height - 1;
     Display::LCD_Line(x1,y1,x2,y1,1);
     Display::LCD_Line(x1,y2,x2,y2,1);
     Display::LCD_Line(x1,y1,x1,y2,1);

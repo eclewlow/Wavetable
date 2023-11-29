@@ -25,8 +25,5 @@ public:
     void triggerUpdate(bool back_pressed);
 
 private:
-    int16_t wavetable_offset_;
-    int16_t wavetable_;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MatrixMode);
 };

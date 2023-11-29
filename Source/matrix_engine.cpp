@@ -16,6 +16,10 @@
 
 MatrixEngine::MatrixEngine() {
     phase_ = 0.0f;
+    x1_ = 0.0f;
+    y1_ = 0.0f;
+    x2_ = 8.0f;
+    y2_ = 8.0f;
 }
 
 MatrixEngine::~MatrixEngine() {

@@ -34,7 +34,24 @@ public:
     
     inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
     inline int GetWavetable() { return wavetable_; }
+    
+    inline void SetX1(float x1) { x1_ = x1; }
+    inline void SetY1(float y1) { y1_ = y1; }
+    inline void SetX2(float x2) { x2_ = x2; }
+    inline void SetY2(float y2) { y2_ = y2; }
+    
+    inline float GetX1() { return x1_; }
+    inline float GetY1() { return y1_; }
+    inline float GetX2() { return x2_; }
+    inline float GetY2() { return y2_; }
+
 private:
     int wavetable_;
+    
+    float x1_;
+    float x2_;
+    float y1_;
+    float y2_;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MatrixEngine);
 };

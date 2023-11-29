@@ -64,8 +64,8 @@ public:
     static void Put_Pixel(uint8_t x, uint8_t y, uint8_t set);
     static void Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, bool shade=false);
     static void LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set);
-    static void LCD_Line(int x0, int y0,
-                         int x1, int y1,
+    static void LCD_Line(int16_t x0, int16_t y0,
+                         int16_t x1, int16_t y1,
                          uint8_t set);
     static void LCD_DottedLine(uint8_t x0, uint8_t y0,
                   uint8_t x1, uint8_t y1, int16_t dash_width, int16_t gap_width,
@@ -84,7 +84,7 @@ public:
     static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
     static void clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
     static void clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
-    static void outline_rectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+    static void outline_rectangle(int16_t x, int16_t y, int16_t width, int16_t height);
     static void invert_rectangle(int8_t x,int8_t y,uint8_t width,uint8_t height);
 
     typedef union

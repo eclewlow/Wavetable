@@ -30,9 +30,10 @@ MainComponent::MainComponent()
 
     abEngine.Init();
     wavetableEngine.Init();
+    matrixEngine.Init();
 
-    context.setState(&wavetableModeMenu);
-    context.setEngine(&wavetableEngine);
+    context.setState(&matrixMode);
+    context.setEngine(&matrixEngine);
 
     effect_manager.Init();
     effect_manager.setEffect(&fm);
