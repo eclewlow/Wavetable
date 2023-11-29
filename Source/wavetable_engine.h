@@ -32,6 +32,10 @@ public:
     float GetSample(float phase);
     float GetSampleNoFX(float phase, float morph);
     void triggerUpdate();
+    
+    inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
+    inline int GetWavetable() { return wavetable_; }
+
 //    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
     //    void Reset();
     //    void LoadUserData(const uint8_t* user_data) { }
