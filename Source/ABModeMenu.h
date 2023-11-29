@@ -62,5 +62,7 @@ private:
     int left_frame_;
     int right_wavetable_;
     int right_frame_;
+    int32_t left_ticker_timer_ = 0;
+    int32_t right_ticker_timer_ = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ABModeMenu);
 };

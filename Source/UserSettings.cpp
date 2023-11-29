@@ -21,6 +21,7 @@ UserSettings::UserSettings() {
     suboscDetune_ = 0;
     suboscMix_ = 50;
     suboscWave_ = SUBOSC_WAVE_SINE;
+    app_start_time_ = juce::Time::currentTimeMillis();
 
 }
 UserSettings::~UserSettings() {}

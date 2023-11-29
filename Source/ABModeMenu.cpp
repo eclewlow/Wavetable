@@ -55,6 +55,8 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_frame_ = abEngine.GetLeftFrame();
                 else
                     left_frame_ = 0;
+
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ - 1, 0, 15);
@@ -63,6 +65,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_frame_offset_ = left_frame_;
                 }
 
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 break;
             default:
                 break;
@@ -87,6 +90,8 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_frame_ = abEngine.GetLeftFrame();
                 else
                     left_frame_ = 0;
+                
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ + 1, 0, 15);
@@ -94,6 +99,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 if(left_frame_ > left_frame_offset_ + 2) {
                     left_frame_offset_ = left_frame_ - 2;
                 }
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
 
                 break;
             default:
@@ -199,12 +205,28 @@ void ABModeMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + left_wavetable_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2;
-            if(storage.GetWavetable(i + left_wavetable_offset_).name[0] == '\0')
-                line2 = (char*)"-------";
-            else
-                line2 = storage.GetWavetable(i + left_wavetable_offset_).name;
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+left_wavetable_offset_ == left_wavetable_);
+            char * name = storage.GetWavetable(i + left_wavetable_offset_).name;
+
+            char line2[20];
+            memset(line2, 0, 20);
+            if(name[0] == '\0')
+                strncpy(line2, "-------", 7);
+            else {
+                int8_t str_len = strlen(name);
+                int name_index = 0;
+                int32_t elapsed_time = juce::Time::currentTimeMillis() - left_ticker_timer_;
+                printf("elsaped time = %d\n", elapsed_time);
+                if (elapsed_time > 4000) {
+                    left_ticker_timer_ = juce::Time::currentTimeMillis();
+                }
+                if(i+left_wavetable_offset_ == left_wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                    name_index = (elapsed_time) / 1000;
+                    name_index = std::clamp(name_index, 0, 1);
+                }
+                // if timer is passed 2000, name_index = 1
+                strncpy(line2, &name[name_index], 7);
+            }
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+left_wavetable_offset_ == left_wavetable_);
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
@@ -245,5 +267,4 @@ void ABModeMenu::paint(juce::Graphics& g) {
             Display::invert_rectangle(x_offset+1 + 15 + 2, y_offset+1, 13, 13);
         }
     }
-    
 }

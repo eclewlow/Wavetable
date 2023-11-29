@@ -41,7 +41,7 @@ bool DisplayConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 user_settings.setInvert(!user_settings.getInvert());
                 break;
             case DISPLAY_MENU_SCOPE:
-                user_settings.setScopeSetting(user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? UserSettings::SETTING_SCOPE_SHADED: UserSettings::SETTING_SCOPE_LINE);
+                user_settings.setScopeSetting(user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? UserSettings::SETTING_SCOPE_FILL: UserSettings::SETTING_SCOPE_LINE);
                 break;
             default:
                 break;
@@ -59,7 +59,7 @@ bool DisplayConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 user_settings.setInvert(!user_settings.getInvert());
                 break;
             case DISPLAY_MENU_SCOPE:
-                user_settings.setScopeSetting(user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? UserSettings::SETTING_SCOPE_SHADED: UserSettings::SETTING_SCOPE_LINE);
+                user_settings.setScopeSetting(user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? UserSettings::SETTING_SCOPE_FILL: UserSettings::SETTING_SCOPE_LINE);
                 break;
             default:
                 break;
@@ -122,6 +122,6 @@ void DisplayConfigurationMenu::paint(juce::Graphics& g) {
     y_offset += 8;
     Display::put_string_5x5(center, y_offset, 1, ":");
     Display::put_string_5x5(center - strlen("SCOPE") * 6, y_offset, strlen("SCOPE"), "SCOPE");
-    snprintf(line, 20, "%s", user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? "LINE" : "SHADED");
+    snprintf(line, 20, "%s", user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_LINE ? "LINE" : "FILL");
     Display::put_string_5x5(center + 6, y_offset, strlen(line), line, state_==DISPLAY_MENU_SCOPE);
 }

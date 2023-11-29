@@ -79,7 +79,7 @@ void Oscilloscope::paint(juce::Graphics& g) {
     int height = 40;
     Display::outline_rectangle(x, y, width, height);
     
-    Display::Draw_Wave(x+1, y+1, width-2, height-2, BUF1, user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_SHADED);
+    Display::Draw_Wave(x+1, y+1, width-2, height-2, BUF1, user_settings.getScopeSetting() == UserSettings::SETTING_SCOPE_FILL);
     
     std::string note_letter = "C C#D D#E F F#G G#A A#B ";
     int note_index = note % 12;
@@ -95,7 +95,7 @@ void Oscilloscope::paint(juce::Graphics& g) {
     y_offset += 7;
 
     char second_line[20];
-    unsigned long long currentTime = juce::Time::currentTimeMillis();
+    uint32_t currentTime = juce::Time::currentTimeMillis() - user_settings.getAppStartTime();
     unsigned int hours = (currentTime / (1000*60*60)) % 24;
     unsigned int minutes = (currentTime / (1000*60)) % 60;
     unsigned int seconds = (currentTime / (1000)) % 60;

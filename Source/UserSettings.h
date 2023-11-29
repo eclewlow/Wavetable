@@ -19,7 +19,7 @@ public:
 
     enum SettingScope {
         SETTING_SCOPE_LINE,
-        SETTING_SCOPE_SHADED,
+        SETTING_SCOPE_FILL,
     };
     enum SettingMorph {
         SETTING_MORPH_SMOOTH,
@@ -62,6 +62,8 @@ public:
 
     inline void setSubOscWave(SubOscWave wave) { suboscWave_ = wave; }
     inline SubOscWave getSubOscWave() {return suboscWave_;}
+    
+    inline int32_t getAppStartTime() { return app_start_time_; }
 
 private:
     int8_t brightness_;
@@ -74,6 +76,6 @@ private:
     int8_t suboscDetune_;
     int8_t suboscMix_;
     SubOscWave suboscWave_;
-    
+    uint32_t app_start_time_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);
 };
