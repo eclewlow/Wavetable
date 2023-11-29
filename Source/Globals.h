@@ -88,6 +88,7 @@
 #include "WaveEditor.h"
 #include "LoadWaveMenu.h"
 #include "SaveWaveMenu.h"
+#include "Popup.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -129,6 +130,7 @@ extern ABModeMenu abModeMenu;
 extern WaveEditor waveEditor;
 extern LoadWaveMenu loadWaveMenu;
 extern SaveWaveMenu saveWaveMenu;
+extern Popup popup;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;

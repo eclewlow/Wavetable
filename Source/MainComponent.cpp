@@ -135,6 +135,7 @@ void MainComponent::paint (juce::Graphics& g)
     // You can add your drawing code here!
 //    display.paint(g);
     context.paint(g);
+    popup.paint(g);
     Display::paint(g);
 }
 
@@ -151,7 +152,11 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
     printf("%d\n", key.getKeyCode());
-    return context.handleKeyPress(key);
+    bool pass = popup.handleKeyPress(key);
+    if(!pass) {
+        pass = context.handleKeyPress(key);
+    }
+    return pass;
 }
 
 void MainComponent::resized()

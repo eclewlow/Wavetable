@@ -121,6 +121,8 @@
               resource="0" file="Source/OscilloscopeConfigurationMenu.cpp"/>
         <FILE id="MkKrUM" name="OscilloscopeConfigurationMenu.h" compile="0"
               resource="0" file="Source/OscilloscopeConfigurationMenu.h"/>
+        <FILE id="DWVWat" name="Popup.cpp" compile="1" resource="0" file="Source/Popup.cpp"/>
+        <FILE id="PZIPwa" name="Popup.h" compile="0" resource="0" file="Source/Popup.h"/>
         <FILE id="ugKjzB" name="QuantizerMenu.cpp" compile="1" resource="0"
               file="Source/QuantizerMenu.cpp"/>
         <FILE id="t7CjOl" name="QuantizerMenu.h" compile="0" resource="0" file="Source/QuantizerMenu.h"/>

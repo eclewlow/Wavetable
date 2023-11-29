@@ -142,15 +142,17 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME: {
-//                if(storage.GetWavetable(wavetable_).name[0] == '\0') {
-                context.setState(&enterNameMenu);
-                enterNameMenu.setBackState(&saveWaveMenu);
-                enterNameMenu.setExecFunc(SaveWaveMenu::SaveWave);
-//                } else {
-//                    setState(SAVE_WAVE_MENU_SELECT_FRAME);
-//                    frame_ = 0;
-//                    frame_offset_ = 0;
-//                }
+                if(wavetable_ < FACTORY_WAVETABLE_COUNT) {
+                    popup.show();
+                    popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                    popup.SetLine(2, (char*)"\0");
+                }
+                else {
+                    context.setState(&enterNameMenu);
+                    enterNameMenu.setBackState(&saveWaveMenu);
+                    enterNameMenu.setExecFunc(SaveWaveMenu::SaveWave);
+                }
                 break;
             }
             default:
@@ -225,14 +227,6 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 
-//        storage.LoadWaveSample(BUF1, wavetable_, morph_);
-
-//        Display::Draw_Wave(64, y_offset - y_shift, 64, bar_height - 3, BUF1);
-
-//        int bar_width = 48;
-//        int x_cursor_offset = morph_ * (bar_width - 5);
-//        Display::outline_rectangle(95 - bar_width / 2 + 1 + x_cursor_offset, y_offset - y_shift + bar_height - 3 + 1, 3, 1);
-//        Display::invert_rectangle(95 - bar_width / 2, y_offset - y_shift + bar_height - 3, bar_width, 3);
     } else {
         char * title = (char *) "SELECT WAVE SLOT";
 

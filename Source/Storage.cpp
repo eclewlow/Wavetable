@@ -140,16 +140,8 @@ bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) 
     
     WaveTables[table].waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
     
-    printf("saving wave table=%d, frame=%d\n", table, frame);
-    printf("saving wave memory_location=%d\n", WaveTables[table].waves[frame].memory_location);
-//    ROM[WaveTables[table].waves[frame].memory_location] = 1;
     std::memcpy((void*)&ROM[WaveTables[table].waves[frame].memory_location], data, 2048 * 2);
-    // TODO: save wave in ROM and set data pointer
-//    Waves[slot].data = ROM data pointer
-//    memcpy(&USER_ROM[slot * 2048], data, 2048 * 2);
-//    Waves[slot].data = &USER_ROM[slot * 2048];
 
-//    WaveTables[table].waves[frame] = &Waves[slot];
     return true;
 }
 

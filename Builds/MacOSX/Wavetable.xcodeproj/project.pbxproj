@@ -34,6 +34,7 @@
 		3BE349A9365C051A85F6073C /* ControlStatusMenu.cpp */ = {isa = PBXBuildFile; fileRef = C17F6DF923783DBA9FC09135; };
 		3F5C7EC9D798EB0E19C60653 /* matrix_engine.cpp */ = {isa = PBXBuildFile; fileRef = 77E4BACEE6408E6EE0C66568; };
 		4378A4D03F852EBBA9E703A6 /* CalibrationMenu.cpp */ = {isa = PBXBuildFile; fileRef = 05B802F5D776B8CCA24CCCFB; };
+		4A5BA30807712129BBC942CB /* Popup.cpp */ = {isa = PBXBuildFile; fileRef = 01D76222E3424AC629F85139; };
 		4C1C0A79867850BE5BF65E68 /* fnt09x09.cpp */ = {isa = PBXBuildFile; fileRef = 7C06D4B69B431FB84B7CC3A7; };
 		55C3B9C5E0EBDFEA8D39AE1F /* CoreMIDI.framework */ = {isa = PBXBuildFile; fileRef = 34C8B7EE2043925113DA947E; };
 		5689D0DAD383DB7160FC4712 /* WaveEditor.cpp */ = {isa = PBXBuildFile; fileRef = D90E331107E8B8E89E1E3B4A; };
@@ -89,6 +90,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01D76222E3424AC629F85139 /* Popup.cpp */ /* Popup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Popup.cpp; path = ../../Source/Popup.cpp; sourceTree = SOURCE_ROOT; };
 		02A8B691067189CC87745E4D /* include_juce_events.mm */ /* include_juce_events.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_events.mm; path = ../../JuceLibraryCode/include_juce_events.mm; sourceTree = SOURCE_ROOT; };
 		05B802F5D776B8CCA24CCCFB /* CalibrationMenu.cpp */ /* CalibrationMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CalibrationMenu.cpp; path = ../../Source/CalibrationMenu.cpp; sourceTree = SOURCE_ROOT; };
 		083EF92DEF8A60E20AFCD44B /* FxMenu.cpp */ /* FxMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FxMenu.cpp; path = ../../Source/FxMenu.cpp; sourceTree = SOURCE_ROOT; };
@@ -107,6 +109,7 @@
 		1C63A4562DDF24ED4D470E78 /* MemoryClearMenu.cpp */ /* MemoryClearMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MemoryClearMenu.cpp; path = ../../Source/MemoryClearMenu.cpp; sourceTree = SOURCE_ROOT; };
 		1F0D3766CE81A36AFF37B5F5 /* fnt05x05.cpp */ /* fnt05x05.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fnt05x05.cpp; path = ../../Source/fnt05x05.cpp; sourceTree = SOURCE_ROOT; };
 		20A1086281EDBAA2972C0873 /* Display.h */ /* Display.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Display.h; path = ../../Source/Display.h; sourceTree = SOURCE_ROOT; };
+		21A10EA5121C69C83A2808EC /* Popup.h */ /* Popup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Popup.h; path = ../../Source/Popup.h; sourceTree = SOURCE_ROOT; };
 		21A3318F5FDFE7E1D1AE6558 /* include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
 		231093117BA3CC979451C06A /* wavetable_engine.cpp */ /* wavetable_engine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = wavetable_engine.cpp; path = ../../Source/wavetable_engine.cpp; sourceTree = SOURCE_ROOT; };
 		23F8A190B5F67FA74BEB2611 /* fnt09x09.h */ /* fnt09x09.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fnt09x09.h; path = ../../Source/fnt09x09.h; sourceTree = SOURCE_ROOT; };
@@ -503,6 +506,8 @@
 				62A0A71B4DA4492EE55CA173,
 				46BD5B32830DC3F4E765545F,
 				E5BE9C99D98740E6D08B5D98,
+				01D76222E3424AC629F85139,
+				21A10EA5121C69C83A2808EC,
 				5E31C5A593CB6FFEA92CFB0D,
 				8B73C61466B9E25FA61B0370,
 				BE0B378AE12EE05AF202B3B0,
@@ -638,6 +643,7 @@
 				0891ECDF85A8CDA95B8E4729,
 				291BFF969B3969A4D8A6C3B3,
 				72BE0E92942035A0DF176411,
+				4A5BA30807712129BBC942CB,
 				ECAB79706E640B6C5DB83377,
 				87311A66B320A4D3754F8C1F,
 				200F94DACA3AD8912493738C,

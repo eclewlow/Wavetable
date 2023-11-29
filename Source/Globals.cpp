@@ -30,6 +30,7 @@ ABModeMenu abModeMenu;
 WaveEditor waveEditor;
 LoadWaveMenu loadWaveMenu;
 SaveWaveMenu saveWaveMenu;
+Popup popup;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
