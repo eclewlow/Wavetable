@@ -37,6 +37,7 @@ public:
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed) {};
+    void DrawSide(int side);
 //    inline void setLeftState(ABMenuState state) { left_state_ = state; }
 //    inline void setRightState(ABMenuState state) { right_state_ = state; }
 //

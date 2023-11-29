@@ -52,6 +52,8 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 morph_ = 0.0f;
 
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+
                 break;
             case LOAD_WAVE_MENU_SELECT_FRAME:
                 frame_ = std::clamp<int16_t>(frame_ - 1, 0, 15);
@@ -59,6 +61,8 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 if(frame_ < frame_offset_) {
                     frame_offset_ = frame_;
                 }
+
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
 
                 break;
             default:
@@ -76,6 +80,8 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 morph_ = 0.0f;
                 
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                
                 break;
             case LOAD_WAVE_MENU_SELECT_FRAME:
                 frame_ = std::clamp<int16_t>(frame_ + 1, 0, 15);
@@ -83,6 +89,8 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 if(frame_ > frame_offset_ + 5) {
                     frame_offset_ = frame_ - 5;
                 }
+
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
 
                 break;
             default:
@@ -128,6 +136,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 setState(LOAD_WAVE_MENU_SELECT_FRAME);
                 frame_ = 0;
                 frame_offset_ = 0;
@@ -169,6 +178,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                     context.setState(&mainMenu);
                 break;
             case LOAD_WAVE_MENU_SELECT_FRAME:
+                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 setState(LOAD_WAVE_MENU_SELECT_WAVETABLE);
                 morph_ = 0.0f;
                 break;
@@ -202,12 +212,28 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2;
-            if(storage.GetWavetable(i + wavetable_offset_).name[0] == '\0')
-                line2 = (char*)"-------";
-            else
-                line2 = storage.GetWavetable(i + wavetable_offset_).name;
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+wavetable_offset_ == wavetable_);
+            char * name = storage.GetWavetable(i + wavetable_offset_).name;
+
+            char line2[20];
+            memset(line2, 0, 20);
+            if(name[0] == '\0')
+                strncpy(line2, "-------", 7);
+            else {
+                int name_index = 0;
+                int32_t elapsed_time = juce::Time::currentTimeMillis() - ticker_timer_;
+
+                if (elapsed_time > 4000) {
+                    ticker_timer_ = juce::Time::currentTimeMillis();
+                }
+                if(i+wavetable_offset_ == wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                    name_index = (elapsed_time) / 1000;
+                    name_index = std::clamp(name_index, 0, 1);
+                }
+                // if timer is passed 2000, name_index = 1
+                strncpy(line2, &name[name_index], 7);
+            }
+
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
         }
 
         int y_shift = 2;
@@ -243,13 +269,28 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + frame_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
-            char * line2;
-            if(storage.GetWavetable(wavetable_).waves[i + frame_offset_].name[0] == '\0')
-                line2 = (char*)"-------";
-            else
-                line2 = storage.GetWavetable(wavetable_).waves[i + frame_offset_].name;
+            char * name = storage.GetWavetable(wavetable_).waves[i + frame_offset_].name;
+
+            char line2[20];
+            memset(line2, 0, 20);
+            if(name[0] == '\0')
+                strncpy(line2, "-------", 7);
+            else {
+                int name_index = 0;
+                int32_t elapsed_time = juce::Time::currentTimeMillis() - ticker_timer_;
+
+                if (elapsed_time > 4000) {
+                    ticker_timer_ = juce::Time::currentTimeMillis();
+                }
+                if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                    name_index = (elapsed_time) / 1000;
+                    name_index = std::clamp(name_index, 0, 1);
+                }
+                // if timer is passed 2000, name_index = 1
+                strncpy(line2, &name[name_index], 7);
+            }
             
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, std::min<int16_t>(strlen(line2), 7), line2, i+frame_offset_ == frame_);
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_);
         }
 
         int y_shift = 2;

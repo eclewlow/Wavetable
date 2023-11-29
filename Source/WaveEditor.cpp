@@ -282,7 +282,10 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             } else if (selection_ == WAVE_EDITOR_SELECTION_LOAD) {
                 context.setState(&loadWaveMenu);
                 loadWaveMenu.setBackMenu(&waveEditor);
-                loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_A);
+                if(wavedata_ == BUF3)
+                    loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_A);
+                else if(wavedata_ == BUF4)
+                    loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_B);
             } else if (selection_ == WAVE_EDITOR_SELECTION_SAVE) {
                 context.setState(&saveWaveMenu);
                 saveWaveMenu.setWavedata(wavedata_);

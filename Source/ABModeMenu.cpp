@@ -111,10 +111,11 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case AB_LOAD_HOVER:
                 left_state_ = AB_SELECT_WAVETABLE;
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingLeft()) {
-                    abEngine.FillWaveform(BUF3, left_wavetable_, left_frame_);
+                    abEngine.FillWaveform(BUF3, abEngine.GetLeftWavetable(), abEngine.GetLeftFrame());
                     abEngine.SetIsEditingLeft(true);
                 }
                 waveEditor.setWavedata(BUF3);
@@ -122,6 +123,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case AB_SELECT_WAVETABLE:
                 left_state_ = AB_SELECT_FRAME;
+                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                 if(left_wavetable_ != abEngine.GetLeftWavetable()) {
                     left_frame_offset_ = 0;
                     left_frame_ = 0;
@@ -134,6 +136,114 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
             case AB_SELECT_FRAME:
                 abEngine.SetIsEditingLeft(false);
                 abEngine.SetLeftWave(left_wavetable_, left_frame_);
+                break;
+            default:
+                break;
+        }
+    }
+    // *************************************************************************** //
+    // RIGHT MENU //
+    // *************************************************************************** //
+    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        active_menu_ = RIGHT;
+        switch(right_state_) {
+            case AB_LOAD_HOVER:
+                break;
+            case AB_EDIT_HOVER:
+                right_state_ = AB_LOAD_HOVER;
+                break;
+            case AB_SELECT_WAVETABLE:
+                right_wavetable_ = std::clamp(right_wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+                
+                if(right_wavetable_ < right_wavetable_offset_) {
+                    right_wavetable_offset_ = right_wavetable_;
+                }
+                
+                if(abEngine.GetRightWavetable() == right_wavetable_)
+                    right_frame_ = abEngine.GetRightFrame();
+                else
+                    right_frame_ = 0;
+
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                break;
+            case AB_SELECT_FRAME:
+                right_frame_ = std::clamp(right_frame_ - 1, 0, 15);
+
+                if(right_frame_ < right_frame_offset_) {
+                    right_frame_offset_ = right_frame_;
+                }
+
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                break;
+            default:
+                break;
+        }
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        active_menu_ = RIGHT;
+        switch(right_state_) {
+            case AB_LOAD_HOVER:
+                right_state_ = AB_EDIT_HOVER;
+                break;
+            case AB_EDIT_HOVER:
+                break;
+            case AB_SELECT_WAVETABLE:
+                right_wavetable_ = std::clamp(right_wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+
+                if(right_wavetable_ > right_wavetable_offset_ + 2) {
+                    right_wavetable_offset_ = right_wavetable_ - 2;
+                }
+                
+                if(abEngine.GetRightWavetable() == right_wavetable_)
+                    right_frame_ = abEngine.GetRightFrame();
+                else
+                    right_frame_ = 0;
+                
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                break;
+            case AB_SELECT_FRAME:
+                right_frame_ = std::clamp(right_frame_ + 1, 0, 15);
+
+                if(right_frame_ > right_frame_offset_ + 2) {
+                    right_frame_offset_ = right_frame_ - 2;
+                }
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+
+                break;
+            default:
+                break;
+        }
+    }
+    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        active_menu_ = RIGHT;
+        switch(right_state_) {
+            case AB_LOAD_HOVER:
+                right_state_ = AB_SELECT_WAVETABLE;
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                break;
+            case AB_EDIT_HOVER:
+                if(!abEngine.IsEditingRight()) {
+                    abEngine.FillWaveform(BUF4, abEngine.GetRightWavetable(), abEngine.GetRightFrame());
+                    abEngine.SetIsEditingRight(true);
+                }
+                waveEditor.setWavedata(BUF4);
+                context.setState(&waveEditor);
+                break;
+            case AB_SELECT_WAVETABLE:
+                right_state_ = AB_SELECT_FRAME;
+                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                if(right_wavetable_ != abEngine.GetRightWavetable()) {
+                    right_frame_offset_ = 0;
+                    right_frame_ = 0;
+                }
+                else {
+                    right_frame_offset_ = std::clamp(abEngine.GetRightFrame(), 0, 15-2);
+                    right_frame_ = abEngine.GetRightFrame();
+                }
+                break;
+            case AB_SELECT_FRAME:
+                abEngine.SetIsEditingRight(false);
+                abEngine.SetRightWave(right_wavetable_, right_frame_);
                 break;
             default:
                 break;
@@ -158,113 +268,173 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
+                    left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
                     left_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
                     break;
             }
         }
-    }
+        if(active_menu_ == RIGHT) {
+            switch(right_state_) {
+                case AB_LOAD_HOVER:
+                    if(back_menu_)
+                        context.setState(back_menu_);
+                    else
+                        context.setState(&mainMenu);
+                    break;
+                case AB_EDIT_HOVER:
+                    if(back_menu_)
+                        context.setState(back_menu_);
+                    else
+                        context.setState(&mainMenu);
+                    break;
+                case AB_SELECT_WAVETABLE:
+                    right_state_ = AB_LOAD_HOVER;
+                    break;
+                case AB_SELECT_FRAME:
+                    right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                    right_state_ = AB_SELECT_WAVETABLE;
+                    break;
+                default:
+                    break;
+            }
+        }    }
 
     return true;
 }
 
-void ABModeMenu::paint(juce::Graphics& g) {
-    uint16_t morph = adc.getChannel(3);
-
-    Display::clear_screen();
-
+void ABModeMenu::DrawSide(int side) {
     int graph_y_offset = 3;
     int graph_height = 32 - graph_y_offset;
     int gap = 1;
     int graph_width = 128 / 2 - gap;
     
-    Display::outline_rectangle(0, graph_y_offset, graph_width, graph_height);
-    Display::outline_rectangle(graph_width + gap * 2, graph_y_offset, graph_width, graph_height);
+    int x_offset = side == 0 ? 0 : graph_width + gap * 2;
     
-    if(left_state_ == AB_SELECT_FRAME || left_state_ == AB_SELECT_WAVETABLE)
-        abEngine.FillWaveform(BUF1, left_wavetable_, left_frame_);
+    int16_t* wavebuffer = side == 0 ? BUF1 : BUF2;
+    int16_t* alternate_wavebuffer = side == 0 ? BUF3 : BUF4;
+    int32_t* ticker_timer = side == 0 ? &left_ticker_timer_ : &right_ticker_timer_;
+    int wavetable = side == 0 ? left_wavetable_ : right_wavetable_;
+    int frame = side == 0 ? left_frame_ : right_frame_;
+    int16_t wavetable_offset = side == 0 ? left_wavetable_offset_ : right_wavetable_offset_;
+    int16_t frame_offset = side == 0 ? left_frame_offset_ : right_frame_offset_;
+    bool is_editing = side == 0 ? abEngine.IsEditingLeft() : abEngine.IsEditingRight();
+    ABMenuState state = side == 0 ? left_state_ : right_state_;
+    int abEngineWavetable = side == 0 ? abEngine.GetLeftWavetable() : abEngine.GetRightWavetable();
+    int abEngineFrame = side == 0 ? abEngine.GetLeftFrame() : abEngine.GetRightFrame();
+
+    Display::outline_rectangle(x_offset, graph_y_offset, graph_width, graph_height);
+    
+    if(state == AB_SELECT_FRAME || state == AB_SELECT_WAVETABLE)
+        abEngine.FillWaveform(wavebuffer, wavetable, frame);
     else
-        abEngine.FillWaveform(BUF1, abEngine.GetLeftWavetable(), abEngine.GetLeftFrame());
+        abEngine.FillWaveform(wavebuffer, abEngineWavetable, abEngineFrame);
 
-    if(left_state_ == AB_SELECT_FRAME || left_state_ == AB_SELECT_WAVETABLE)
-        Display::Draw_Wave(1, graph_y_offset + 1, graph_width-2, graph_height-2, BUF1);
+    if(state == AB_SELECT_FRAME || state == AB_SELECT_WAVETABLE)
+        Display::Draw_Wave(x_offset + 1, graph_y_offset + 1, graph_width-2, graph_height-2, wavebuffer);
     else
-        Display::Draw_Wave(1, graph_y_offset + 1, graph_width-2, graph_height-2, abEngine.IsEditingLeft() ? BUF3 : BUF1);
+        Display::Draw_Wave(x_offset + 1, graph_y_offset + 1, graph_width-2, graph_height-2, is_editing ? alternate_wavebuffer : wavebuffer);
 
-    abEngine.FillWaveform(BUF2, right_wavetable_, right_frame_);
-
-    Display::Draw_Wave(graph_width + gap * 2 + 1, graph_y_offset + 1, graph_width-2, graph_height-2, BUF2);
+//    abEngine.FillWaveform(BUF2, right_wavetable_, right_frame_);
+//
+//    Display::Draw_Wave(graph_width + gap * 2 + 1, graph_y_offset + 1, graph_width-2, graph_height-2, BUF2);
 
     int y_offset = graph_y_offset + graph_height + 5;
-    int x_offset = 64 - 5;
-    if(left_state_ == AB_SELECT_WAVETABLE) {
+    if(state == AB_SELECT_WAVETABLE) {
         for(int i = 0; i < 3; i++)
         {
             char line[20];
-            snprintf(line, 20, "%*d", 2, i + left_wavetable_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            snprintf(line, 20, "%*d", 2, i + wavetable_offset + 1);
+            Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
             
-            char * name = storage.GetWavetable(i + left_wavetable_offset_).name;
+            char * name = storage.GetWavetable(i + wavetable_offset).name;
 
             char line2[20];
             memset(line2, 0, 20);
             if(name[0] == '\0')
                 strncpy(line2, "-------", 7);
             else {
-                int8_t str_len = strlen(name);
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - left_ticker_timer_;
-                printf("elsaped time = %d\n", elapsed_time);
+                int32_t elapsed_time = juce::Time::currentTimeMillis() - *ticker_timer;
+
                 if (elapsed_time > 4000) {
-                    left_ticker_timer_ = juce::Time::currentTimeMillis();
+                    *ticker_timer = juce::Time::currentTimeMillis();
                 }
-                if(i+left_wavetable_offset_ == left_wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                if(i + wavetable_offset == wavetable && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;
                     name_index = std::clamp(name_index, 0, 1);
                 }
                 // if timer is passed 2000, name_index = 1
                 strncpy(line2, &name[name_index], 7);
             }
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+left_wavetable_offset_ == left_wavetable_);
+            Display::put_string_5x5(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable);
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
-        int y_cursor_offset = ((bar_height-3) * left_wavetable_offset_) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
-        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
-        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
+        int y_cursor_offset = ((bar_height-3) * wavetable_offset) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+        
+        Display::outline_rectangle(x_offset + 64 - 5 + 1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset + 64 - 5, y_offset - y_shift, 3, bar_height);
 
-    } else if (left_state_ == AB_SELECT_FRAME) {
+    } else if (state == AB_SELECT_FRAME) {
         for(int i = 0; i < 3; i++)
         {
             char line[20];
 
-            snprintf(line, 20, "%*d", 2, i + left_frame_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            snprintf(line, 20, "%*d", 2, i + frame_offset + 1);
+            Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
 
-            if(storage.GetWavetable(left_wavetable_).waves[i].name[0] == '\0')
-                strncpy(line, "-------", 7);
-            else
-                snprintf(line, 20, "%02d", i + left_frame_offset_);
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line), line, i+left_frame_offset_ == left_frame_);
+            char * name = storage.GetWavetable(wavetable).waves[i + frame_offset].name;
+
+            char line2[20];
+            memset(line2, 0, 20);
+            if(name[0] == '\0')
+                strncpy(line2, "-------", 7);
+            else {
+                int name_index = 0;
+                int32_t elapsed_time = juce::Time::currentTimeMillis() - *ticker_timer;
+
+                if (elapsed_time > 4000) {
+                    *ticker_timer = juce::Time::currentTimeMillis();
+                }
+                if(i + frame_offset == frame && strlen(name) > 7 && (elapsed_time) > 0) {
+                    name_index = (elapsed_time) / 1000;
+                    name_index = std::clamp(name_index, 0, 1);
+                }
+                // if timer is passed 2000, name_index = 1
+                strncpy(line2, &name[name_index], 7);
+            }
+
+            Display::put_string_5x5(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame);
 
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
-        int y_cursor_offset = ((bar_height-3/2) * left_frame_offset_) / 15;
-        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
-        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
+        int y_cursor_offset = ((bar_height-3/2) * frame_offset) / 15;
+        
+        Display::outline_rectangle(x_offset + 64 - 5 + 1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset + 64 - 5, y_offset - y_shift, 3, bar_height);
     }
-    else if(left_state_ == AB_LOAD_HOVER || left_state_ == AB_EDIT_HOVER) {
+    else if(state == AB_LOAD_HOVER || state == AB_EDIT_HOVER) {
         int y_offset = graph_y_offset + graph_height + 5;
         int x_offset = 64 / 2 - (15 + 1);
+        x_offset = x_offset + (side == 0 ? 0 : graph_width + gap * 2);
+        
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_load_15x15, 15);
         Display::put_image_16bit(x_offset + 15 + 2, y_offset, Graphic_icon_edit_15x15, 15);
         
-        if(left_state_ == AB_LOAD_HOVER) {
-            Display::invert_rectangle(x_offset+1, y_offset+1, 13, 13);
+        if(state == AB_LOAD_HOVER) {
+            Display::invert_rectangle(x_offset + 1, y_offset + 1, 13, 13);
         } else {
-            Display::invert_rectangle(x_offset+1 + 15 + 2, y_offset+1, 13, 13);
+            Display::invert_rectangle(x_offset + 1 + 15 + 2, y_offset + 1, 13, 13);
         }
     }
+}
+
+void ABModeMenu::paint(juce::Graphics& g) {
+    Display::clear_screen();
+
+    DrawSide(0);
+    DrawSide(1);
 }

@@ -48,8 +48,8 @@ private:
     
     WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT] = {
         {
-            "TABLE 0", {
-                {"00", 0},
+            "SPECTRAL", {
+                {"GRANULAR", 0},
                 {"01", 2048},
                 {"02", 4096},
                 {"03", 6144},
