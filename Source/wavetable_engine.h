@@ -26,7 +26,6 @@ public:
     void Init();
     float GetSample(int16_t wavetable, int16_t frame, float phase);
     float GetSampleBetweenFrames(float phase, float thisX);
-//    void SetX(float newX);
     bool handleKeyPress(const juce::KeyPress &key);
     void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
     float GetSample(float phase);
@@ -35,10 +34,6 @@ public:
     
     inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
     inline int GetWavetable() { return wavetable_; }
-
-//    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }
-    //    void Reset();
-    //    void LoadUserData(const uint8_t* user_data) { }
 private:
     int wavetable_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavetableEngine);

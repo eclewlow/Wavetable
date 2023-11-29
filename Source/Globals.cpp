@@ -31,9 +31,11 @@ WaveEditor waveEditor;
 LoadWaveMenu loadWaveMenu;
 SaveWaveMenu saveWaveMenu;
 Popup popup;
+MatrixMode matrixMode;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
+MatrixEngine matrixEngine;
 Suboscillator suboscillator;
 
 EffectManager effect_manager;
