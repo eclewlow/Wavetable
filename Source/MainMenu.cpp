@@ -55,6 +55,9 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 } else if(context.getEngine() == &abEngine) {
                     abModeMenu.setBackMenu(&mainMenu);
                     context.setState(&abModeMenu);
+                } else if(context.getEngine() == &matrixEngine) {
+                    abModeMenu.setBackMenu(&mainMenu);
+                    context.setState(&matrixMode);
                 }
 //                getContext()->setState(new ModeMenu());
                 break;

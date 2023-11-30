@@ -43,6 +43,11 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 context.setState(&wavetableModeMenu);
                 context.setEngine(&wavetableEngine);
                 break;
+            case MODE_MATRIX:
+                matrixMode.setBackMenu(&modeMenu);
+                context.setState(&matrixMode);
+                context.setEngine(&matrixEngine);
+                break;
 //            case MODE_MATRIX:
 //                setState(MODE_DRUM);
 //                break;
