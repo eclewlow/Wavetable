@@ -31,7 +31,7 @@ float Suboscillator::GetSample(int16_t wavetable, int16_t frame, float phase){
 }
 
 
-float Suboscillator::GetSampleNoFX(float phase, float morph) {
+float Suboscillator::GetSampleNoFX(float phase, float fx, float morph) {
     return 0.0f;
 }
 
@@ -45,24 +45,19 @@ void Suboscillator::triggerUpdate() {
 
 void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
-    //    float target = morph;
-    // convert 12 bit uint 0-4095 to 0...15 float
     float morphTarget;
+    float fxTarget;
+    
     morphTarget = morph / 4095.0;
-    //    float interpolatedFloat = interpolated16 / 32768.0f;
+    fxTarget = fx / 4095.0;
+
     float tuneTarget = static_cast<float>(tune);
     
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
+    ParameterInterpolator fx_interpolator(&fx_, fxTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);
     
-//    float note = (120.0f * tune)/4095.0;
-
-//    float a = 440; //frequency of A (coomon value is 440Hz)
-//    float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
-//    float adjusted_phase = 0.0f;
-//    float phaseIncrement = frequency / 48000.0f;
-
     while (size--) {
         float note = (120.0f * tune_interpolator.Next()) / 4095.0;
         note = clamp(note, 0.0f, 120.0f);
@@ -77,7 +72,10 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
 
         float interpolated_morph = morph_interpolator.Next();
         interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
-        
+
+        float interpolated_fx = fx_interpolator.Next();
+        interpolated_fx = clamp(interpolated_fx, 0.0, 1.0);
+
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = 0.0f;
             if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SINE)
@@ -91,7 +89,7 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
             else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SQUARE)
                 sample = GetSquare(phase_, phase_increment);
             else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_COPY) {
-                sample = context.getEngine()->GetSampleNoFX(phase_, interpolated_morph);
+                sample = context.getEngine()->GetSampleNoFX(phase_, interpolated_fx, interpolated_morph);
             }
 
             phase_ += phase_increment;

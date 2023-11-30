@@ -97,6 +97,8 @@ void MainMenu::paint(juce::Graphics& g) {
                 caption = (char*)"WAVETABLE";
             } else if(context.getEngine() == &abEngine) {
                 caption = (char*)"AB WAVE";
+            } else if(context.getEngine() == &matrixEngine) {
+                caption = (char*)"MATRIX";
             }
             break;
         case MODE_SELECT:
@@ -121,6 +123,7 @@ void MainMenu::paint(juce::Graphics& g) {
             caption = (char*)"CONFIG";
             break;
         default:
+            caption = (char*)"";
             break;
     }
 
@@ -132,7 +135,9 @@ void MainMenu::paint(juce::Graphics& g) {
         Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_ab);
     else if(context.getEngine() == &wavetableEngine)
         Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wavetable);
-    
+    else if(context.getEngine() == &matrixEngine)
+        Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wave_matrix);
+
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);
     

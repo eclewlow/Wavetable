@@ -91,7 +91,7 @@ void WavetableEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t f
     }
 }
 
-float WavetableEngine::GetSampleNoFX(float phase, float morph) {
+float WavetableEngine::GetSampleNoFX(float phase, float fx, float morph) {
     float sample = GetSampleBetweenFrames(phase, morph);
     return sample;
 }

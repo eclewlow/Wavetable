@@ -28,7 +28,7 @@ public:
     float GetSampleBetweenFrames(float phase, float thisX);
 //    void SetX(float newX);
     bool handleKeyPress(const juce::KeyPress &key);
-    float GetSampleNoFX(float phase, float morph);
+    float GetSampleNoFX(float phase, float fx, float morph);
     void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
     void triggerUpdate();
 //    inline void sync_suboscillator_phase() { subosc_phase_ = phase; }

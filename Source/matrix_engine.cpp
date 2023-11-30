@@ -15,11 +15,12 @@
 #include "4x_downsampler.h"
 
 MatrixEngine::MatrixEngine() {
-    phase_ = 0.0f;
-    x1_ = 0.0f;
-    y1_ = 0.0f;
-    x2_ = 8.0f;
-    y2_ = 8.0f;
+    phase_ = 0;
+    x1_ = 0;
+    y1_ = 0;
+    x2_ = 7;
+    y2_ = 7;
+    wavelist_offset_ = 0;
 }
 
 MatrixEngine::~MatrixEngine() {
@@ -38,8 +39,8 @@ float MatrixEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {
     
     uint16_t nextIntegral = (integral + 1) % 2048;
     
-    float sample = storage.LoadWaveSample(wavetable, frame, integral);
-    float next_sample = storage.LoadWaveSample(wavetable, frame, nextIntegral);
+    float sample = storage.LoadWaveSample(wavelist_offset_ + wavetable, frame, integral);
+    float next_sample = storage.LoadWaveSample(wavelist_offset_ + wavetable, frame, nextIntegral);
     float interpolated16 = sample + (next_sample - sample) * fractional;
     
     float interpolatedFloat = interpolated16 / 32768.0f;
@@ -47,17 +48,31 @@ float MatrixEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {
     return interpolatedFloat;
 }
 
-float MatrixEngine::GetSampleBetweenFrames(float phase, float morph) {
-    float frame = morph * 15.0f;
-    uint16_t frame_integral = floor(frame);
-    float frame_fractional = frame - frame_integral;
-    
-    uint16_t next_frame_integral = (frame_integral + 1) % 16;
+float MatrixEngine::GetSampleBetweenFrames(float phase, float morph_x, float morph_y) {
+    // if x1 = 8 and x2 = 12. and morph_x = 0.5, then x1 + morph_x * (x2 - x1)
+    float frame_x = x1_ + morph_x * (x2_ - x1_);
+    uint16_t frame_x_integral = floor(frame_x);
+    float frame_x_fractional = frame_x - frame_x_integral;
 
-    float frame1sample = GetSample(wavetable_, frame_integral, phase);
-    float frame2sample = GetSample(wavetable_, next_frame_integral, phase);
+    uint16_t next_frame_x_integral = (frame_x_integral + 1) % 16;
+
+    float frame_y = y1_ + morph_y * (y2_ - y1_);
+    uint16_t frame_y_integral = floor(frame_y);
+    float frame_y_fractional = frame_y - frame_y_integral;
+
+    uint16_t next_frame_y_integral = (frame_y_integral + 1) % 16;
+
+    // TODO: get sample across 4 frames
+    float frame_x1y1_sample = GetSample(frame_y_integral, frame_x_integral, phase);
+    float frame_x2y1_sample = GetSample(frame_y_integral, next_frame_x_integral, phase);
+
+    float frame_x1y2_sample = GetSample(next_frame_y_integral, frame_x_integral, phase);
+    float frame_x2y2_sample = GetSample(next_frame_y_integral, next_frame_x_integral, phase);
     
-    float sample = frame1sample * (1.0f - frame_fractional) + frame2sample * frame_fractional;
+    float upper_sample = frame_x1y1_sample * (1 - frame_x_fractional) + frame_x2y1_sample * frame_x_fractional;
+    float lower_sample = frame_x1y2_sample * (1 - frame_x_fractional) + frame_x2y2_sample * frame_x_fractional;
+
+    float sample = upper_sample * (1.0f - frame_y_fractional) + lower_sample * frame_y_fractional;
     return sample;
 }
 
@@ -72,17 +87,12 @@ void MatrixEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_a
         effect_manager.getEffect()->Sync_phases();
 
     for(int i = 0; i < 2048; i++) {
-        float thisX = morph_;
-        thisX = clamp(thisX, 0.0, 1.0);
-        
-        float calculated_phase = temp_phase;
-        if(withFx)
-            calculated_phase = effect_manager.RenderPhaseEffect(temp_phase, frequency, fx_amount, fx, true);
-        
-        float sample = GetSampleBetweenFrames(calculated_phase, thisX);
-        
-        if(withFx)
-            sample = effect_manager.RenderSampleEffect(sample, temp_phase, frequency, fx_amount, fx, true);
+        float morph_y = morph_;
+        float morph_x = fx_;
+        morph_x = clamp(morph_x, 0.0, 1.0);
+        morph_y = clamp(morph_y, 0.0, 1.0);
+
+        float sample = GetSampleBetweenFrames(temp_phase, morph_x, morph_y);
         
         temp_phase += phaseIncrement;
         
@@ -93,8 +103,8 @@ void MatrixEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_a
     }
 }
 
-float MatrixEngine::GetSampleNoFX(float phase, float morph) {
-    float sample = GetSampleBetweenFrames(phase, morph);
+float MatrixEngine::GetSampleNoFX(float phase, float fx, float morph) {
+    float sample = GetSampleBetweenFrames(phase, fx, morph);
     return sample;
 }
 
@@ -104,13 +114,16 @@ void MatrixEngine::triggerUpdate() {
 
 void MatrixEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
-    //    float target = morph;
-    // convert 12 bit uint 0-4095 to 0...15 float
-    float morphTarget = morph * 1.0 / 4095.0;
-    //    float interpolatedFloat = interpolated16 / 32768.0f;
+    float morphTarget;
+    float fxTarget;
+
+    morphTarget = morph * 1.0 / 4095.0;
+    fxTarget = fx * 1.0f / 4095.0f;
+    
     float tuneTarget = static_cast<float>(tune);
     
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
+    ParameterInterpolator fx_interpolator(&fx_, fxTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);
     
@@ -125,11 +138,12 @@ void MatrixEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, 
         
         float interpolated_morph = morph_interpolator.Next();
         interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
-        
+
+        float interpolated_fx = fx_interpolator.Next();
+        interpolated_fx = clamp(interpolated_fx, 0.0, 1.0);
+
         for (size_t j = 0; j < kOversampling; ++j) {
-            float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase_, frequency, fx_amount, fx, false, true), interpolated_morph);
-            
-            sample = effect_manager.RenderSampleEffect(sample, phase_, frequency, fx_amount, fx, false, true);
+            float sample = GetSampleBetweenFrames(phase_, interpolated_fx, interpolated_morph);
             
             phase_ += phaseIncrement;
             

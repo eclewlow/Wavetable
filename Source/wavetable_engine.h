@@ -29,7 +29,7 @@ public:
     bool handleKeyPress(const juce::KeyPress &key);
     void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
     float GetSample(float phase);
-    float GetSampleNoFX(float phase, float morph);
+    float GetSampleNoFX(float phase, float fx, float morph);
     void triggerUpdate();
     
     inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }

@@ -18,6 +18,13 @@ class State;
 class MatrixMode: public State
 {
 public:
+    enum MatrixModeEditState {
+        MATRIX_MODE_EDIT_DEFAULT = 0,
+        MATRIX_MODE_EDIT_TOPLEFT = 1,
+        MATRIX_MODE_EDIT_BOTTOMRIGHT = 2,
+        MATRIX_MODE_EDIT_LAST = 3,
+        MATRIX_MODE_EDIT_OFFSET = 4,
+    };
     MatrixMode();
     ~MatrixMode();
     virtual bool handleKeyPress(const juce::KeyPress &key);
@@ -25,5 +32,7 @@ public:
     void triggerUpdate(bool back_pressed);
 
 private:
+    uint8_t edit_state_;
+    bool editing_offset_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MatrixMode);
 };

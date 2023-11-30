@@ -33,7 +33,7 @@ public:
     void FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph, bool withFx);
     void FillWaveform(int16_t * waveform, int16_t wavetable, int16_t frame);
     float GetSample(float phase);
-    float GetSampleNoFX(float phase, float morph);
+    float GetSampleNoFX(float phase, float fx, float morph);
     
     inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
     inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }

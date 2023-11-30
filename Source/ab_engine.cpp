@@ -126,7 +126,7 @@ void ABEngine::FillWaveform(int16_t * waveform, int16_t wavetable, int16_t frame
     storage.LoadWaveSample(waveform, wavetable, frame);
 }
 
-float ABEngine::GetSampleNoFX(float phase, float morph) {
+float ABEngine::GetSampleNoFX(float phase, float fx, float morph) {
     float sample = GetSampleBetweenFrames(phase, morph);
     return sample;
 }
