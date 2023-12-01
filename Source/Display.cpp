@@ -56,10 +56,15 @@ void Display::clear_screen() {
     memset(framebuffer, 0, 128*8);
 }
 
-void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set) {
+void Display::Put_Pixel(uint8_t x, uint8_t y, uint8_t set, bool toggle) {
     //2.48uS ~ 4.70uS
     if(x >= 128 || y >= 64)
         return;
+    
+    if(toggle) {
+        Display::framebuffer[y>>3][x]^=(0x01 << (y&0x07));
+        return;
+    }
     
     if(0 != set)
     {
@@ -117,7 +122,7 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
 
 void Display::LCD_Line(int16_t x0, int16_t y0,
                        int16_t x1, int16_t y1,
-                       uint8_t set) {
+                       uint8_t set, bool toggle) {
     int16_t dx;
     int16_t sx;
     int16_t dy;
@@ -133,7 +138,7 @@ void Display::LCD_Line(int16_t x0, int16_t y0,
     
     for (;;)
     {
-        Display::Put_Pixel(x0, y0, set);
+        Display::Put_Pixel(x0, y0, set, toggle);
         if ((x0 == x1) && (y0 == y1))
             break;
         e2 = err;
@@ -738,12 +743,9 @@ void Display::outline_rectangle(int16_t x, int16_t y, int16_t width, int16_t hei
 // From: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
 void Display::LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set)
 {
-    uint8_t
-    x;
-    uint8_t
-    y;
-    int8_t
-    radiusError;
+    uint8_t x;
+    uint8_t y;
+    int8_t radiusError;
     
     x = radius;
     y = 0;
@@ -767,6 +769,58 @@ void Display::LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set)
         Put_Pixel(x0 - y, y0 - x, set);
         //5 O'Clock
         Put_Pixel(x0 + y, y0 - x, set);
+        
+        y++;
+        if (radiusError < 0)
+        {
+            radiusError += (int16_t)(2 * y + 1);
+        }
+        else
+        {
+            x--;
+            radiusError += 2 * (((int16_t) y - (int16_t) x) + 1);
+        }
+    }
+}
+
+//============================================================================
+// From: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+void Display::LCD_FillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set)
+{
+    uint8_t x;
+    uint8_t y;
+    int8_t radiusError;
+    
+    x = radius;
+    y = 0;
+    radiusError = 1 - (int8_t) x;
+    
+    while (x >= y)
+    {
+        //11 O'Clock
+        LCD_Line(x0 - y, y0 + x, x0 - y, y0, true);
+//        Put_Pixel(x0 - y, y0 + x, set);
+        //1 O'Clock
+        LCD_Line(x0 + y, y0 + x, x0 + y, y0, true);
+//        Put_Pixel(x0 + y, y0 + x, set);
+        //10 O'Clock
+        LCD_Line(x0 - x, y0 + y, x0 - x, y0, true);
+//        Put_Pixel(x0 - x, y0 + y, set);
+        //2 O'Clock
+        LCD_Line(x0 + x, y0 + y, x0 + x, y0, true);
+//        Put_Pixel(x0 + x, y0 + y, set);
+        //8 O'Clock
+        LCD_Line(x0 - x, y0 - y, x0 - x, y0, true);
+//        Put_Pixel(x0 - x, y0 - y, set);
+        //4 O'Clock
+        LCD_Line(x0 + x, y0 - y, x0 + x, y0, true);
+//        Put_Pixel(x0 + x, y0 - y, set);
+        //7 O'Clock
+        LCD_Line(x0 - y, y0 - x, x0 - y, y0, true);
+//        Put_Pixel(x0 - y, y0 - x, set);
+        //5 O'Clock
+        LCD_Line(x0 + y, y0 - x, x0 + y, y0, true);
+//        Put_Pixel(x0 + y, y0 - x, set);
         
         y++;
         if (radiusError < 0)

@@ -58,6 +58,9 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 } else if(context.getEngine() == &matrixEngine) {
                     abModeMenu.setBackMenu(&mainMenu);
                     context.setState(&matrixMode);
+                } else if(context.getEngine() == &drumEngine) {
+                    abModeMenu.setBackMenu(&mainMenu);
+                    context.setState(&drumMode);
                 }
 //                getContext()->setState(new ModeMenu());
                 break;
@@ -102,6 +105,8 @@ void MainMenu::paint(juce::Graphics& g) {
                 caption = (char*)"AB WAVE";
             } else if(context.getEngine() == &matrixEngine) {
                 caption = (char*)"MATRIX";
+            } else if(context.getEngine() == &drumEngine) {
+                caption = (char*)"DRUM";
             }
             break;
         case MODE_SELECT:
@@ -140,6 +145,8 @@ void MainMenu::paint(juce::Graphics& g) {
         Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wavetable);
     else if(context.getEngine() == &matrixEngine)
         Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_wave_matrix);
+    else if(context.getEngine() == &drumEngine)
+        Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_mode_menu_drum);
 
     col++;
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_main_menu_mode_select);

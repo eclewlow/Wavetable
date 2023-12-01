@@ -29,6 +29,11 @@ MatrixEngine::~MatrixEngine() {
 
 void MatrixEngine::Init() {
     phase_ = 0.0f;
+    x1_ = 0;
+    y1_ = 0;
+    x2_ = 7;
+    y2_ = 7;
+    wavelist_offset_ = 0;
 }
 
 

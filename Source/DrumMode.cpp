@@ -13,8 +13,8 @@
 #include "Globals.h"
 
 DrumMode::DrumMode() {
-    edit_state_ = MATRIX_MODE_EDIT_DEFAULT;
-    editing_offset_ = false;
+    edit_state_ = DRUM_MODE_EDIT_WAVETABLE;
+    setEditing(false);
 }
 
 DrumMode::~DrumMode() {
@@ -22,103 +22,79 @@ DrumMode::~DrumMode() {
 }
 
 void DrumMode::triggerUpdate(bool back_pressed) {
-    editing_offset_ = false;
-    edit_state_ = MATRIX_MODE_EDIT_DEFAULT;
+    setEditing(false);
+    edit_state_ = DRUM_MODE_EDIT_WAVETABLE;
 }
 
 bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
+//    DRUM_MODE_EDIT_WAVETABLE = 0,
+//    DRUM_MODE_EDIT_AMP_DECAY = 1,
+//    DRUM_MODE_EDIT_FM_DECAY = 2,
+//    DRUM_MODE_EDIT_FM_SHAPE = 3,
+//    DRUM_MODE_EDIT_FM_DEPTH = 4,
+    float dx = 0.1f;
+
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
-        switch(edit_state_) {
-            case MATRIX_MODE_EDIT_DEFAULT:
-                if(matrixEngine.GetX1() > 0) {
-                    matrixEngine.IncrementX1(-1);
-                    matrixEngine.IncrementX2(-1);
-                }
-                break;
-            case MATRIX_MODE_EDIT_TOPLEFT:
-                matrixEngine.IncrementX1(-1);
-                break;
-            case MATRIX_MODE_EDIT_BOTTOMRIGHT:
-                matrixEngine.IncrementX2(-1);
-                break;
-            default:
-                break;
-        }
+        edit_state_ = std::clamp<int8_t>(edit_state_ - 1, DRUM_MODE_EDIT_WAVETABLE, DRUM_MODE_EDIT_FM_DEPTH);
+        setEditing(false);
     }
     if(key.getKeyCode() == LEFT_ENCODER_CW) {
-        switch(edit_state_) {
-            case MATRIX_MODE_EDIT_DEFAULT:
-                if(matrixEngine.GetX2() < 15) {
-                    matrixEngine.IncrementX2(1);
-                    matrixEngine.IncrementX1(1);
-                }
-                break;
-            case MATRIX_MODE_EDIT_TOPLEFT:
-                matrixEngine.IncrementX1(1);
-                break;
-            case MATRIX_MODE_EDIT_BOTTOMRIGHT:
-                matrixEngine.IncrementX2(1);
-                break;
-            default:
-                break;
-        }
+        edit_state_ = std::clamp<int8_t>(edit_state_ + 1, DRUM_MODE_EDIT_WAVETABLE, DRUM_MODE_EDIT_FM_DEPTH);
+        setEditing(false);
     }
     if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(edit_state_) {
-            case MATRIX_MODE_EDIT_DEFAULT:
-                if(matrixEngine.GetY1() > 0) {
-                    matrixEngine.IncrementY1(-1);
-                    matrixEngine.IncrementY2(-1);
-                }
+            case DRUM_MODE_EDIT_WAVETABLE:
+                drumEngine.SetWavetable(drumEngine.GetWavetable() - 1);
                 break;
-            case MATRIX_MODE_EDIT_TOPLEFT:
-                matrixEngine.IncrementY1(-1);
+            case DRUM_MODE_EDIT_AMP_DECAY:
+                drumEngine.SetAmpDecay(drumEngine.GetAmpDecay() - dx);
+                setEditing(true);
                 break;
-            case MATRIX_MODE_EDIT_BOTTOMRIGHT:
-                matrixEngine.IncrementY2(-1);
+            case DRUM_MODE_EDIT_FM_DECAY:
+                drumEngine.SetFMDecay(drumEngine.GetFMDecay() - dx);
+                setEditing(true);
                 break;
-            case MATRIX_MODE_EDIT_OFFSET: {
-                int8_t new_offset = matrixEngine.GetWavelistOffset() - 1;
-                if (new_offset < 0)
-                    new_offset = 0;
-                matrixEngine.SetWavelistOffset(new_offset);
+            case DRUM_MODE_EDIT_FM_SHAPE:
+                drumEngine.SetFMShape(drumEngine.GetFMShape() - dx);
+                setEditing(true);
                 break;
-            }
+            case DRUM_MODE_EDIT_FM_DEPTH:
+                drumEngine.SetFMDepth(drumEngine.GetFMDepth() - dx);
+                setEditing(true);
+                break;
             default:
                 break;
         }
     }
     if(key.getKeyCode() == RIGHT_ENCODER_CW) {
         switch(edit_state_) {
-            case MATRIX_MODE_EDIT_DEFAULT:
-                if(matrixEngine.GetY2() < 15) {
-                    matrixEngine.IncrementY2(1);
-                    matrixEngine.IncrementY1(1);
-                }
+            case DRUM_MODE_EDIT_WAVETABLE:
+                drumEngine.SetWavetable(drumEngine.GetWavetable() + 1);
                 break;
-            case MATRIX_MODE_EDIT_TOPLEFT:
-                matrixEngine.IncrementY1(1);
+            case DRUM_MODE_EDIT_AMP_DECAY:
+                drumEngine.SetAmpDecay(drumEngine.GetAmpDecay() + dx);
+                setEditing(true);
                 break;
-            case MATRIX_MODE_EDIT_BOTTOMRIGHT:
-                matrixEngine.IncrementY2(1);
+            case DRUM_MODE_EDIT_FM_DECAY:
+                drumEngine.SetFMDecay(drumEngine.GetFMDecay() + dx);
+                setEditing(true);
                 break;
-            case MATRIX_MODE_EDIT_OFFSET: {
-                int8_t new_offset = matrixEngine.GetWavelistOffset() + 1;
-                if (new_offset > FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT - 1 - 16)
-                    new_offset = FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT - 1 - 16;
-                matrixEngine.SetWavelistOffset(new_offset);
+            case DRUM_MODE_EDIT_FM_SHAPE:
+                drumEngine.SetFMShape(drumEngine.GetFMShape() + dx);
+                setEditing(true);
                 break;
-            }
+            case DRUM_MODE_EDIT_FM_DEPTH:
+                drumEngine.SetFMDepth(drumEngine.GetFMDepth() + dx);
+                setEditing(true);
+                break;
             default:
                 break;
         }
     }
     if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
-        edit_state_ = edit_state_ == MATRIX_MODE_EDIT_OFFSET ? MATRIX_MODE_EDIT_DEFAULT : MATRIX_MODE_EDIT_OFFSET;
     }
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
-        edit_state_ = edit_state_ == MATRIX_MODE_EDIT_OFFSET ? MATRIX_MODE_EDIT_BOTTOMRIGHT : edit_state_;
-        edit_state_ = (edit_state_ + 1) % (MATRIX_MODE_EDIT_LAST);
     }
     if(key.getKeyCode() == BACK_BUTTON) {
         if(back_menu_)
@@ -138,77 +114,154 @@ void DrumMode::paint(juce::Graphics& g) {
     uint16_t fx = adc.getChannel(2);
     uint16_t morph = adc.getChannel(3);
     
-    /****/
-    // draw grid corners
-    /****/
-    int grid_offset_x = 2;
-    int grid_offset_y = 2;
-    
-    for(int i = 0; i < 16; i++) {
-        for (int j = 0; j < 16; j++) {
-            Display::Put_Pixel(grid_offset_x + i * 4, grid_offset_y + j * 4, true);
-        }
+    int32_t elapsed_time = juce::Time::currentTimeMillis() - timer_;
+    if(is_editing_ && elapsed_time > 1000) {
+        setEditing(false);
     }
-    
-    /****/
-    // draw outline
-    /****/
-    int16_t outline_x1 = matrixEngine.GetX1() * 4;
-    int16_t outline_y1 = matrixEngine.GetY1() * 4;
-    int16_t outline_x2 = matrixEngine.GetX2() * 4 + 4;
-    int16_t outline_y2 = matrixEngine.GetY2() * 4 + 4;
-    int16_t outline_width = outline_x2 - outline_x1 + 1;
-    int16_t outline_height = outline_y2 - outline_y1 + 1;
-    Display::outline_rectangle(outline_x1, outline_y1, outline_width, outline_height);
-
-    /****/
-    // draw 4 corners
-    /****/
-    // top left
-    if(edit_state_ == MATRIX_MODE_EDIT_DEFAULT || edit_state_ == MATRIX_MODE_EDIT_TOPLEFT)
-        Display::outline_rectangle(outline_x1 - 1, outline_y1 - 1, 3, 3);
-    // top right
-    if(edit_state_ == MATRIX_MODE_EDIT_DEFAULT)
-        Display::outline_rectangle(outline_x2 - 1, outline_y1 - 1, 3, 3);
-    // bottom left
-    if(edit_state_ == MATRIX_MODE_EDIT_DEFAULT)
-        Display::outline_rectangle(outline_x1 - 1, outline_y2 - 1, 3, 3);
-    // bottom right
-    if(edit_state_ == MATRIX_MODE_EDIT_DEFAULT || edit_state_ == MATRIX_MODE_EDIT_BOTTOMRIGHT)
-        Display::outline_rectangle(outline_x2 - 1, outline_y2 - 1, 3, 3);
-
-    /****/
-    // draw cursor
-    /****/
-    int16_t cursor_x = 4 * matrixEngine.GetX1() + 4 * (matrixEngine.GetX2() - matrixEngine.GetX1()) * fx * 1.0f / 4095.0f;
-    int16_t cursor_y = 4 * matrixEngine.GetY1() + 4 * (matrixEngine.GetY2() - matrixEngine.GetY1()) * morph * 1.0f / 4095.0f;
-    Display::outline_rectangle(cursor_x + 1, cursor_y + 1, 3, 3);
-    
 
     /****/
     // draw wave
     /****/
-    int x_offset = grid_offset_x + 15 * 4 + 6;
-    Display::outline_rectangle(x_offset, 0, 128 - x_offset, 32);
+    int wave_width = 108;
+    int wave_height = 22;
+    int x_offset = 64 - wave_width / 2;
+    int y_offset = 0;//32 - 10 - wave_height;
+    Display::outline_rectangle(x_offset, y_offset, wave_width, wave_height);
     
-    matrixEngine.FillWaveform(BUF1, tune, fx_amount, fx, morph, false);
-    Display::Draw_Wave(x_offset + 1, 0 + 1, 128 - x_offset - 2, 32 - 2, BUF1);
+    storage.LoadWaveSample(BUF1, drumEngine.GetWavetable(), morph * 1.0f / 4095.0f);
+    Display::Draw_Wave(x_offset + 1, y_offset + 1, wave_width - 2, wave_height - 2, BUF1);
 
     /****/
-    // draw coordinates
+    // draw cursor
     /****/
-    char line[20];
-    memset(line, 0, 20);
+    int x = x_offset + 1 + (wave_width - 2 - 4) * morph * 1.0f / 4095.0f;
+    Display::invert_rectangle(x, y_offset + 1, 4, wave_height - 2);
+
     
-    snprintf(line, 20, "X;%.1f", 1.0 + matrixEngine.GetX1() + (matrixEngine.GetX2() - matrixEngine.GetX1()) * fx * 1.0f / 4095.0f);
-    Display::put_string_5x5(x_offset + 1, 35, strlen(line), line);
+    /****/
+    // draw wave name
+    /****/
+    char * line;
+    if(storage.GetWavetable(drumEngine.GetWavetable()).name[0] == '\0')
+        line = (char*)"--------";
+    else
+        line = storage.GetWavetable(drumEngine.GetWavetable()).name;
+    //    snprintf(line, 20, "", 1.0 + matrixEngine.GetX1() + (matrixEngine.GetX2() - matrixEngine.GetX1()) * fx * 1.0f / 4095.0f);
+    y_offset += wave_height + 2;
+    x_offset = 64 - strlen("WAVETABLE:") * 6 + 6;
+    Display::put_string_5x5(x_offset, y_offset, strlen("WAVETABLE:"), "WAVETABLE:");
+    Display::put_string_5x5(x_offset + strlen("WAVETABLE:") * 6, y_offset, strlen(line), line, edit_state_ == DRUM_MODE_EDIT_WAVETABLE);
 
-    snprintf(line, 20, "Y;%.1f", 1.0 + matrixEngine.GetY1() + (matrixEngine.GetY2() - matrixEngine.GetY1()) * morph * 1.0f / 4095.0f);
-    Display::put_string_5x5(x_offset + 1, 35 + 7, strlen(line), line);
+    /****/
+    // draw squares and circles
+    /****/
+    int shape_width = 18;
+    int gap = (128 - shape_width * 4) / 5;
+    
+    x_offset = gap;
+    y_offset = 32;
+    Display::outline_rectangle(x_offset, y_offset, shape_width, shape_width);
+    Display::LCD_Line(x_offset + 1, y_offset + 1, x_offset + 1 + (shape_width - 2) * drumEngine.GetAmpDecay(), y_offset + 1 + shape_width - 2, true);
+    if(edit_state_ == DRUM_MODE_EDIT_AMP_DECAY)
+        Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);
 
-    strncpy(line, "OFS;  /16", 20);
-    Display::put_string_5x5(x_offset + 1, 35 + 7 + 12, strlen(line), line);
+    x_offset += gap + shape_width;
+    Display::outline_rectangle(x_offset, y_offset, shape_width, shape_width);
+    Display::LCD_Line(x_offset + 1, y_offset + 1, x_offset + 1 + (shape_width - 2) * drumEngine.GetFMDecay(), y_offset + 1 + shape_width - 2, true);
+    if(edit_state_ == DRUM_MODE_EDIT_FM_DECAY)
+        Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);
 
-    snprintf(line, 20, "%*d", 2, matrixEngine.GetWavelistOffset());
-    Display::put_string_5x5(x_offset + 1 + 4 * 6, 35 + 7 + 12, strlen(line), line, edit_state_ == MATRIX_MODE_EDIT_OFFSET);
+    x_offset += gap + shape_width;
+    Display::outline_rectangle(x_offset, y_offset, shape_width, shape_width);
+    
+    // draw curved line.  equation =
+    int last_x = -1;
+    int last_y = -1;
+    for (float i = 0.0f; i < M_PI_2; i += 0.01f) {
+        float phase = static_cast<float>(i) / static_cast<float>(shape_width - 2);
+        float curve = drumEngine.GetFMShape();
+        float x = cos(i);
+        float y = sin(i);
+        
+        x = cos(3 * M_PI_2 - i) + 1;
+        y = sin(3 * M_PI_2 - i) + 1;
+        x = x * (1 - curve) + cos(i) * curve;
+        y = y * (1 - curve) + sin(i) * curve;
+        int ix = x_offset + 1 + x * (shape_width - 2);
+        int iy = (y_offset + 1 + shape_width - 2) - y * (shape_width - 2);
+        if(last_x != ix)
+            Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
+        last_x = ix;
+    }
+//    Display::LCD_Line(x_offset + 1, y_offset + 1, x_offset + 1 + (shape_width - 2) * drumEngine.GetFMDecay(), y_offset + 1 + shape_width - 2, true);
+    if(edit_state_ == DRUM_MODE_EDIT_FM_SHAPE)
+        Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);
+
+    x_offset += gap + shape_width;
+
+    x_offset += shape_width / 2;
+    y_offset += shape_width / 2;
+    int radius = shape_width / 2;
+    float angle = 2 * M_PI * ((1.0f - drumEngine.GetFMDepth()) * 300.0f - 60.0f) / 360.0f;
+
+    if(edit_state_ == DRUM_MODE_EDIT_FM_DEPTH) {
+        Display::LCD_FillCircle(x_offset, y_offset, radius, true);
+        Display::LCD_Line(x_offset, y_offset, radius * cos(angle) + x_offset, y_offset - radius * sin(angle), true, true);
+    } else {
+        Display::LCD_Line(x_offset, y_offset, radius * cos(angle) + x_offset, y_offset - radius * sin(angle), true);
+        Display::LCD_Circle(x_offset, y_offset, radius, true);
+    }
+
+    /****/
+    // draw text
+    /****/
+    x_offset = gap + shape_width / 2;
+    y_offset += shape_width / 2 + 2;
+    
+    if(edit_state_ == DRUM_MODE_EDIT_AMP_DECAY && is_editing_) {
+        char line[20];
+        snprintf(line, 20, "%d", static_cast<int8_t>(drumEngine.GetAmpDecay() * 100.0f));
+        Display::put_string_5x5(x_offset - strlen(line) * 6 / 2, y_offset + 6 / 2 - 1, strlen(line), line);
+    } else {
+        Display::put_string_5x5(x_offset - strlen("AMP") * 6 / 2, y_offset, strlen("AMP"), "AMP");
+        Display::put_string_5x5(x_offset - strlen("DECY") * 6 / 2, y_offset + 6, strlen("DECY"), "DECY");
+    }
+
+    x_offset += gap + shape_width;
+
+    if(edit_state_ == DRUM_MODE_EDIT_FM_DECAY && is_editing_) {
+        char line[20];
+        snprintf(line, 20, "%d", static_cast<int8_t>(drumEngine.GetFMDecay() * 100.0f));
+        Display::put_string_5x5(x_offset - strlen(line) * 6 / 2, y_offset + 6 / 2 - 1, strlen(line), line);
+    } else {
+        Display::put_string_5x5(x_offset - strlen("FM") * 6 / 2, y_offset, strlen("FM"), "FM");
+        Display::put_string_5x5(x_offset - strlen("DECY") * 6 / 2, y_offset + 6, strlen("DECY"), "DECY");
+    }
+
+    // depth -50 to 50
+    // decays 0 to 100
+    // shape -50 to 50
+
+    x_offset += gap + shape_width;
+
+    if(edit_state_ == DRUM_MODE_EDIT_FM_SHAPE && is_editing_) {
+        char line[20];
+        snprintf(line, 20, "%d", static_cast<int8_t>(drumEngine.GetFMShape() * 100.0f - 50.0f));
+        Display::put_string_5x5(x_offset - strlen(line) * 6 / 2, y_offset + 6 / 2 - 1, strlen(line), line);
+    } else {
+        Display::put_string_5x5(x_offset - strlen("FM") * 6 / 2, y_offset, strlen("FM"), "FM");
+        Display::put_string_5x5(x_offset - strlen("SHPE") * 6 / 2, y_offset + 6, strlen("SHPE"), "SHPE");
+    }
+
+    
+    x_offset += gap + shape_width;
+
+    if(edit_state_ == DRUM_MODE_EDIT_FM_DEPTH && is_editing_) {
+        char line[20];
+        snprintf(line, 20, "%d", static_cast<int8_t>(drumEngine.GetFMDepth() * 100.0f - 50.0f));
+        Display::put_string_5x5(x_offset - strlen(line) * 6 / 2, y_offset + 6 / 2 - 1, strlen(line), line);
+    } else {
+        Display::put_string_5x5(x_offset - strlen("FM") * 6 / 2, y_offset, strlen("FM"), "FM");
+        Display::put_string_5x5(x_offset - strlen("DPTH") * 6 / 2, y_offset + 6, strlen("DPTH"), "DPTH");
+    }
 }

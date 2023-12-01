@@ -30,6 +30,12 @@ ABEngine::~ABEngine() {
 
 void ABEngine::Init() {
     phase_ = 0.0f;
+    is_editing_left_ = false;
+    is_editing_right_ = false;
+    left_wavetable_ = 0;
+    left_frame_ = 0;
+    right_wavetable_ = 1;
+    right_frame_ = 5;
 }
 
 float ABEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {

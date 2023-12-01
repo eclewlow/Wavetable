@@ -16,6 +16,7 @@
 
 WavetableEngine::WavetableEngine() {
     phase_ = 0.0f;
+    wavetable_ = 0;
 }
 
 WavetableEngine::~WavetableEngine() {
@@ -24,8 +25,7 @@ WavetableEngine::~WavetableEngine() {
 
 void WavetableEngine::Init() {
     phase_ = 0.0f;
-//    frame00 = (int16_t*)&Wavetable_harmonic_series[0];
-//    frame01 = (int16_t*)&Wavetable_harmonic_series[2048];
+    wavetable_ = 0;
 }
 
 

@@ -16,6 +16,10 @@
 
 DrumEngine::DrumEngine() {
     phase_ = 0.0f;
+    amp_decay_ = 1.0f;
+    fm_decay_ = 1.0f;
+    fm_shape_ = 0.5f;
+    fm_depth_ = 0.5f;
 }
 
 DrumEngine::~DrumEngine() {
@@ -24,8 +28,10 @@ DrumEngine::~DrumEngine() {
 
 void DrumEngine::Init() {
     phase_ = 0.0f;
-//    frame00 = (int16_t*)&Wavetable_harmonic_series[0];
-//    frame01 = (int16_t*)&Wavetable_harmonic_series[2048];
+    amp_decay_ = 1.0f;
+    fm_decay_ = 1.0f;
+    fm_shape_ = 0.5f;
+    fm_depth_ = 0.5f;
 }
 
 

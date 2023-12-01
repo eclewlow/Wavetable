@@ -19,20 +19,26 @@ class DrumMode: public State
 {
 public:
     enum DrumModeEditState {
-        MATRIX_MODE_EDIT_DEFAULT = 0,
-        MATRIX_MODE_EDIT_TOPLEFT = 1,
-        MATRIX_MODE_EDIT_BOTTOMRIGHT = 2,
-        MATRIX_MODE_EDIT_LAST = 3,
-        MATRIX_MODE_EDIT_OFFSET = 4,
+        DRUM_MODE_EDIT_WAVETABLE = 0,
+        DRUM_MODE_EDIT_AMP_DECAY = 1,
+        DRUM_MODE_EDIT_FM_DECAY = 2,
+        DRUM_MODE_EDIT_FM_SHAPE = 3,
+        DRUM_MODE_EDIT_FM_DEPTH = 4,
+        DRUM_MODE_EDIT_LAST = 5,
     };
     DrumMode();
     ~DrumMode();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed);
+    inline void setEditing(bool editing) { is_editing_ = editing; timer_ = juce::Time::currentTimeMillis(); }
 
 private:
-    uint8_t edit_state_;
-    bool editing_offset_;
+    // depth -50 to 50
+    // decays 0 to 100
+    // shape -50 to 50
+    int32_t timer_;
+    bool is_editing_;
+    int8_t edit_state_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DrumMode);
 };

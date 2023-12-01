@@ -61,12 +61,13 @@ public:
     //==============================================================================
     static void paint(juce::Graphics& g);
     static void clear_screen();
-    static void Put_Pixel(uint8_t x, uint8_t y, uint8_t set);
+    static void Put_Pixel(uint8_t x, uint8_t y, uint8_t set, bool toggle=false);
     static void Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, bool shade=false);
     static void LCD_Circle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set);
+    static void LCD_FillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t set);
     static void LCD_Line(int16_t x0, int16_t y0,
                          int16_t x1, int16_t y1,
-                         uint8_t set);
+                         uint8_t set, bool toggle=false);
     static void LCD_DottedLine(uint8_t x0, uint8_t y0,
                   uint8_t x1, uint8_t y1, int16_t dash_width, int16_t gap_width,
                          uint8_t set);
