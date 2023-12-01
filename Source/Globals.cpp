@@ -32,10 +32,12 @@ LoadWaveMenu loadWaveMenu;
 SaveWaveMenu saveWaveMenu;
 Popup popup;
 MatrixMode matrixMode;
+DrumMode drumMode;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
 MatrixEngine matrixEngine;
+DrumEngine drumEngine;
 Suboscillator suboscillator;
 
 EffectManager effect_manager;

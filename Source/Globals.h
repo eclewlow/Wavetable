@@ -90,10 +90,12 @@
 #include "SaveWaveMenu.h"
 #include "Popup.h"
 #include "MatrixMode.h"
+#include "DrumMode.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
 #include "matrix_engine.h"
+#include "drum_engine.h"
 #include "suboscillator.h"
 
 #include "effect_manager.h"
@@ -134,10 +136,12 @@ extern LoadWaveMenu loadWaveMenu;
 extern SaveWaveMenu saveWaveMenu;
 extern Popup popup;
 extern MatrixMode matrixMode;
+extern DrumMode drumMode;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;
 extern MatrixEngine matrixEngine;
+extern DrumEngine drumEngine;
 extern Suboscillator suboscillator;
 
 extern EffectManager effect_manager;

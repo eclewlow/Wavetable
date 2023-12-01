@@ -79,7 +79,9 @@
 		CE5348C9DB3101F1AD9CA49B /* include_juce_audio_processors.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF8CB2CA8E5A2A8FF2EA5E20 /* include_juce_audio_processors.mm */; };
 		CE94AF97C5E38153BBCEEF63 /* include_juce_audio_utils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F0FBA0DF3BFDFE77B9A79E6A /* include_juce_audio_utils.mm */; };
 		D24D39F83CDAAC7C76EE6F3E /* include_juce_dsp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2FDA177E56012EC2E2EF5683 /* include_juce_dsp.mm */; };
+		D4C455B5073622A6E24D0B21 /* drum_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C8F5A7F2AB65304285E57C5 /* drum_engine.cpp */; };
 		DC8BE130BCC62F9309307FD2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E495D2C0D5DB7155F14B887B /* AudioToolbox.framework */; };
+		E0868F0DC538271559B5F20D /* DrumMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71844743D625B25DF4404711 /* DrumMode.cpp */; };
 		EABDA97D4B9A73AD50082C0A /* ABModeMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64B7596D01EC465D5C6D0862 /* ABModeMenu.cpp */; };
 		EB9E91DAB05E97D2ABE0BBF4 /* Display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8D20F6D44136657534CF0296 /* Display.cpp */; };
 		ECAB79706E640B6C5DB83377 /* QuantizerMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E31C5A593CB6FFEA92CFB0D /* QuantizerMenu.cpp */; };
@@ -98,6 +100,7 @@
 		08EC7844D92421954A180EB9 /* DisplayConfigurationMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DisplayConfigurationMenu.h; path = ../../Source/DisplayConfigurationMenu.h; sourceTree = SOURCE_ROOT; };
 		0C05C0A91C09A8D8EF4A7311 /* UserSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserSettings.h; path = ../../Source/UserSettings.h; sourceTree = SOURCE_ROOT; };
 		0C8BE7C5CA59336E7CB20AEC /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
+		0C8F5A7F2AB65304285E57C5 /* drum_engine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = drum_engine.cpp; path = ../../Source/drum_engine.cpp; sourceTree = SOURCE_ROOT; };
 		0ECF70E66936958C7FEB92A6 /* fnt08x08.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fnt08x08.h; path = ../../Source/fnt08x08.h; sourceTree = SOURCE_ROOT; };
 		0F91364E2F2E41B8EC998D57 /* DeviceConfigurationMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DeviceConfigurationMenu.cpp; path = ../../Source/DeviceConfigurationMenu.cpp; sourceTree = SOURCE_ROOT; };
 		11EC50BD718D00E1DB8248C5 /* include_juce_audio_processors_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_ara.cpp; sourceTree = SOURCE_ROOT; };
@@ -156,8 +159,10 @@
 		69AC52CFF092D999CF2E8E51 /* MatrixMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixMode.cpp; path = ../../Source/MatrixMode.cpp; sourceTree = SOURCE_ROOT; };
 		6CFA3318364F90FDB25938EB /* bypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bypass.h; path = ../../Source/bypass.h; sourceTree = SOURCE_ROOT; };
 		6E057E4CE79F8CCD260EB5EF /* 4x_downsampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = 4x_downsampler.h; path = ../../Source/4x_downsampler.h; sourceTree = SOURCE_ROOT; };
+		6F6EB9D1267E013491916749 /* DrumMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DrumMode.h; path = ../../Source/DrumMode.h; sourceTree = SOURCE_ROOT; };
 		709BB3D49CF795A1A0ED5467 /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_graphics"; sourceTree = "<absolute>"; };
 		7133D639779721AC692BD739 /* bypass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = bypass.cpp; path = ../../Source/bypass.cpp; sourceTree = SOURCE_ROOT; };
+		71844743D625B25DF4404711 /* DrumMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DrumMode.cpp; path = ../../Source/DrumMode.cpp; sourceTree = SOURCE_ROOT; };
 		77B047EA20230B6249D619DB /* fnt03x05.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fnt03x05.cpp; path = ../../Source/fnt03x05.cpp; sourceTree = SOURCE_ROOT; };
 		77E4BACEE6408E6EE0C66568 /* matrix_engine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_engine.cpp; path = ../../Source/matrix_engine.cpp; sourceTree = SOURCE_ROOT; };
 		7C06D4B69B431FB84B7CC3A7 /* fnt09x09.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fnt09x09.cpp; path = ../../Source/fnt09x09.cpp; sourceTree = SOURCE_ROOT; };
@@ -231,6 +236,7 @@
 		EB6567049F3D4AD5848AED6D /* ABModeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ABModeMenu.h; path = ../../Source/ABModeMenu.h; sourceTree = SOURCE_ROOT; };
 		ED2D1C0CC5349F48DDCB58EC /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_gui_extra"; sourceTree = "<absolute>"; };
 		EED6C95E1A6E6695470DBD63 /* effect_manager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = effect_manager.cpp; path = ../../Source/effect_manager.cpp; sourceTree = SOURCE_ROOT; };
+		F0172CF7235EA2329D1FA5CF /* drum_engine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = drum_engine.h; path = ../../Source/drum_engine.h; sourceTree = SOURCE_ROOT; };
 		F0FBA0DF3BFDFE77B9A79E6A /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		F16B6981CEBD543A1BF8E84E /* adc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = adc.cpp; path = ../../Source/adc.cpp; sourceTree = SOURCE_ROOT; };
 		F20EBE7C6BB0264FBEFDF1FD /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -273,6 +279,8 @@
 				95EDE64C53C6D810BEB06387 /* fx */,
 				33669F2C9724FCA52F29F346 /* ab_engine.cpp */,
 				26B31D2DFAA0292FE58C49D7 /* ab_engine.h */,
+				0C8F5A7F2AB65304285E57C5 /* drum_engine.cpp */,
+				F0172CF7235EA2329D1FA5CF /* drum_engine.h */,
 				A4E201877E5B8459FB5B7C1A /* Engine.cpp */,
 				DE0FBDC13BC88A0B2ACED1B6 /* Engine.h */,
 				77E4BACEE6408E6EE0C66568 /* matrix_engine.cpp */,
@@ -488,6 +496,8 @@
 				956243BE1926D2FD3FC43CB9 /* DeviceConfigurationMenu.h */,
 				128DA8FC99F3ED5D7D3CE464 /* DisplayConfigurationMenu.cpp */,
 				08EC7844D92421954A180EB9 /* DisplayConfigurationMenu.h */,
+				71844743D625B25DF4404711 /* DrumMode.cpp */,
+				6F6EB9D1267E013491916749 /* DrumMode.h */,
 				F685921BA9640C9F6390675B /* EnterNameMenu.cpp */,
 				97931E53633F9182E5B2D0DF /* EnterNameMenu.h */,
 				083EF92DEF8A60E20AFCD44B /* FxMenu.cpp */,
@@ -616,6 +626,7 @@
 				64BFB44ED7CAB1ACB89DD457 /* UserSettings.cpp in Sources */,
 				6EC37FB8C3B8DE65E38E342B /* adc.cpp in Sources */,
 				386626AC9E6E002BB1CA3272 /* encoder.cpp in Sources */,
+				D4C455B5073622A6E24D0B21 /* drum_engine.cpp in Sources */,
 				57F9FC79C70C0ED5F496A23A /* fft.cpp in Sources */,
 				2A7BED8ADB9AF2308957DD34 /* bitcrush.cpp in Sources */,
 				60C3B23D7688856441FE746D /* bypass.cpp in Sources */,
@@ -638,6 +649,7 @@
 				3BE349A9365C051A85F6073C /* ControlStatusMenu.cpp in Sources */,
 				9ABFFD50339F889D775BC48C /* DeviceConfigurationMenu.cpp in Sources */,
 				5CB22F6F892450B5749D4875 /* DisplayConfigurationMenu.cpp in Sources */,
+				E0868F0DC538271559B5F20D /* DrumMode.cpp in Sources */,
 				C1D0088030686A415CE79E7E /* EnterNameMenu.cpp in Sources */,
 				651623F52A710514C4F385B5 /* FxMenu.cpp in Sources */,
 				39DA99B217BA0F309199EF91 /* InfoMenu.cpp in Sources */,

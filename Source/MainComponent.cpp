@@ -31,9 +31,10 @@ MainComponent::MainComponent()
     abEngine.Init();
     wavetableEngine.Init();
     matrixEngine.Init();
+    drumEngine.Init();
 
-    context.setState(&matrixMode);
-    context.setEngine(&matrixEngine);
+    context.setState(&drumMode);
+    context.setEngine(&drumEngine);
 
     effect_manager.Init();
     effect_manager.setEffect(&fm);

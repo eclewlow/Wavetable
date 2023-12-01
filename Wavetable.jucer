@@ -18,6 +18,8 @@
         <FILE id="V0KABH" name="encoder.h" compile="0" resource="0" file="Source/encoder.h"/>
       </GROUP>
       <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="dsp">
+        <FILE id="KUDrOJ" name="drum_engine.cpp" compile="1" resource="0" file="Source/drum_engine.cpp"/>
+        <FILE id="aO9fnS" name="drum_engine.h" compile="0" resource="0" file="Source/drum_engine.h"/>
         <GROUP id="{A7B8A86C-7CEC-2EA9-58F0-0BEB21A1FF0B}" name="fft">
           <FILE id="lv0A5f" name="fft.cpp" compile="1" resource="0" file="Source/fft.cpp"/>
           <FILE id="iTewL7" name="fft.h" compile="0" resource="0" file="Source/fft.h"/>
@@ -92,6 +94,8 @@
               file="Source/DisplayConfigurationMenu.cpp"/>
         <FILE id="LZZHpP" name="DisplayConfigurationMenu.h" compile="0" resource="0"
               file="Source/DisplayConfigurationMenu.h"/>
+        <FILE id="I2NPOW" name="DrumMode.cpp" compile="1" resource="0" file="Source/DrumMode.cpp"/>
+        <FILE id="my8bps" name="DrumMode.h" compile="0" resource="0" file="Source/DrumMode.h"/>
         <FILE id="b7UxxJ" name="EnterNameMenu.cpp" compile="1" resource="0"
               file="Source/EnterNameMenu.cpp"/>
         <FILE id="fgmmi4" name="EnterNameMenu.h" compile="0" resource="0" file="Source/EnterNameMenu.h"/>
