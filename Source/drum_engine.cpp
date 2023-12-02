@@ -71,7 +71,7 @@ void DrumEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amo
     float phaseIncrement = frequency / 48000.0f;
     
     float temp_phase = 0.0f;
-    
+            
     if(withFx)
         effect_manager.getEffect()->Sync_phases();
 
@@ -88,6 +88,8 @@ void DrumEngine::FillWaveform(int16_t * waveform, uint16_t tune, uint16_t fx_amo
         if(withFx)
             sample = effect_manager.RenderSampleEffect(sample, temp_phase, frequency, fx_amount, fx, true);
         
+        sample = (1 - amp_decay_trigger_) * sample;
+
         temp_phase += phaseIncrement;
         
         if(temp_phase >= 1.0f)
@@ -135,11 +137,15 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         float x;
         float y;
         
-        x = cos(3 * M_PI_2 - (1 - fm_decay_trigger_) * M_PI_2) + 1;
-        y = sin(3 * M_PI_2 - (1 - fm_decay_trigger_) * M_PI_2) + 1;
-        x = x * (1 - curve) + cos((1 - fm_decay_trigger_) * M_PI_2) * curve;
-        y = y * (1 - curve) + sin((1 - fm_decay_trigger_) * M_PI_2) * curve;
+        x = fm_decay_trigger_;
 
+        if(curve > 0.5)
+           y = (1 - x) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
+        else if(curve == 0.5)
+            y = (1 - x);
+        else
+            y = (1 - x) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
+        
         
         float note = (120.0f * tune_interpolator.Next()) / 4095.0;
         note += 12 * y * (fm_depth_ * 2.0f - 1.0f);

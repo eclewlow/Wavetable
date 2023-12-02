@@ -176,24 +176,25 @@ void DrumMode::paint(juce::Graphics& g) {
     
     // draw curved line.  equation =
     int last_x = -1;
-    int last_y = -1;
-    for (float i = 0.0f; i < M_PI_2; i += 0.01f) {
-        float phase = static_cast<float>(i) / static_cast<float>(shape_width - 2);
+    for (float i = 0.0f; i < 1.0; i += 0.01f) {
         float curve = drumEngine.GetFMShape();
-        float x = cos(i);
-        float y = sin(i);
+        float x = i;
+        float y;
+
+        if(curve > 0.5)
+           y = (1 - i) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
+        else if(curve == 0.5)
+            y = (1 - i);
+        else
+            y = (1 - i) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
         
-        x = cos(3 * M_PI_2 - i) + 1;
-        y = sin(3 * M_PI_2 - i) + 1;
-        x = x * (1 - curve) + cos(i) * curve;
-        y = y * (1 - curve) + sin(i) * curve;
         int ix = x_offset + 1 + x * (shape_width - 2);
-        int iy = (y_offset + 1 + shape_width - 2) - y * (shape_width - 2);
+        
         if(last_x != ix)
             Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
         last_x = ix;
     }
-//    Display::LCD_Line(x_offset + 1, y_offset + 1, x_offset + 1 + (shape_width - 2) * drumEngine.GetFMDecay(), y_offset + 1 + shape_width - 2, true);
+
     if(edit_state_ == DRUM_MODE_EDIT_FM_SHAPE)
         Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);
 
