@@ -19,10 +19,11 @@ class IOConfigurationMenu: public State
 {
 public:
     enum IOConfigurationMenuInput {
-        IO_CONFIG_PITCH = 0,
+        IO_CONFIG_PITCH     = 0,
         IO_CONFIG_FX_AMOUNT = 1,
-        IO_CONFIG_FX = 2,
-        IO_CONFIG_MORPH = 3,
+        IO_CONFIG_FX        = 2,
+        IO_CONFIG_MORPH     = 3,
+        IO_CONFIG_LAST      = 4,
     };
     enum IOConfigurationMenuState {
         IO_CONFIG_MENU_INPUT = 0,

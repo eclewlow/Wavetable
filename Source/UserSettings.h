@@ -41,6 +41,7 @@ public:
         IO_CONFIG_GAIN_2V5  = 1,
         IO_CONFIG_GAIN_5V   = 2,
         IO_CONFIG_GAIN_10V  = 3,
+        IO_CONFIG_GAIN_LAST = 4,
     };
 
     inline void setBrightness(int8_t brightness) { brightness_ = std::clamp<int8_t>(brightness, 0, 100); }

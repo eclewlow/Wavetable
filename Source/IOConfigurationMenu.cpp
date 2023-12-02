@@ -38,10 +38,11 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
     else if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case IO_CONFIG_MENU_INPUT: {
-                input_ = std::clamp<int8_t>(input_ - 1, IO_CONFIG_PITCH, IO_CONFIG_MORPH);
+                input_ = (input_ + IO_CONFIG_LAST - 1) % IO_CONFIG_LAST;
                 break;
             }
             case IO_CONFIG_MENU_GAIN: {
+                user_settings.setIOGain(input_, (user_settings.getIOGain(input_) + UserSettings::IO_CONFIG_GAIN_LAST - 1) % UserSettings::SUBOSC_WAVE_LAST);
                 break;
             }
             case IO_CONFIG_MENU_BIAS: {
@@ -52,6 +53,21 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     else if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        switch(state_) {
+            case IO_CONFIG_MENU_INPUT: {
+                input_ = (input_ + 1) % IO_CONFIG_LAST;
+                break;
+            }
+            case IO_CONFIG_MENU_GAIN: {
+                user_settings.setIOGain(input_, (user_settings.getIOGain(input_) + 1) % UserSettings::IO_CONFIG_GAIN_LAST);
+                break;
+            }
+            case IO_CONFIG_MENU_BIAS: {
+                break;
+            }
+            default:
+                break;
+        }
     }
     else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
     }
@@ -105,7 +121,7 @@ void IOConfigurationMenu::paint(juce::Graphics& g) {
         default:
             break;
     }
-    Display::put_string_5x5(x_offset + strlen("GAIN:") * 6, y_offset, strlen(line), line, state_ == IO_CONFIG_MENU_GAIN);
+    Display::put_string_5x5(x_offset + strlen("GAIN:") * 6 + 6, y_offset, strlen(line), line, state_ == IO_CONFIG_MENU_GAIN);
 
     
     y_offset += 7;
