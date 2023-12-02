@@ -32,7 +32,7 @@ bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
 //    DRUM_MODE_EDIT_FM_DECAY = 2,
 //    DRUM_MODE_EDIT_FM_SHAPE = 3,
 //    DRUM_MODE_EDIT_FM_DEPTH = 4,
-    float dx = 0.1f;
+    float dx = 0.01f;
 
     if(key.getKeyCode() == LEFT_ENCODER_CCW) {
         edit_state_ = std::clamp<int8_t>(edit_state_ - 1, DRUM_MODE_EDIT_WAVETABLE, DRUM_MODE_EDIT_FM_DEPTH);
@@ -174,19 +174,28 @@ void DrumMode::paint(juce::Graphics& g) {
     x_offset += gap + shape_width;
     Display::outline_rectangle(x_offset, y_offset, shape_width, shape_width);
     
-    // draw curved line.  equation =
     int last_x = -1;
     for (float i = 0.0f; i < 1.0; i += 0.01f) {
         float curve = drumEngine.GetFMShape();
         float x = i;
         float y;
+        
+        float r;
+        if(curve > 0.5) {
+            r = (1.0f - curve) * 10.0f + 1.0f;
+        } else {
+            r = (curve) * 10.0f + 1.0f;
+        }
+        
+        float angle = acos(1.0f - 2.0f / (2.0f * r * r));
+        float new_angle = angle + (M_PI_2 - angle) / 2.0f;
+        float p = r * sin(new_angle) - 1.0f;
+        float q = r * cos(new_angle);
 
         if(curve > 0.5)
-           y = (1 - i) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
-        else if(curve == 0.5)
-            y = (1 - i);
+            y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
         else
-            y = (1 - i) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
+            y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
         
         int ix = x_offset + 1 + x * (shape_width - 2);
         
@@ -194,6 +203,25 @@ void DrumMode::paint(juce::Graphics& g) {
             Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
         last_x = ix;
     }
+//    int last_x = -1;
+//    for (float i = 0.0f; i < 1.0; i += 0.01f) {
+//        float curve = drumEngine.GetFMShape();
+//        float x = i;
+//        float y;
+//
+//        if(curve > 0.5)
+//           y = (1 - i) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
+//        else if(curve == 0.5)
+//            y = (1 - i);
+//        else
+//            y = (1 - i) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
+//        
+//        int ix = x_offset + 1 + x * (shape_width - 2);
+//        
+//        if(last_x != ix)
+//            Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
+//        last_x = ix;
+//    }
 
     if(edit_state_ == DRUM_MODE_EDIT_FM_SHAPE)
         Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);

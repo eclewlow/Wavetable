@@ -139,12 +139,29 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         
         x = fm_decay_trigger_;
 
+        float r;
+        if(curve > 0.5) {
+            r = (1.0f - curve) * 10.0f + 1.0f;
+        } else {
+            r = (curve) * 10.0f + 1.0f;
+        }
+        
+        float angle = acos(1.0f - 2.0f / (2.0f * r * r));
+        float new_angle = angle + (M_PI_2 - angle) / 2.0f;
+        float p = r * sin(new_angle) - 1.0f;
+        float q = r * cos(new_angle);
+
         if(curve > 0.5)
-           y = (1 - x) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
-        else if(curve == 0.5)
-            y = (1 - x);
+            y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
         else
-            y = (1 - x) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
+            y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
+
+//        if(curve > 0.5)
+//           y = (1 - x) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
+//        else if(curve == 0.5)
+//            y = (1 - x);
+//        else
+//            y = (1 - x) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
         
         
         float note = (120.0f * tune_interpolator.Next()) / 4095.0;
