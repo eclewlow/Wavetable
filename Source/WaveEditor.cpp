@@ -299,7 +299,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             }
         }
         if(key.getKeyCode() == BACK_BUTTON) {
-            switch(selection_) {
+            switch(mode_) {
                 case WAVE_EDITOR_SELECTION_SPECTRAL:
                     state_ = WAVE_EDITOR_STATE_SPECTRAL;
                     break;
@@ -539,9 +539,11 @@ void WaveEditor::CalculateFFT() {
     }
     FFT::fft(wavedata, 2048, spectral_phasors_);
     for(int i = 0; i < 32; i++) {
-        printf("spectral gain %i, %f\n", i, std::min(FFT::complexMagnitude(spectral_phasors_[i+1]), 2048.0f) / 2048.0f);
         spectral_gain_[i] = std::min(FFT::complexMagnitude(spectral_phasors_[i+1]), 2048.0f) / 2048.0f;
-        spectral_angles_[i] = atan2(spectral_phasors_[i + 1].real, spectral_phasors_[i + 1].imag);
+        if(spectral_phasors_[i + 1].imag == 0.0f)
+            spectral_angles_[i] = M_PI;
+        else
+            spectral_angles_[i] = atan2(spectral_phasors_[i + 1].real, spectral_phasors_[i + 1].imag);
         spectral_angles_[64 - (i+1)] = atan2(spectral_phasors_[2048 - (i + 1)].real, spectral_phasors_[2048 - (i + 1)].imag);
     }
 
