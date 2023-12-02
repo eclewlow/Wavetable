@@ -20,6 +20,8 @@ DrumEngine::DrumEngine() {
     fm_decay_ = 1.0f;
     fm_shape_ = 0.5f;
     fm_depth_ = 0.5f;
+    amp_decay_trigger_ = 1.0f;
+    fm_decay_trigger_ = 1.0f;
 }
 
 DrumEngine::~DrumEngine() {
@@ -32,6 +34,8 @@ void DrumEngine::Init() {
     fm_decay_ = 1.0f;
     fm_shape_ = 0.5f;
     fm_depth_ = 0.5f;
+    amp_decay_trigger_ = 1.0f;
+    fm_decay_trigger_ = 1.0f;
 }
 
 

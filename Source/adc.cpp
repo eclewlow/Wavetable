@@ -13,8 +13,8 @@
 #include "Globals.h"
 
 Adc::Adc() {
-    memset(values_, 0, 8*2);
-    values_[0] = 2354;
+    memset(values_, 0, 8 * 2);
+    values_[ADC_CHANNEL_PITCH_POT] = 2354;
 }
 
 bool Adc::handleKeyPress() {
