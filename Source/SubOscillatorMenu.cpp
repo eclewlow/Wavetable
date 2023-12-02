@@ -45,18 +45,7 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 user_settings.setSubOscMix(user_settings.getSubOscMix()-1);
                 break;
             case SUB_OSC_MENU_WAVE:
-                if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SINE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_COPY);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_TRIANGLE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SINE);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SAWTOOTH)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_TRIANGLE);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_RAMP)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SAWTOOTH);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SQUARE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_RAMP);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_COPY)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SQUARE);
+                user_settings.setSubOscWave((user_settings.getSubOscWave() + UserSettings::SUBOSC_WAVE_LAST - 1) % UserSettings::SUBOSC_WAVE_LAST);
                 break;
             default:
                 break;
@@ -74,18 +63,7 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 user_settings.setSubOscMix(user_settings.getSubOscMix()+1);
                 break;
             case SUB_OSC_MENU_WAVE:
-                if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SINE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_TRIANGLE);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_TRIANGLE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SAWTOOTH);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SAWTOOTH)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_RAMP);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_RAMP)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SQUARE);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_SQUARE)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_COPY);
-                else if(user_settings.getSubOscWave()==UserSettings::SUBOSC_WAVE_COPY)
-                    user_settings.setSubOscWave(UserSettings::SUBOSC_WAVE_SINE);
+                user_settings.setSubOscWave((user_settings.getSubOscWave() + 1) % UserSettings::SUBOSC_WAVE_LAST);
                 break;
             default:
                 break;

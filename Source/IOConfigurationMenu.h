@@ -29,6 +29,7 @@ public:
         IO_CONFIG_MENU_GAIN = 1,
         IO_CONFIG_MENU_BIAS = 2,
     };
+
     IOConfigurationMenu();
     ~IOConfigurationMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
