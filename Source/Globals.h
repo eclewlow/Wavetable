@@ -70,6 +70,8 @@
 #define MORPH_POT_CCW           KEYCODE_J
 #define MORPH_POT_CW            KEYCODE_K
 
+#define FX_AMOUNT_CV_TRIGGER    KEYCODE_U
+
 #define BACK_BUTTON             KEYCODE_ESCAPE
 
 #include "MainMenu.h"

@@ -114,19 +114,44 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
     //    float interpolatedFloat = interpolated16 / 32768.0f;
     float tuneTarget = static_cast<float>(tune);
     
+    uint16_t fx_amount_cv = adc.getChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV);
+    
+    if(fx_amount_cv > 2048) {
+        if(amp_decay_trigger_ >= 1.0f && fm_decay_trigger_ >= 1.0f) {
+            amp_decay_trigger_ = 0.0f;
+            fm_decay_trigger_ = 0.0f;
+        }
+    }
+    
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);
     
     while (size--) {
+        float amp_decay_trigger_increment = (1.0f / (6.0f * (amp_decay_ + 0.001f))) / 48000.0f;
+        float fm_decay_trigger_increment = (1.0f / (6.0f * (fm_decay_ + 0.001f))) / 48000.0f;
+
+        float curve = fm_shape_;
+        float x;
+        float y;
+        
+        x = cos(3 * M_PI_2 - (1 - fm_decay_trigger_) * M_PI_2) + 1;
+        y = sin(3 * M_PI_2 - (1 - fm_decay_trigger_) * M_PI_2) + 1;
+        x = x * (1 - curve) + cos((1 - fm_decay_trigger_) * M_PI_2) * curve;
+        y = y * (1 - curve) + sin((1 - fm_decay_trigger_) * M_PI_2) * curve;
+
+        
         float note = (120.0f * tune_interpolator.Next()) / 4095.0;
+        note += 12 * y * (fm_depth_ * 2.0f - 1.0f);
         note = clamp(note, 0.0f, 120.0f);
 
         note = note - 24.0f;
         float a = 440; //frequency of A (coomon value is 440Hz)
         float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
+        
         float phaseIncrement = frequency / 48000.0f;
         
+
         float interpolated_morph = morph_interpolator.Next();
         interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
         
@@ -135,6 +160,18 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
             
             sample = effect_manager.RenderSampleEffect(sample, phase_, frequency, fx_amount, fx, false, true);
             
+            sample = (1 - amp_decay_trigger_) * sample;
+            
+            amp_decay_trigger_ += amp_decay_trigger_increment;
+            
+            if(amp_decay_trigger_ >= 1.0f)
+                amp_decay_trigger_ = 1.0f;
+
+            fm_decay_trigger_ += fm_decay_trigger_increment;
+            
+            if(fm_decay_trigger_ >= 1.0f)
+                fm_decay_trigger_ = 1.0f;
+
             phase_ += phaseIncrement;
             
             if(phase_ >= 1.0f)

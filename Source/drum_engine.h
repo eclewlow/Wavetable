@@ -51,6 +51,8 @@ private:
     // depth -50 to 50
     // decays 0 to 100
     // shape -50 to 50
+    float amp_decay_trigger_;
+    float fm_decay_trigger_;
     float amp_decay_;
     float fm_decay_;
     float fm_shape_;
