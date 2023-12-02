@@ -33,6 +33,7 @@ SaveWaveMenu saveWaveMenu;
 Popup popup;
 MatrixMode matrixMode;
 DrumMode drumMode;
+IOConfigurationMenu ioConfigurationMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

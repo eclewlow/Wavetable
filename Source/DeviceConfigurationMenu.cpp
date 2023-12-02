@@ -35,7 +35,6 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
         currentState = std::clamp<int8_t>(currentState + 1, DEVICE_INFO, DEVICE_MEMORY);
     }
 
-    //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
     if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case DEVICE_INFO:
@@ -46,16 +45,13 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case DEVICE_OSCILLOSCOPE:
                 context.setState(&oscilloscopeConfigurationMenu);
-//                setState(DEVICE_IO);
                 break;
             case DEVICE_IO:
-//                setState(DEVICE_CALIBRATION);
+                context.setState(&ioConfigurationMenu);
                 break;
             case DEVICE_CALIBRATION:
-//                setState(DEVICE_QUANTIZER);
                 break;
             case DEVICE_QUANTIZER:
-//                setState(DEVICE_MEMORY);
                 break;
             case DEVICE_MEMORY:
                 break;

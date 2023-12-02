@@ -93,6 +93,7 @@
 #include "Popup.h"
 #include "MatrixMode.h"
 #include "DrumMode.h"
+#include "IOConfigurationMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -139,6 +140,7 @@ extern SaveWaveMenu saveWaveMenu;
 extern Popup popup;
 extern MatrixMode matrixMode;
 extern DrumMode drumMode;
+extern IOConfigurationMenu ioConfigurationMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;

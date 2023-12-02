@@ -33,11 +33,11 @@ MainComponent::MainComponent()
     matrixEngine.Init();
     drumEngine.Init();
 
-    context.setState(&drumMode);
-    context.setEngine(&drumEngine);
+    context.setState(&ioConfigurationMenu);
+    context.setEngine(&abEngine);
 
     effect_manager.Init();
-    effect_manager.setEffect(&fm);
+    effect_manager.setEffect(&bypass);
 //    fx_engine.Init();
     
     startTimer(16); // 60 / second.  1000/60
