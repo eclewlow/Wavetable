@@ -76,7 +76,7 @@ public:
     inline void setIOGain(int8_t channel, float gain) { io_gain_[channel] = std::clamp<float>(gain, 0.1, 10.0); }
     inline float getIOGain(int8_t channel) { return io_gain_[channel]; }
 
-    inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = std::clamp<float>(bias, -10.0, 10.0); }
+    inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = std::clamp<float>(bias, -1.0, 1.0); }
     inline float getIOBias(int8_t channel) { return io_bias_[channel]; }
 
 private:

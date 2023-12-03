@@ -46,7 +46,7 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             }
             case IO_CONFIG_MENU_BIAS: {
-                user_settings.setIOBias(input_, user_settings.getIOBias(input_) - 1.0f);
+                user_settings.setIOBias(input_, user_settings.getIOBias(input_) - 0.1f);
                 break;
             }
             default:
@@ -64,7 +64,7 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             }
             case IO_CONFIG_MENU_BIAS: {
-                user_settings.setIOBias(input_, user_settings.getIOBias(input_) + 1.0f);
+                user_settings.setIOBias(input_, user_settings.getIOBias(input_) + 0.1f);
                 break;
             }
             default:
@@ -158,20 +158,7 @@ void IOConfigurationMenu::UpdateWaveform() {
     for(int i = 0; i < 49; i++) {
         wavedata_[i] = wavedata_[i+1];
     }
-    switch(input_) {
-        case IO_CONFIG_PITCH:
-            wavedata_[49] = adc.getChannel(Adc::ADC_CHANNEL_PITCH_CV);
-            break;
-        case IO_CONFIG_FX_AMOUNT:
-            wavedata_[49] = adc.getChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV);
-            break;
-        case IO_CONFIG_FX:
-            wavedata_[49] = adc.getChannel(Adc::ADC_CHANNEL_FX_CV);
-            break;
-        case IO_CONFIG_MORPH:
-            wavedata_[49] = adc.getChannel(Adc::ADC_CHANNEL_MORPH_CV);
-            break;
-        default:
-            break;
-    }
+    uint16_t channel;
+    channel = adc.getChannelProcessed(input_ + 4);
+    wavedata_[49] = channel;
 }

@@ -120,7 +120,7 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
     }
 }
 
-void Display::Draw_NWave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, int16_t n) {
+void Display::Draw_NWave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint16_t* waveform_data, int16_t n) {
     uint8_t last_x = 0;
     uint8_t last_y = 0;
     for(int i = 0; i < width; i++) {

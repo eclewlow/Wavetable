@@ -42,6 +42,6 @@ public:
 private:
     int8_t input_;
     int8_t state_;
-    int16_t wavedata_[50];
+    uint16_t wavedata_[50];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IOConfigurationMenu);
 };
