@@ -23,7 +23,11 @@ UserSettings::UserSettings() {
     suboscWave_ = SUBOSC_WAVE_SINE;
     app_start_time_ = juce::Time::currentTimeMillis();
     
-    memset(io_gain_, 0, 4);
+    memset(io_gain_, 0, 4 * 4);
+    io_gain_ [0] = 1.0f;
+    io_gain_ [1] = 1.0f;
+    io_gain_ [2] = 1.0f;
+    io_gain_ [3] = 1.0f;
     memset(io_bias_, 0, 4 * 4);
 }
 UserSettings::~UserSettings() {}

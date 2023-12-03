@@ -120,6 +120,28 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
     }
 }
 
+void Display::Draw_NWave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int16_t* waveform_data, int16_t n) {
+    uint8_t last_x = 0;
+    uint8_t last_y = 0;
+    for(int i = 0; i < width; i++) {
+        
+        float sample = std::clamp<float>(2047 - waveform_data[i], -2048.0f, 2047.0f);
+        
+        int col = i + x;
+        
+        int center = y + height / 2;
+        int row = center + static_cast<int>((sample / 2048.0f) * (height / 2) - (sample < 0 ? 1:0));
+        if(i == 0) {
+            if(row < 64 && col < 128)
+                Display::framebuffer[row>>3][col]|=(0x01 << (row&0x07));
+        } else {
+            Display::LCD_Line(last_x, last_y, i + x, row, true);
+        }
+        last_x = i + x;
+        last_y = row;
+    }
+}
+
 void Display::LCD_Line(int16_t x0, int16_t y0,
                        int16_t x1, int16_t y1,
                        uint8_t set, bool toggle) {

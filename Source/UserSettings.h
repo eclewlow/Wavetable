@@ -73,10 +73,10 @@ public:
     
     inline int32_t getAppStartTime() { return app_start_time_; }
 
-    inline void setIOGain(int8_t channel, int8_t gain) { io_gain_[channel] = gain; }
-    inline int8_t getIOGain(int8_t channel) { return io_gain_[channel]; }
+    inline void setIOGain(int8_t channel, float gain) { io_gain_[channel] = std::clamp<float>(gain, 0.1, 10.0); }
+    inline float getIOGain(int8_t channel) { return io_gain_[channel]; }
 
-    inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = bias; }
+    inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = std::clamp<float>(bias, -10.0, 10.0); }
     inline float getIOBias(int8_t channel) { return io_bias_[channel]; }
 
 private:
@@ -92,7 +92,7 @@ private:
     int8_t suboscWave_;
     uint32_t app_start_time_;
     
-    int8_t io_gain_[4];
+    float io_gain_[4];
     float io_bias_[4];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);

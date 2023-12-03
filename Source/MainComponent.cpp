@@ -95,25 +95,28 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     
     context.getEngine()->Render(out, out, size, tune, fx_amount, fx, morph);
     suboscillator.Render(subosc_out, subosc_out, size, tune, fx_amount, fx, morph);
-       
+    
+    int16_t sample_data = std::clamp<int16_t>(context.getEngine()->GetSine(phase) * 2048.0f + 2048.0f, 0, 4095);
+    adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, sample_data);
+    
+    if(context.getState() == &ioConfigurationMenu) {
+        ioConfigurationMenu.UpdateWaveform();
+    }
+           
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {
         // get a pointer to the start sample in the buffer for this audio output channel :
         auto* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-        
-        // fill the required number of samples :
-//        buffer = out;
+
         for (auto a = 0 ; a < bufferToFill.numSamples ; a++)
         {
-            //            sample = (user_settings.getSubOscMix() / 100.0f) * sample + (1.0f - user_settings.getSubOscMix() / 100.0f) * GetSubOscillatorSample(subosc_phase_, subosc_phase_increment, interpolated_morph);
+            if(channel == 0) {
+                float phase_increment = 1.0f / 48000.0f;
+                phase += phase_increment;
+                if(phase >= 1.0f)
+                    phase -= 1.0f;
+            }
             buffer[a] = (user_settings.getSubOscMix() / 100.0f) * out[a] + (1.0f - user_settings.getSubOscMix() / 100.0f) * subosc_out[a];
-//            buffer[a] = out[a];
-//            buffer[a] = engine.Render();
-//            buffer[a] = sin(2 * M_PI * temp_phase);
-
-//            temp_phase += phaseIncrement;
-//            if(temp_phase >= 1.0f)
-//                temp_phase -= 1.0f;
         }
     }
 }

@@ -35,11 +35,13 @@ public:
     ~IOConfigurationMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate(bool back_pressed) {};
+    void triggerUpdate(bool back_pressed);
     inline void setState(int8_t state) { state_ = state; }
+    void UpdateWaveform();
 
 private:
     int8_t input_;
     int8_t state_;
+    int16_t wavedata_[50];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IOConfigurationMenu);
 };

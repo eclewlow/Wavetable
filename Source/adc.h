@@ -29,6 +29,7 @@ public:
     
     bool handleKeyPress();
     inline uint16_t getChannel(int channel) { return values_[channel]; }
+    inline void setChannel(int channel, uint16_t value) { values_[channel] = value; }
 private:
     int16_t values_[8];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Adc);
