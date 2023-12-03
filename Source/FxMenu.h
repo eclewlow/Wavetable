@@ -35,12 +35,15 @@ public:
     ~FxMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate(bool back_pressed) {};
+    void triggerUpdate(bool back_pressed);
+    void UpdateWaveform();
+    void ClearWaveform();
     inline void setLeftState(FxMenuLeftState left_state) { left_state_ = left_state; }
     inline void setRightState(FxMenuRightState right_state) { right_state_ = right_state; }
 
 private:
     FxMenuLeftState left_state_;
     FxMenuRightState right_state_;
+    uint16_t wavedata_[59];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FxMenu);
 };

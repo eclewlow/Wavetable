@@ -79,6 +79,14 @@ float Bitcrush::RenderSampleEffect(float sample, float input_phase, float freque
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            float modulator_sample = fx / 4095.0;
+            
+            float bit_rate_divisor = std::clamp(modulator_sample, 0.001f, 1.0f);
+
+            float calculated_sample = static_cast<int>(sample / bit_rate_divisor) * bit_rate_divisor;
+
+            sample = sample * (1 - amount) + amount * calculated_sample;
+
             break;
         }
         case EffectManager::MANUAL_CONTROL:

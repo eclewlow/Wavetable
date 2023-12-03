@@ -85,11 +85,6 @@ void EnterNameMenu::triggerUpdate(bool back_pressed) {
 void EnterNameMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
     
-    uint16_t tune = adc.getChannel(0);
-    uint16_t fx_amount = adc.getChannel(1);
-    uint16_t fx = adc.getChannel(2);
-    uint16_t morph = adc.getChannel(3);
-
     int y_offset;
     int x_offset;
     

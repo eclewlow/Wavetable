@@ -74,6 +74,15 @@ float Wavewrapper::RenderSampleEffect(float sample, float input_phase, float fre
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            float modulator_sample = 2.0 * fx / 4095.0 - 1.0;
+            
+            modulator_sample = 6 * sample * modulator_sample;
+            
+            while(modulator_sample > 1.0) modulator_sample -= 2.0f;
+            while(modulator_sample < -1.0) modulator_sample += 2.0f;
+            
+            sample = sample * (1 - amount) + amount * modulator_sample;
+            
             break;
         }
         case EffectManager::MANUAL_CONTROL:

@@ -83,16 +83,10 @@ float ABEngine::GetSample(int16_t wavetable, int16_t frame, float phase, bool is
 }
 
 float ABEngine::GetSampleBetweenFrames(float phase, float morph) {
-    float index = morph;
-    uint8_t integral = floor(index);
-    float fractional = index - integral;
-    
-    uint8_t nextIntegral = integral + ceil(fractional);
-    
     float frame1sample = GetSample(left_wavetable_, left_frame_, phase, true);
     float frame2sample = GetSample(right_wavetable_, right_frame_, phase, false);
     
-    float sample = frame1sample * (1.0f - fractional) + frame2sample * fractional;
+    float sample = frame1sample * (1.0f - morph) + frame2sample * morph;
     return sample;
 }
 
@@ -168,6 +162,7 @@ void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint
         
         float interpolated_morph = morph_interpolator.Next();
         interpolated_morph = clamp(interpolated_morph, 0.0, 1.0);
+//        printf("%f\n", interpolated_morph);
         
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = GetSampleBetweenFrames(effect_manager.RenderPhaseEffect(phase_, frequency, fx_amount, fx, false, true), interpolated_morph);

@@ -71,7 +71,7 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
     int y_offset = 5;
     int x_offset = 1 + 2 * 4;
 
-    uint16_t morph = adc.getChannel(3);
+    uint16_t morph = adc.getChannelProcessed(3);
 
     storage.LoadWaveSample(BUF1, wavetable_, morph * 1.0f / 4095.0f);
     

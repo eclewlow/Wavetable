@@ -82,6 +82,17 @@ float Drive::RenderSampleEffect(float sample, float input_phase, float frequency
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            float modulator_sample = fx / 4095.0;
+            
+            float calculated_sample = 0.0f;
+            
+            float gain = modulator_sample;
+            float sample_with_gain = gain * 12.0f * sample;
+
+            calculated_sample = tanh(sample_with_gain);
+
+            sample = sample * (1 - amount) + amount * calculated_sample;
+
             break;
         }
         case EffectManager::MANUAL_CONTROL:

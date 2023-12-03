@@ -73,6 +73,8 @@ float PhaseDistortion::RenderPhaseEffect(float input_phase, float frequency, uin
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            x1 = 0.5f + amount * (1.0f * fx / 4095.0f - 0.5f);
+
             break;
         }
         case EffectManager::MANUAL_CONTROL:

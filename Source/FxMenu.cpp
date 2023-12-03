@@ -99,8 +99,10 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
     if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
         switch(right_state_) {
             case FX_MENU_RIGHT_MOD:
-                if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL)
+                if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
+                    ClearWaveform();
                     effect_manager.setControlType(EffectManager::EXTERNAL_MODULATOR);
+                }
                 else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR)
                     effect_manager.setControlType(EffectManager::MANUAL_CONTROL);
                 else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR)
@@ -153,8 +155,10 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
             case FX_MENU_RIGHT_MOD:
                 if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL)
                     effect_manager.setControlType(EffectManager::INTERNAL_MODULATOR);
-                else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR)
+                else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
+                    ClearWaveform();
                     effect_manager.setControlType(EffectManager::EXTERNAL_MODULATOR);
+                }
                 else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR)
                     effect_manager.setControlType(EffectManager::MANUAL_CONTROL);
                 break;
@@ -335,10 +339,10 @@ void FxMenu::paint(juce::Graphics& g) {
     Display::outline_rectangle(0, graph_y_offset, 64 - 3, graph_height);
     Display::outline_rectangle(64, graph_y_offset, 64 - 3, graph_height);
     
-    uint16_t tune = adc.getChannel(0);
-    uint16_t fx_amount = adc.getChannel(1);
-    uint16_t fx = adc.getChannel(2);
-    uint16_t morph = adc.getChannel(3);
+    uint16_t tune = adc.getChannelProcessed(0);
+    uint16_t fx_amount = adc.getChannelProcessed(1);
+    uint16_t fx = adc.getChannelProcessed(2);
+    uint16_t morph = adc.getChannelProcessed(3);
 
     context.getEngine()->FillWaveform(BUF1, tune,  fx_amount,  fx,  morph);
 
@@ -427,7 +431,9 @@ void FxMenu::paint(juce::Graphics& g) {
     }
     else if(effect_manager.getControlType() == EffectManager::EXTERNAL_MODULATOR) {
         // TODO: draw incoming ADC FX CV value
-
+        UpdateWaveform();
+        Display::Draw_NWave(64 + 1, graph_y_offset + 1, 64 - 3 - 2, graph_height - 2, wavedata_, 59);
+        
         char line[20];
         snprintf(line, 20, "%d", effect_manager.getScale());
 
@@ -440,4 +446,22 @@ void FxMenu::paint(juce::Graphics& g) {
         Display::put_string_5x5(64, depth_y_offset, strlen("RANGE:"), "RANGE:");
         Display::put_string_5x5(64+6*6, depth_y_offset, strlen(line), line, right_state_ == FX_MENU_RIGHT_RANGE);
     }
+}
+
+
+void FxMenu::triggerUpdate(bool back_pressed) {
+    ClearWaveform();
+}
+
+void FxMenu::ClearWaveform() {
+    for(int i = 0; i < 59; i++)
+        wavedata_[i] = 2048;
+}
+
+// called 48000x per second
+void FxMenu::UpdateWaveform() {
+    for(int i = 0; i < 58; i++) {
+        wavedata_[i] = wavedata_[i+1];
+    }
+    wavedata_[58] = adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_CV);
 }

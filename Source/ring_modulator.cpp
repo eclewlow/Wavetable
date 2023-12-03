@@ -66,11 +66,13 @@ float RingModulator::RenderSampleEffect(float sample, float input_phase, float f
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            float modulator_sample = 2.0 * fx / 4095.0 - 1.0;
+            
+            sample = sample * (1 - amount) + amount * sample * modulator_sample;
             break;
         }
         case EffectManager::MANUAL_CONTROL:
         {
-            
             float modulator_sample = 2.0 * fx / 4095.0 - 1.0;
             
             sample = sample * (1 - amount) + amount * sample * modulator_sample;

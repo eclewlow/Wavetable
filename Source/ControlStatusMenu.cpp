@@ -58,6 +58,7 @@ bool ControlStatusMenu::handleKeyPress(const juce::KeyPress &key) {
 
 void ControlStatusMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
+    UpdateWaveform();
     
     uint16_t tune = adc.getChannel(0);
     uint16_t fx_amount = adc.getChannel(1);
@@ -102,14 +103,45 @@ void ControlStatusMenu::paint(juce::Graphics& g) {
     int row_gap = 4;
     x_offset = gap;
     Display::outline_rectangle(x_offset, y_offset + radius + row_gap, radius * 2, radius * 2);
+    Display::Draw_NWave(x_offset+1, y_offset + radius + row_gap + 1, radius * 2 - 2, radius * 2 - 2, pitch_wavedata_, radius * 2 - 2);
 
     x_offset += gap + radius * 2;
     Display::outline_rectangle(x_offset, y_offset + radius + row_gap, radius * 2, radius * 2);
+    Display::Draw_NWave(x_offset+1, y_offset + radius + row_gap + 1, radius * 2 - 2, radius * 2 - 2, fx_amount_wavedata_, radius * 2 - 2);
 
     x_offset += gap + radius * 2;
     Display::outline_rectangle(x_offset, y_offset + radius + row_gap, radius * 2, radius * 2);
+    Display::Draw_NWave(x_offset+1, y_offset + radius + row_gap + 1, radius * 2 - 2, radius * 2 - 2, fx_wavedata_, radius * 2 - 2);
 
     x_offset += gap + radius * 2;
     Display::outline_rectangle(x_offset, y_offset + radius + row_gap, radius * 2, radius * 2);
+    Display::Draw_NWave(x_offset+1, y_offset + radius + row_gap + 1, radius * 2 - 2, radius * 2 - 2, morph_wavedata_, radius * 2 - 2);
 
+}
+
+void ControlStatusMenu::triggerUpdate(bool back_pressed) {
+    ClearWaveform();
+}
+
+void ControlStatusMenu::ClearWaveform() {
+    for(int i = 0; i < 20; i++) {
+        pitch_wavedata_[i] = 2048;
+        fx_amount_wavedata_[i] = 2048;
+        fx_wavedata_[i] = 2048;
+        morph_wavedata_[i] = 2048;
+    }
+}
+
+// called 48000x per second
+void ControlStatusMenu::UpdateWaveform() {
+    for(int i = 0; i < 19; i++) {
+        pitch_wavedata_[i] = pitch_wavedata_[i+1];
+        fx_amount_wavedata_[i] = fx_amount_wavedata_[i+1];
+        fx_wavedata_[i] = fx_wavedata_[i+1];
+        morph_wavedata_[i] = morph_wavedata_[i+1];
+    }
+    pitch_wavedata_[19] = adc.getChannelProcessed(Adc::ADC_CHANNEL_PITCH_CV);
+    fx_amount_wavedata_[19] = adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_AMOUNT_CV);
+    fx_wavedata_[19] = adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_CV);
+    morph_wavedata_[19] = adc.getChannelProcessed(Adc::ADC_CHANNEL_MORPH_CV);
 }

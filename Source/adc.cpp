@@ -71,7 +71,7 @@ bool Adc::handleKeyPress() {
     if(juce::KeyPress::isKeyCurrentlyDown(FX_AMOUNT_CV_TRIGGER)) {
         values_[ADC_CHANNEL_FX_AMOUNT_CV] = 4095;
     } else {
-        values_[ADC_CHANNEL_FX_AMOUNT_CV] = 0;
+        values_[ADC_CHANNEL_FX_AMOUNT_CV] = 2048;
     }
     return true;
 }
@@ -81,8 +81,8 @@ uint16_t Adc::getChannelProcessed(int channel) {
     if(channel > 3) {
         float normalized = (unprocessed / 2048.0f - 1.0f);   // -1.0 to 1.0
         normalized = normalized * user_settings.getIOGain(channel - 4) + user_settings.getIOBias(channel - 4);  // -x.0 to x.0 + bias
-        normalized = std::clamp(normalized, -1.0f, 1.0f);
         normalized = (normalized + 1.0f) * 2048.0f;
+        normalized = std::clamp(normalized, 0.0f, 4095.0f);
         return (uint16_t)(normalized);
     } else {
         return std::clamp(unprocessed + (int16_t)(((getChannelProcessed(channel + 4) / 2048.0f) - 1.0f) * 4095.0f), 0, 4095);

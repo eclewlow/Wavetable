@@ -79,6 +79,7 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
 void IOConfigurationMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
 
+    UpdateWaveform();
     /****/
     // draw IO
     /****/
@@ -150,7 +151,13 @@ void IOConfigurationMenu::paint(juce::Graphics& g) {
 }
 
 void IOConfigurationMenu::triggerUpdate(bool back_pressed) {
-    memset(wavedata_, 0, 50 * 2);
+    ClearWaveform();
+}
+
+
+void IOConfigurationMenu::ClearWaveform() {
+    for(int i = 0; i < 50; i++)
+        wavedata_[i] = 2048;
 }
 
 // called 48000x per second

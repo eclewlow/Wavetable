@@ -25,10 +25,16 @@ public:
     ~ControlStatusMenu();
     virtual bool handleKeyPress(const juce::KeyPress &key);
     virtual void paint(juce::Graphics& g);
-    void triggerUpdate(bool back_pressed) {};
+    void triggerUpdate(bool back_pressed);
+    void UpdateWaveform();
+    void ClearWaveform();
     inline void setState(ControlStatusMenuState newState) { currentState = newState; }
 
 private:
     ControlStatusMenuState currentState;
+    uint16_t pitch_wavedata_[20];
+    uint16_t fx_amount_wavedata_[20];
+    uint16_t fx_wavedata_[20];
+    uint16_t morph_wavedata_[20];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlStatusMenu);
 };

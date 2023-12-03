@@ -38,6 +38,7 @@ public:
     void triggerUpdate(bool back_pressed);
     inline void setState(int8_t state) { state_ = state; }
     void UpdateWaveform();
+    void ClearWaveform();
 
 private:
     int8_t input_;

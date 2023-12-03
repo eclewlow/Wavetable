@@ -109,10 +109,7 @@ bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
 void DrumMode::paint(juce::Graphics& g) {
     Display::clear_screen();
     
-    uint16_t tune = adc.getChannel(0);
-    uint16_t fx_amount = adc.getChannel(1);
-    uint16_t fx = adc.getChannel(2);
-    uint16_t morph = adc.getChannel(3);
+    uint16_t morph = adc.getChannelProcessed(3);
     
     int32_t elapsed_time = juce::Time::currentTimeMillis() - timer_;
     if(is_editing_ && elapsed_time > 1000) {

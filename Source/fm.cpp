@@ -69,6 +69,10 @@ float FM::RenderPhaseEffect(float input_phase, float frequency, uint16_t fx_amou
         }
         case EffectManager::EXTERNAL_MODULATOR:
         {
+            float sample = 2.0 * fx / 4095.0 - 1.0;//-1 to 1;
+
+            adjusted_phase = input_phase + amount * sample;
+
             break;
         }
         case EffectManager::MANUAL_CONTROL:

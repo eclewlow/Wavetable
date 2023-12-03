@@ -62,10 +62,10 @@ void Oscilloscope::paint(juce::Graphics& g) {
     int y_offset;
     int x_offset;
     
-    uint16_t tune = adc.getChannel(0);
-    uint16_t fx_amount = adc.getChannel(1);
-    uint16_t fx = adc.getChannel(2);
-    uint16_t morph = adc.getChannel(3);
+    uint16_t tune = adc.getChannelProcessed(0);
+    uint16_t fx_amount = adc.getChannelProcessed(1);
+    uint16_t fx = adc.getChannelProcessed(2);
+    uint16_t morph = adc.getChannelProcessed(3);
     
     context.getEngine()->FillWaveform(BUF1, tune,  fx_amount,  fx,  morph);
 
