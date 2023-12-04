@@ -34,6 +34,7 @@ Popup popup;
 MatrixMode matrixMode;
 DrumMode drumMode;
 IOConfigurationMenu ioConfigurationMenu;
+CalibrationMenu calibrationMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

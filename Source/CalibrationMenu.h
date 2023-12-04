@@ -9,3 +9,40 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+#include "State.h"
+
+class State;
+
+class CalibrationMenu: public State
+{
+public:
+//    enum IOConfigurationMenuInput {
+//        IO_CONFIG_PITCH     = 0,
+//        IO_CONFIG_FX_AMOUNT = 1,
+//        IO_CONFIG_FX        = 2,
+//        IO_CONFIG_MORPH     = 3,
+//        IO_CONFIG_LAST      = 4,
+//    };
+    enum CalibrationMenuState {
+        CALIBRATION_MENU_STATE_1V = 0,
+        CALIBRATION_MENU_STATE_5V = 1,
+        CALIBRATION_MENU_STATE_DONE = 2,
+    };
+
+    CalibrationMenu();
+    ~CalibrationMenu();
+    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual void paint(juce::Graphics& g);
+    void triggerUpdate(bool back_pressed);
+    inline void setState(int8_t state) { state_ = state; }
+
+private:
+    int8_t state_;
+    int32_t timer_;
+    bool message_displayed_;
+    int16_t c1_value_;
+    int16_t c5_value_;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CalibrationMenu);
+};

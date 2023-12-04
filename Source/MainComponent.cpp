@@ -27,13 +27,17 @@ MainComponent::MainComponent()
 //    context.setState(&mainMenu);
 //    context.setState(&wavetableModeMenu);
 //    enterNameMenu.setBackState(&fxMenu);
+    adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2048);
+    adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2048);
+    adc.setChannel(Adc::ADC_CHANNEL_FX_CV, 2048);
+    adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
 
     abEngine.Init();
     wavetableEngine.Init();
     matrixEngine.Init();
     drumEngine.Init();
 
-    context.setState(&ioConfigurationMenu);
+    context.setState(&calibrationMenu);
     context.setEngine(&abEngine);
 
     effect_manager.Init();
@@ -94,13 +98,24 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     uint16_t morph = adc.getChannelProcessed(3);
     
     context.getEngine()->Render(out, out, size, tune, fx_amount, fx, morph);
+    if(context.getLastEngine()) {
+        float last_engine_out[size];
+        context.getLastEngine()->Render(last_engine_out, last_engine_out, size, tune, fx_amount, fx, morph);
+        
+        for(int i = 0; i < size; i++) {
+            float fraction = (float) i / (float) size;
+            out[i] = fraction * out[i] + (1.0f - fraction) * last_engine_out[i];
+        }
+        
+        context.setLastEngine(NULL);
+    }
     suboscillator.Render(subosc_out, subosc_out, size, tune, fx_amount, fx, morph);
     
-    int16_t sample_data = std::clamp<int16_t>(context.getEngine()->GetSine(phase) * 2048.0f + 2048.0f, 0, 4095);
-    adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2048);
-    adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2048);
-    adc.setChannel(Adc::ADC_CHANNEL_FX_CV, sample_data);
-    adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
+    int16_t sample_data = std::clamp<int16_t>(context.getEngine()->GetSine(phase) * 50.0f + 2048.0f, 0, 4095);
+//    adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, sample_data);
+//    adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2048);
+//    adc.setChannel(Adc::ADC_CHANNEL_FX_CV, 2048);
+//    adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
            
     for (auto channel = 0 ; channel < outputChannelsNumber ; channel++)
     {
@@ -110,7 +125,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
         for (auto a = 0 ; a < bufferToFill.numSamples ; a++)
         {
             if(channel == 0) {
-                float phase_increment = 1.0f / 48000.0f;
+                float phase_increment = 0.125f / 48000.0f;
                 phase += phase_increment;
                 if(phase >= 1.0f)
                     phase -= 1.0f;
@@ -154,6 +169,13 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
 //    printf("%d\n", key.getKeyCode());
+    if(key.getKeyCode() == FX_AMOUNT_CV_TRIGGER) {
+        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_PITCH_CV) == 2059) {
+            adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 4022);
+        } else {
+            adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2059);
+        }
+    }
     bool pass = popup.handleKeyPress(key);
     if(!pass) {
         pass = context.handleKeyPress(key);

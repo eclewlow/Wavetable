@@ -457,20 +457,13 @@ void Display::put_string_3x5(uint8_t x, int8_t y, uint8_t Field_Width, const cha
 
 void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted)
 {
-    uint8_t
-    Terminator_Found;
-    uint8_t
-    Characters_Placed;
-    uint8_t
-    this_character;
-    uint8_t
-    *LCD_Memory;
-    uint8_t
-    column;
-    uint8_t
-    row;
-    WORD_UNION
-    Pixel_Data;
+    uint8_t Terminator_Found;
+    uint8_t Characters_Placed;
+    uint8_t this_character;
+    uint8_t *LCD_Memory;
+    uint8_t column;
+    uint8_t row;
+    WORD_UNION Pixel_Data;
     
     //Get the first row of the display character.
     row=y>>3;

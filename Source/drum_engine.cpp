@@ -109,7 +109,7 @@ float DrumEngine::GetSampleNoFX(float phase, float fx, float morph) {
 }
 
 void DrumEngine::triggerUpdate() {
-    
+    phase_ = 0.0f;
 }
 
 void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
@@ -168,7 +168,8 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
 //            y = (1 - x) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
         
         
-        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
+//        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
+        float note = tune_interpolator.Next() * user_settings.getCalibrationX() + user_settings.getCalibrationY();
         note += 12 * y * (fm_depth_ * 2.0f - 1.0f);
         note = clamp(note, 0.0f, 120.0f);
 

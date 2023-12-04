@@ -79,6 +79,11 @@ public:
     inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = std::clamp<float>(bias, -1.0, 1.0); }
     inline float getIOBias(int8_t channel) { return io_bias_[channel]; }
 
+    void Calibrate(uint16_t c1, uint16_t c5);
+    inline float getCalibrationX() { return calibration_x_; }
+    inline float getCalibrationY() { return calibration_y_; }
+
+    
 private:
     int8_t brightness_;
     int8_t contrast_;
@@ -95,5 +100,8 @@ private:
     float io_gain_[4];
     float io_bias_[4];
 
+    float calibration_x_;
+    float calibration_y_;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);
 };

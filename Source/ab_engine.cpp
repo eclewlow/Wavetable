@@ -132,6 +132,7 @@ float ABEngine::GetSampleNoFX(float phase, float fx, float morph) {
 }
 
 void ABEngine::triggerUpdate() {
+    phase_ = 0.0f;
 //    SetIsEditingLeft(false);
 //    SetIsEditingRight(false);
 //    SetLeftFrame(0);
@@ -152,7 +153,8 @@ void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint
     Downsampler carrier_downsampler(&carrier_fir_);
     
     while (size--) {
-        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
+//        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
+        float note = tune_interpolator.Next() * user_settings.getCalibrationX() + user_settings.getCalibrationY();
         note = clamp(note, 0.0f, 120.0f);
 
         note = note - 24.0f;
