@@ -95,6 +95,7 @@
 #include "DrumMode.h"
 #include "IOConfigurationMenu.h"
 #include "CalibrationMenu.h"
+#include "QuantizerMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -111,6 +112,8 @@
 #include "bitcrush.h"
 #include "drive.h"
 #include "bypass.h"
+
+#include "quantizer.h"
 
 #include "Context.h"
 #include "UserSettings.h"
@@ -143,6 +146,7 @@ extern MatrixMode matrixMode;
 extern DrumMode drumMode;
 extern IOConfigurationMenu ioConfigurationMenu;
 extern CalibrationMenu calibrationMenu;
+extern QuantizerMenu quantizerMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;
@@ -159,6 +163,8 @@ extern Wavewrapper wavewrapper;
 extern Bitcrush bitcrush;
 extern Drive drive;
 extern Bypass bypass;
+
+extern Quantizer quantizer;
 
 extern Adc adc;
 

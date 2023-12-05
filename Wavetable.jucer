@@ -18,8 +18,10 @@
         <FILE id="V0KABH" name="encoder.h" compile="0" resource="0" file="Source/encoder.h"/>
       </GROUP>
       <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="dsp">
-        <FILE id="KUDrOJ" name="drum_engine.cpp" compile="1" resource="0" file="Source/drum_engine.cpp"/>
-        <FILE id="aO9fnS" name="drum_engine.h" compile="0" resource="0" file="Source/drum_engine.h"/>
+        <GROUP id="{40539739-5E33-E863-4588-487674398C3C}" name="quantizer">
+          <FILE id="y49v3X" name="quantizer.cpp" compile="1" resource="0" file="Source/quantizer.cpp"/>
+          <FILE id="p4oR6h" name="quantizer.h" compile="0" resource="0" file="Source/quantizer.h"/>
+        </GROUP>
         <GROUP id="{A7B8A86C-7CEC-2EA9-58F0-0BEB21A1FF0B}" name="fft">
           <FILE id="lv0A5f" name="fft.cpp" compile="1" resource="0" file="Source/fft.cpp"/>
           <FILE id="iTewL7" name="fft.h" compile="0" resource="0" file="Source/fft.h"/>
@@ -58,6 +60,8 @@
         </GROUP>
         <FILE id="x7BF4e" name="ab_engine.cpp" compile="1" resource="0" file="Source/ab_engine.cpp"/>
         <FILE id="DFsvkg" name="ab_engine.h" compile="0" resource="0" file="Source/ab_engine.h"/>
+        <FILE id="KUDrOJ" name="drum_engine.cpp" compile="1" resource="0" file="Source/drum_engine.cpp"/>
+        <FILE id="aO9fnS" name="drum_engine.h" compile="0" resource="0" file="Source/drum_engine.h"/>
         <FILE id="xfMVXw" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
         <FILE id="fMW9i0" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
         <FILE id="wyY8jj" name="matrix_engine.cpp" compile="1" resource="0"

@@ -35,6 +35,7 @@ MatrixMode matrixMode;
 DrumMode drumMode;
 IOConfigurationMenu ioConfigurationMenu;
 CalibrationMenu calibrationMenu;
+QuantizerMenu quantizerMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;
@@ -51,6 +52,8 @@ Wavewrapper wavewrapper;
 Bitcrush bitcrush;
 Drive drive;
 Bypass bypass;
+
+Quantizer quantizer;
 
 Adc adc;
 
