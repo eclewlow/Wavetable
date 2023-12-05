@@ -170,8 +170,13 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         
 //        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
         float note = tune_interpolator.Next() * user_settings.getCalibrationX() + user_settings.getCalibrationY();
+        note = clamp(note, 0.0f, 120.0f);
+
+        note = quantizer.Quantize(note);
+
         note += 12 * y * (fm_depth_ * 2.0f - 1.0f);
         note = clamp(note, 0.0f, 120.0f);
+
 
         note = note - 24.0f;
         float a = 440; //frequency of A (coomon value is 440Hz)

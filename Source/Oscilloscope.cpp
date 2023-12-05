@@ -71,6 +71,9 @@ void Oscilloscope::paint(juce::Graphics& g) {
 
 //    uint8_t note = static_cast<uint8_t>((120.0f * tune)/4095.0);
     float note = tune * user_settings.getCalibrationX() + user_settings.getCalibrationY();
+    
+    note = quantizer.Quantize(note);
+    
     float a = 440; //frequency of A (coomon value is 440Hz)
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     

@@ -660,10 +660,23 @@ void Display::invert_rectangle(int8_t x, int8_t y,uint8_t width,uint8_t height)
     }
 }
 
-void Display::clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height) {
+void Display::clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height, bool set) {
     for(int i = x; i < x + width; i++) {
         for(int j = y; j < y + height; j++) {
-            Put_Pixel(i, j, false);
+            Put_Pixel(i, j, set);
+        }
+    }
+}
+
+void Display::clear_rectangle_grey(uint8_t x,uint8_t y,uint8_t width,uint8_t height) {
+    for(int i = x; i < x + width; i++) {
+        for(int j = y; j < y + height; j++) {
+            if(i == x || j == y || i == x + width - 1 || j == y + height - 1)
+                Put_Pixel(i, j, true);
+            else if ( (i + j) % 2 == 0)
+                Put_Pixel(i, j, false);
+            else
+                Put_Pixel(i, j, true);
         }
     }
 }

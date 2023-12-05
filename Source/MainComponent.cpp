@@ -37,7 +37,7 @@ MainComponent::MainComponent()
     matrixEngine.Init();
     drumEngine.Init();
 
-    context.setState(&calibrationMenu);
+    context.setState(&quantizerMenu);
     context.setEngine(&abEngine);
 
     effect_manager.Init();

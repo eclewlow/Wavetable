@@ -83,6 +83,7 @@ float Quantizer::getClosest(float val1, float val2,
         return val1;
 }
 
+
 float Quantizer::Quantize(float input) {
 
     if(scale_ == QUANTIZER_SCALE_OFF)
@@ -93,34 +94,68 @@ float Quantizer::Quantize(float input) {
     uint16_t tune = adc.getChannel(Adc::ADC_CHANNEL_PITCH_POT);
     float tonic = (120.0f * tune) / 4095.0;
     
-    float offset = input - tonic;
-    // ^ this is the current tuning of the tune pot
-    // without cv modulation
-    // we want to be able to set a dersired tonic note, and quantize the CV input.
-    // now we want to quantize the CV input midi_note offset from the tonic note.
-    // so if tonic note = 24.0 (C-1?) and midi_note offset = 26.0f.
-    // so we subtract input_midi - tonic = 2.0f, quantize to C scale 0.0f, then add to tonic
-    // and if tonic_note = 25.0 (C#-1?) and midi_note offset = 26.0f.
-    // so we subtract input_midi - tonic = 1.0f, quantize to C scale 0.0f, then add to tonic
-    // what if offset is negative?
-    //  well we need to have a midi c scale range from 0 - 120 .  0 - 120.  -120 to 120.
-
+    float tonic_mod = fmod(tonic, 12.0f);
+    float input_mod = fmod(input, 12.0f);
     
-//    input = CLAMP<uint16_t>(input, 0, 4095);
+    int16_t tonic_octave = tonic / 12;
+    int16_t input_octave = input / 12;
 
-    // if current input is close enough to the last input, then we use the last input
-    // if (abs(static_cast<int>(input) - static_cast<int>(last_input_)) < 24) {
-    //     input = last_input_;
-    // }
+//    const float quantizer_scale_pentatonic[11] = { -12.0,-10.0,-8.0,-5.0,-3.0,0.0,2.0,4.0,7.0,9.0,12.0 };
+//    const float quantizer_scale_blues[13] = { -12.0,-10.0,-9.0,-8.0,-5.0,-3.0,0.0,2.0,3.0,4.0,7.0,9.0,12.0 };
+//    const float quantizer_scale_diminish[17] = { -12.0,-10.0,-9.0,-7.0,-6.0,-4.0,-3.0,-1.0,0.0,2.0,3.0,5.0,6.0,8.0,9.0,11.0,12.0 };
+//    const float quantizer_scale_harmonic_major[15] = { -12.0,-10.0,-8.0,-7.0,-5.0,-4.0,-1.0,0.0,2.0,4.0,5.0,7.0,8.0,11.0,12.0 };
+//    const float quantizer_scale_harmonic_minor[15] = { -12.0,-10.0,-9.0,-7.0,-5.0,-4.0,-1.0,0.0,2.0,3.0,5.0,7.0,8.0,11.0,12.0 };
+//    const float quantizer_scale_wholetone[13] = { -12.0,-10.0,-8.0,-6.0,-4.0,-2.0,0.0,2.0,4.0,6.0,8.0,10.0,12.0 };
+//    const float quantizer_scale_chromatic[25] = { -12.0,-11.0,-10.0,-9.0,-8.0,-7.0,-6.0,-5.0,-4.0,-3.0,-2.0,-1.0,0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0 };
+//    const float quantizer_scale_arabian[15] = { -12.0,-11.0,-8.0,-7.0,-5.0,-4.0,-1.0,0.0,1.0,4.0,5.0,7.0,8.0,11.0,12.0 };
+//    const float quantizer_scale_diatonic[15] = { -12.0,-10.0,-8.0,-7.0,-5.0,-3.0,-1.0,0.0,2.0,4.0,5.0,7.0,9.0,11.0,12.0 };
 
-    // last_input_ = input;
+    const float* arr;
+    int8_t size;
+    switch(scale_) {
+        case QUANTIZER_SCALE_PENTATONIC:
+            arr = quantizer_scale_pentatonic;
+            size = sizeof(quantizer_scale_pentatonic) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_BLUES:
+            arr = quantizer_scale_blues;
+            size = sizeof(quantizer_scale_blues) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_DIMINISH:
+            arr = quantizer_scale_diminish;
+            size = sizeof(quantizer_scale_diminish) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_HARMONIC_MAJOR:
+            arr = quantizer_scale_harmonic_major;
+            size = sizeof(quantizer_scale_harmonic_major) / sizeof(float);
+            break;
+        case QUANTIZER_CALE_HARMONIC_MINOR:
+            arr = quantizer_scale_harmonic_minor;
+            size = sizeof(quantizer_scale_harmonic_minor) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_WHOLETONE:
+            arr = quantizer_scale_wholetone;
+            size = sizeof(quantizer_scale_wholetone) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_CHROMATIC:
+            arr = quantizer_scale_chromatic;
+            size = sizeof(quantizer_scale_chromatic) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_ARABIAN:
+            arr = quantizer_scale_arabian;
+            size = sizeof(quantizer_scale_arabian) / sizeof(float);
+            break;
+        case QUANTIZER_SCALE_DIATONIC:
+            arr = quantizer_scale_diatonic;
+            size = sizeof(quantizer_scale_diatonic) / sizeof(float);
+            break;
+        default:
+            return input;
+    }
 
-
-    const float* arr = lut_test;
-
-    float closest = findClosest(arr, 120, offset);
+    float closest = findClosest(arr, size, input_mod - tonic_mod);
     
-    closest = tonic + closest;
+    closest = tonic + (input_octave - tonic_octave) * 12.0f + closest;
 
     while (closest < 0.0f) {
         closest += 12.0f;
@@ -131,3 +166,31 @@ float Quantizer::Quantize(float input) {
 
     return closest;
 }
+//
+//float Quantizer::Quantize(float input) {
+//
+//    if(scale_ == QUANTIZER_SCALE_OFF)
+//        return input;
+//    
+//    // input is a 0.0f to 120.0f [???]  float - type midi value.
+//    
+//    uint16_t tune = adc.getChannel(Adc::ADC_CHANNEL_PITCH_POT);
+//    float tonic = (120.0f * tune) / 4095.0;
+//    
+//    float offset = input - tonic;
+//
+//    const float* arr = lut_test;
+//
+//    float closest = findClosest(arr, 120, offset);
+//    
+//    closest = tonic + closest;
+//
+//    while (closest < 0.0f) {
+//        closest += 12.0f;
+//    }
+//    while (closest > 120.0f) {
+//        closest -= 12.0f;
+//    }
+//
+//    return closest;
+//}

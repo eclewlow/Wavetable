@@ -63,6 +63,8 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
         float note = tune_interpolator.Next() * user_settings.getCalibrationX() + user_settings.getCalibrationY();
         note = clamp(note, 0.0f, 120.0f);
 
+        note = quantizer.Quantize(note);
+
         note = note - 24.0f;
         float a = 440; //frequency of A (coomon value is 440Hz)
         float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
