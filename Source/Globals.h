@@ -173,6 +173,7 @@ extern int16_t BUF2[2048];
 extern int16_t BUF3[2048];
 extern int16_t BUF4[2048];
 
+extern const float lut_test[];
 
 inline double clamp(double input, double low, double high) {
     return std::min(std::max(input, low), high);
