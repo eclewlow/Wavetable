@@ -80,7 +80,7 @@ private:
     int8_t mode_;
     WaveEditorState state_;
     int16_t menu_selection_offset_;
-    int16_t timer_;
+    uint32_t timer_;
     int menu_target_offset_y_;
     int menu_offset_y_;
     int selection_x1_;

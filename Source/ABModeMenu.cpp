@@ -56,7 +56,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 else
                     left_frame_ = 0;
 
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ - 1, 0, 15);
@@ -65,7 +65,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_frame_offset_ = left_frame_;
                 }
 
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             default:
                 break;
@@ -91,7 +91,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 else
                     left_frame_ = 0;
                 
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ + 1, 0, 15);
@@ -99,7 +99,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 if(left_frame_ > left_frame_offset_ + 2) {
                     left_frame_offset_ = left_frame_ - 2;
                 }
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
             default:
@@ -111,7 +111,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(left_state_) {
             case AB_LOAD_HOVER:
                 left_state_ = AB_SELECT_WAVETABLE;
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingLeft()) {
@@ -123,7 +123,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case AB_SELECT_WAVETABLE:
                 left_state_ = AB_SELECT_FRAME;
-                left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                left_ticker_timer_ = system_clock.milliseconds() - 2000;
                 if(left_wavetable_ != abEngine.GetLeftWavetable()) {
                     left_frame_offset_ = 0;
                     left_frame_ = 0;
@@ -164,7 +164,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 else
                     right_frame_ = 0;
 
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 right_frame_ = std::clamp(right_frame_ - 1, 0, 15);
@@ -173,7 +173,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     right_frame_offset_ = right_frame_;
                 }
 
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             default:
                 break;
@@ -199,7 +199,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 else
                     right_frame_ = 0;
                 
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_SELECT_FRAME:
                 right_frame_ = std::clamp(right_frame_ + 1, 0, 15);
@@ -207,7 +207,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 if(right_frame_ > right_frame_offset_ + 2) {
                     right_frame_offset_ = right_frame_ - 2;
                 }
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
             default:
@@ -219,7 +219,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
         switch(right_state_) {
             case AB_LOAD_HOVER:
                 right_state_ = AB_SELECT_WAVETABLE;
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingRight()) {
@@ -231,7 +231,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
             case AB_SELECT_WAVETABLE:
                 right_state_ = AB_SELECT_FRAME;
-                right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                right_ticker_timer_ = system_clock.milliseconds() - 2000;
                 if(right_wavetable_ != abEngine.GetRightWavetable()) {
                     right_frame_offset_ = 0;
                     right_frame_ = 0;
@@ -268,7 +268,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     left_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
-                    left_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                    left_ticker_timer_ = system_clock.milliseconds() - 2000;
                     left_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
@@ -293,7 +293,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                     right_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
-                    right_ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                    right_ticker_timer_ = system_clock.milliseconds() - 2000;
                     right_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
@@ -314,7 +314,7 @@ void ABModeMenu::DrawSide(int side) {
     
     int16_t* wavebuffer = side == 0 ? BUF1 : BUF2;
     int16_t* alternate_wavebuffer = side == 0 ? BUF3 : BUF4;
-    int32_t* ticker_timer = side == 0 ? &left_ticker_timer_ : &right_ticker_timer_;
+    uint32_t* ticker_timer = side == 0 ? &left_ticker_timer_ : &right_ticker_timer_;
     int wavetable = side == 0 ? left_wavetable_ : right_wavetable_;
     int frame = side == 0 ? left_frame_ : right_frame_;
     int16_t wavetable_offset = side == 0 ? left_wavetable_offset_ : right_wavetable_offset_;
@@ -356,10 +356,10 @@ void ABModeMenu::DrawSide(int side) {
                 strncpy(line2, "-------", 7);
             else {
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - *ticker_timer;
+                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
 
                 if (elapsed_time > 4000) {
-                    *ticker_timer = juce::Time::currentTimeMillis();
+                    *ticker_timer = system_clock.milliseconds();
                 }
                 if(i + wavetable_offset == wavetable && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;
@@ -393,10 +393,10 @@ void ABModeMenu::DrawSide(int side) {
                 strncpy(line2, "-------", 7);
             else {
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - *ticker_timer;
+                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
 
                 if (elapsed_time > 4000) {
-                    *ticker_timer = juce::Time::currentTimeMillis();
+                    *ticker_timer = system_clock.milliseconds();
                 }
                 if(i + frame_offset == frame && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;

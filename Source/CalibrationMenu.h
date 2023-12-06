@@ -40,7 +40,7 @@ public:
 
 private:
     int8_t state_;
-    int32_t timer_;
+    uint32_t timer_;
     bool message_displayed_;
     int16_t c1_value_;
     int16_t c5_value_;

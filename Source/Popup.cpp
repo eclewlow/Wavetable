@@ -15,7 +15,7 @@
 Popup::Popup() {
     is_showing_ = false;
     timer_length_ = 2000;
-    timer_ = juce::Time::currentTimeMillis();
+    timer_ = system_clock.milliseconds();
 }
 
 Popup::~Popup() {
@@ -40,7 +40,7 @@ bool Popup::handleKeyPress(const juce::KeyPress &key) {
 
 void Popup::show(int32_t timer_length) {
     timer_length_ = timer_length;
-    timer_ = juce::Time::currentTimeMillis();
+    timer_ = system_clock.milliseconds();
     is_showing_ = true;
 }
 void Popup::hide() {
@@ -65,7 +65,7 @@ void Popup::paint(juce::Graphics& g) {
         return;
     }
 
-    int32_t elapsed_time = juce::Time::currentTimeMillis() - timer_;
+    uint32_t elapsed_time = system_clock.milliseconds() - timer_;
     
     if(elapsed_time > timer_length_) {
         hide();

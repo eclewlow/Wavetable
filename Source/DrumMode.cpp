@@ -21,6 +21,12 @@ DrumMode::~DrumMode() {
     
 }
 
+void DrumMode::setEditing(bool editing) {
+    is_editing_ = editing;
+    timer_ = system_clock.milliseconds();
+}
+
+
 void DrumMode::triggerUpdate(bool back_pressed) {
     setEditing(false);
     edit_state_ = DRUM_MODE_EDIT_WAVETABLE;
@@ -111,7 +117,7 @@ void DrumMode::paint(juce::Graphics& g) {
     
     uint16_t morph = adc.getChannelProcessed(3);
     
-    int32_t elapsed_time = juce::Time::currentTimeMillis() - timer_;
+    uint32_t elapsed_time = system_clock.milliseconds() - timer_;
     if(is_editing_ && elapsed_time > 1000) {
         setEditing(false);
     }

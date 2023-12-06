@@ -16,6 +16,9 @@
         <FILE id="cK3RiG" name="adc.h" compile="0" resource="0" file="Source/adc.h"/>
         <FILE id="RldXOa" name="encoder.cpp" compile="1" resource="0" file="Source/encoder.cpp"/>
         <FILE id="V0KABH" name="encoder.h" compile="0" resource="0" file="Source/encoder.h"/>
+        <FILE id="tla73B" name="system_clock.cpp" compile="1" resource="0"
+              file="Source/system_clock.cpp"/>
+        <FILE id="YYJ9Qu" name="system_clock.h" compile="0" resource="0" file="Source/system_clock.h"/>
       </GROUP>
       <GROUP id="{34B5CE4D-F4D9-6620-A3F7-D3D52041787E}" name="dsp">
         <GROUP id="{40539739-5E33-E863-4588-487674398C3C}" name="quantizer">

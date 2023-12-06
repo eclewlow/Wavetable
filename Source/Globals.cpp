@@ -57,6 +57,7 @@ Bypass bypass;
 Quantizer quantizer;
 
 Adc adc;
+SystemClock system_clock;
 
 int16_t BUF1[2048];
 int16_t BUF2[2048];

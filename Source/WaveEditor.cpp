@@ -228,7 +228,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
 
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
             if(back_menu_)
@@ -266,19 +266,19 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_SPECTRAL;
                 menu_target_offset_y_ = -30;
-                timer_ = juce::Time::currentTimeMillis();
+                timer_ = system_clock.milliseconds();
 
                 CalculateFFT();
             } else if(selection_ == WAVE_EDITOR_SELECTION_PEN) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_PEN;
                 menu_target_offset_y_ = -30;
-                timer_ = juce::Time::currentTimeMillis();
+                timer_ = system_clock.milliseconds();
             } else if(selection_ == WAVE_EDITOR_SELECTION_LINE) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_LINE;
                 menu_target_offset_y_ = -30;
-                timer_ = juce::Time::currentTimeMillis();
+                timer_ = system_clock.milliseconds();
             } else if (selection_ == WAVE_EDITOR_SELECTION_LOAD) {
                 context.setState(&loadWaveMenu);
                 loadWaveMenu.setBackMenu(&waveEditor);
@@ -295,7 +295,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 mode_ = selection_;
                 state_ = WAVE_EDITOR_STATE_EDITOR;
                 menu_target_offset_y_ = -30;
-                timer_ = juce::Time::currentTimeMillis();
+                timer_ = system_clock.milliseconds();
             }
         }
         if(key.getKeyCode() == BACK_BUTTON) {
@@ -314,7 +314,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                     break;
             }
             menu_target_offset_y_ = -30;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_SPECTRAL) {
@@ -339,7 +339,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             selection_ = mode_;
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
             if(back_menu_)
@@ -383,7 +383,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
             pen_drawing_ = false;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
             pen_drawing_ = false;
@@ -430,7 +430,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
             pen_drawing_ = false;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
         }
         if(key.getKeyCode() == BACK_BUTTON) {
             pen_drawing_ = false;
@@ -572,8 +572,9 @@ void WaveEditor::CalculateIFFT() {
 }
 
 void WaveEditor::DrawMenu() {
-    if(menu_target_offset_y_ != menu_offset_y_ && juce::Time::currentTimeMillis() - timer_ > 1000) {
-        timer_ = juce::Time::currentTimeMillis();
+    uint32_t elapsed_time = system_clock.milliseconds() - timer_;
+    if(menu_target_offset_y_ != menu_offset_y_ && elapsed_time > 10) {
+        timer_ = system_clock.milliseconds();
         if(menu_target_offset_y_ > menu_offset_y_)
             menu_offset_y_++;
         else if(menu_target_offset_y_ < menu_offset_y_)

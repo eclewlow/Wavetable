@@ -67,6 +67,7 @@
 		9F1C518DBED5115F78F55599 /* IOConfigurationMenu.cpp */ = {isa = PBXBuildFile; fileRef = D2C40C538707ED14A8FE3E18; };
 		A1950F03E09D2DC0F84C1CB4 /* include_juce_audio_processors_ara.cpp */ = {isa = PBXBuildFile; fileRef = 11EC50BD718D00E1DB8248C5; };
 		A36473C4B5F88160B233F7FC /* Foundation.framework */ = {isa = PBXBuildFile; fileRef = 640895EFCB80A7C5F5F06858; };
+		A4F443328DAE39A327458C7E /* system_clock.cpp */ = {isa = PBXBuildFile; fileRef = CA3CAC0B25D8411984C8157A; };
 		A8D73C4F5990F31F4C527B4A /* wavetable_engine.cpp */ = {isa = PBXBuildFile; fileRef = 231093117BA3CC979451C06A; };
 		ADC0293C24B42099060CD0FF /* RecentFilesMenuTemplate.nib */ = {isa = PBXBuildFile; fileRef = 3577027293311B90A037D356; };
 		B4D5876F12ACD45ECB9AFF0F /* wavewrapper.cpp */ = {isa = PBXBuildFile; fileRef = A2D8E7D850D55B33BBFDE1AE; };
@@ -167,6 +168,7 @@
 		709BB3D49CF795A1A0ED5467 /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_graphics"; sourceTree = "<absolute>"; };
 		7133D639779721AC692BD739 /* bypass.cpp */ /* bypass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = bypass.cpp; path = ../../Source/bypass.cpp; sourceTree = SOURCE_ROOT; };
 		71844743D625B25DF4404711 /* DrumMode.cpp */ /* DrumMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DrumMode.cpp; path = ../../Source/DrumMode.cpp; sourceTree = SOURCE_ROOT; };
+		779921A6294CA4D73D501988 /* system_clock.h */ /* system_clock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = system_clock.h; path = ../../Source/system_clock.h; sourceTree = SOURCE_ROOT; };
 		77B047EA20230B6249D619DB /* fnt03x05.cpp */ /* fnt03x05.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fnt03x05.cpp; path = ../../Source/fnt03x05.cpp; sourceTree = SOURCE_ROOT; };
 		77E4BACEE6408E6EE0C66568 /* matrix_engine.cpp */ /* matrix_engine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_engine.cpp; path = ../../Source/matrix_engine.cpp; sourceTree = SOURCE_ROOT; };
 		7806B3D10FB308E53A0498B6 /* ManageMenu.cpp */ /* ManageMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ManageMenu.cpp; path = ../../Source/ManageMenu.cpp; sourceTree = SOURCE_ROOT; };
@@ -218,6 +220,7 @@
 		C62BD70D23B0EC20CD1C0AB8 /* Storage.h */ /* Storage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Storage.h; path = ../../Source/Storage.h; sourceTree = SOURCE_ROOT; };
 		C6A3645CA5DC778E1259A961 /* CoreAudioKit.framework */ /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
 		C8CD861EB0C193949B5290A7 /* include_juce_audio_devices.mm */ /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../../JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
+		CA3CAC0B25D8411984C8157A /* system_clock.cpp */ /* system_clock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = system_clock.cpp; path = ../../Source/system_clock.cpp; sourceTree = SOURCE_ROOT; };
 		CAAA16832CC58D3EE2AC4756 /* wavewrapper.h */ /* wavewrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavewrapper.h; path = ../../Source/wavewrapper.h; sourceTree = SOURCE_ROOT; };
 		CABD10C759D0672536EE38FC /* juce_gui_basics */ /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_gui_basics"; sourceTree = "<absolute>"; };
 		CBBCB22F5B656AF27BA95412 /* wavefolder.h */ /* wavefolder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavefolder.h; path = ../../Source/wavefolder.h; sourceTree = SOURCE_ROOT; };
@@ -328,6 +331,8 @@
 				81B3170DC6EC6FAC4838D701,
 				3BBA7C4D224105DD7CDFD40E,
 				60ED18482889F92B9E80A5AE,
+				CA3CAC0B25D8411984C8157A,
+				779921A6294CA4D73D501988,
 			);
 			name = drivers;
 			sourceTree = "<group>";
@@ -644,6 +649,7 @@
 				64BFB44ED7CAB1ACB89DD457,
 				6EC37FB8C3B8DE65E38E342B,
 				386626AC9E6E002BB1CA3272,
+				A4F443328DAE39A327458C7E,
 				FD10E91037A7E6B0316B768D,
 				57F9FC79C70C0ED5F496A23A,
 				2A7BED8ADB9AF2308957DD34,

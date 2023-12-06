@@ -40,16 +40,16 @@ bool CalibrationMenu::handleKeyPress(const juce::KeyPress &key) {
     else if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
         if(state_ == CALIBRATION_MENU_STATE_1V && message_displayed_ == false) {
             message_displayed_ = true;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
             c1_value_ = adc.getChannel(Adc::ADC_CHANNEL_PITCH_CV);
         } else if(state_ == CALIBRATION_MENU_STATE_5V && message_displayed_ == false) {
             message_displayed_ = true;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
             c5_value_ = adc.getChannel(Adc::ADC_CHANNEL_PITCH_CV);
             user_settings.Calibrate(c1_value_, c5_value_);
         } else if(state_ == CALIBRATION_MENU_STATE_DONE) {
             message_displayed_ = false;
-            timer_ = juce::Time::currentTimeMillis();
+            timer_ = system_clock.milliseconds();
             setState(CALIBRATION_MENU_STATE_1V);
         }
     }
@@ -132,7 +132,7 @@ void CalibrationMenu::paint(juce::Graphics& g) {
     Display::put_string_5x5(x_offset - strlen(line) * 6 / 2 + 1, y_offset, strlen(line), line);
     
     y_offset += 8 + 6 + 3 + 4;
-    int32_t elapsed_time = juce::Time::currentTimeMillis() - timer_;
+    uint32_t elapsed_time = system_clock.milliseconds() - timer_;
     if(elapsed_time > 2000 && message_displayed_ == true) {
         message_displayed_ = false;
         if(state_ == CALIBRATION_MENU_STATE_1V)

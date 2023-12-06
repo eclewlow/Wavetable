@@ -99,7 +99,7 @@ void Oscilloscope::paint(juce::Graphics& g) {
     y_offset += 7;
 
     char second_line[20];
-    uint32_t currentTime = juce::Time::currentTimeMillis() - user_settings.getAppStartTime();
+    uint32_t currentTime = system_clock.milliseconds();
     unsigned int hours = (currentTime / (1000*60*60)) % 24;
     unsigned int minutes = (currentTime / (1000*60)) % 60;
     unsigned int seconds = (currentTime / (1000)) % 60;

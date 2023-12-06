@@ -31,6 +31,8 @@ MainComponent::MainComponent()
     adc.setChannel(Adc::ADC_CHANNEL_FX_CV, 2048);
     adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
 
+    system_clock.Init();
+
     abEngine.Init();
     wavetableEngine.Init();
     matrixEngine.Init();
@@ -157,6 +159,8 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::timerCallback()
 {
+    for(int i = 0; i < 16; i++)
+        system_clock.Tick();
     repaint();
 };
 

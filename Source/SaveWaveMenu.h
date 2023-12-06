@@ -41,7 +41,7 @@ private:
     int16_t frame_offset_;
     int16_t wavetable_;
     int16_t frame_;
-    int32_t ticker_timer_ = 0;
+    uint32_t ticker_timer_ = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SaveWaveMenu);
 };

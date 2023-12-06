@@ -46,7 +46,7 @@ void SaveWaveMenu::triggerUpdate(bool back_pressed) {
         frame_offset_ = frame_ - 5;
     }
     
-    ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+    ticker_timer_ = system_clock.milliseconds() - 2000;
 
 }
 
@@ -62,7 +62,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME:
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 frame_ = std::clamp<int16_t>(frame_ - 1, 0, 15);
 
@@ -86,7 +86,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME:
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 frame_ = std::clamp<int16_t>(frame_ + 1, 0, 15);
 
@@ -141,7 +141,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                     enterNameMenu.setBackMenu(&saveWaveMenu);
                     enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
                 } else {
-                    ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                    ticker_timer_ = system_clock.milliseconds() - 2000;
 
                     setState(SAVE_WAVE_MENU_SELECT_FRAME);
                     frame_ = 0;
@@ -262,10 +262,10 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
                 strncpy(line2, "[EMPTY]", strlen("[EMPTY]"));
             else {
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - ticker_timer_;
+                int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 
                 if (elapsed_time > 4000) {
-                    ticker_timer_ = juce::Time::currentTimeMillis();
+                    ticker_timer_ = system_clock.milliseconds();
                 }
                 if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;

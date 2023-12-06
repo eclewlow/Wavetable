@@ -16,6 +16,7 @@ ManageMenu::ManageMenu() {
     setState(MANAGE_MENU_SELECT_WAVETABLE);
     wavetable_ = 0;
     frame_ = 0;
+    ticker_timer_ = 0;
 }
 
 ManageMenu::~ManageMenu() {
@@ -60,7 +61,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 morph_ = 0.0f;
 
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
             case MANAGE_MENU_SELECT_FRAME:
@@ -70,7 +71,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                     frame_offset_ = frame_;
                 }
 
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
             case MANAGE_MENU_WAVETABLE_OPTIONS:
@@ -94,7 +95,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
 
                 morph_ = 0.0f;
                 
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
                 
                 break;
             case MANAGE_MENU_SELECT_FRAME:
@@ -104,7 +105,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                     frame_offset_ = frame_ - 5;
                 }
 
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
             case MANAGE_MENU_WAVETABLE_OPTIONS:
@@ -218,7 +219,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                     context.setState(&mainMenu);
                 break;
             case MANAGE_MENU_SELECT_FRAME:
-                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
+                ticker_timer_ = system_clock.milliseconds() - 2000;
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
                 morph_ = 0.0f;
                 break;
@@ -338,12 +339,12 @@ void ManageMenu::paint(juce::Graphics& g) {
                 strncpy(line2, "-------", 7);
             else {
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - ticker_timer_;
+                uint32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 
                 if (elapsed_time > 4000) {
-                    ticker_timer_ = juce::Time::currentTimeMillis();
+                    ticker_timer_ = system_clock.milliseconds();
                 }
-                if(i+wavetable_offset_ == wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                if(i + wavetable_offset_ == wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;
                     name_index = std::clamp(name_index, 0, 1);
                 }
@@ -395,12 +396,12 @@ void ManageMenu::paint(juce::Graphics& g) {
                 strncpy(line2, "-------", 7);
             else {
                 int name_index = 0;
-                int32_t elapsed_time = juce::Time::currentTimeMillis() - ticker_timer_;
+                int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 
                 if (elapsed_time > 4000) {
-                    ticker_timer_ = juce::Time::currentTimeMillis();
+                    ticker_timer_ = system_clock.milliseconds();
                 }
-                if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                if(i + frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
                     name_index = (elapsed_time) / 1000;
                     name_index = std::clamp(name_index, 0, 1);
                 }

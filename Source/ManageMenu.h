@@ -52,7 +52,7 @@ private:
     int16_t frame_;
     float morph_;
     int8_t target_;
-    int32_t ticker_timer_ = 0;
+    uint32_t ticker_timer_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ManageMenu);
 };

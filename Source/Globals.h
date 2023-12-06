@@ -121,6 +121,7 @@
 #include "Storage.h"
 
 #include "adc.h"
+#include "system_clock.h"
 
 extern Context context;
 extern UserSettings user_settings;
@@ -169,6 +170,7 @@ extern Bypass bypass;
 extern Quantizer quantizer;
 
 extern Adc adc;
+extern SystemClock system_clock;
 
 extern int16_t BUF1[2048];
 extern int16_t BUF2[2048];

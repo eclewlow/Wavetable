@@ -9,6 +9,7 @@
 */
 
 #include "UserSettings.h"
+#include "Globals.h"
 
 UserSettings::UserSettings() {
     brightness_ = 100;
@@ -21,7 +22,7 @@ UserSettings::UserSettings() {
     suboscDetune_ = 0;
     suboscMix_ = 100;
     suboscWave_ = SUBOSC_WAVE_SINE;
-    app_start_time_ = juce::Time::currentTimeMillis();
+    app_start_time_ = system_clock.milliseconds();
     
     memset(io_gain_, 0, 4 * 4);
     io_gain_ [0] = 1.0f;

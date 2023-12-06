@@ -24,7 +24,7 @@ public:
     void hide();
     void SetLine(int line_no, char* str);
 private:
-    int32_t timer_;
+    uint32_t timer_;
     int32_t timer_length_;
     char lines_[3][20];
     bool is_showing_;
