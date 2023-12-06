@@ -469,6 +469,7 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
     uint8_t column;
     uint8_t row;
     WORD_UNION Pixel_Data;
+    const char * save_input = input;
     
     //Get the first row of the display character.
     row=y>>3;
@@ -514,7 +515,7 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         LCD_Memory++;
     }
     if(inverted)
-        Display::invert_rectangle(x, y - 2, get_string_9x9_width(input, gap), 9 + 4);
+        Display::invert_rectangle(x - 2, y - 2, get_string_9x9_width(save_input, gap) + 4, 9 + 4);
     
 }
 

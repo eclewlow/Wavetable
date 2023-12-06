@@ -27,8 +27,8 @@ public:
     void triggerUpdate(bool back_pressed);
     inline void setState(EnterNameMenuState newState) { currentState = newState; }
     inline void setExecFunc(void (* func)(char* param)) { exec_func = func; }
-    inline void setBackState(State* state) { back_state = state; }
-
+    inline void setNameChars(const char* name) { strncpy(name_chars, name, 9); name_index = std::clamp<int>(strlen(name), 0, 8-1); }
+    
 private:
     int num_of_chars = 41;
     int num_of_name_chars = 8;
@@ -39,7 +39,6 @@ private:
     bool clear_selected = false;
     bool ok_selected = false;
     void (*exec_func)(char* param);
-    State* back_state;
     EnterNameMenuState currentState;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnterNameMenu);
 };

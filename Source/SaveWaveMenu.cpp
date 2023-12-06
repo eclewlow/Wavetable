@@ -23,6 +23,13 @@ SaveWaveMenu::~SaveWaveMenu() {
 }
 
 void SaveWaveMenu::triggerUpdate(bool back_pressed) {
+    if(!back_pressed) {
+        wavetable_offset_ = 0;
+        wavetable_ = 0;
+        frame_ = 0;
+        frame_offset_ = 0;
+        return;
+    }
     if(wavetable_ < wavetable_offset_) {
         wavetable_offset_ = wavetable_;
     }
@@ -131,7 +138,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 if(storage.GetWavetable(wavetable_).name[0] == '\0') {
                     context.setState(&enterNameMenu);
-                    enterNameMenu.setBackState(&saveWaveMenu);
+                    enterNameMenu.setBackMenu(&saveWaveMenu);
                     enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
                 } else {
                     ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
@@ -150,7 +157,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 }
                 else {
                     context.setState(&enterNameMenu);
-                    enterNameMenu.setBackState(&saveWaveMenu);
+                    enterNameMenu.setBackMenu(&saveWaveMenu);
                     enterNameMenu.setExecFunc(SaveWaveMenu::SaveWave);
                 }
                 break;

@@ -23,6 +23,14 @@ LoadWaveMenu::~LoadWaveMenu() {
 }
 
 void LoadWaveMenu::triggerUpdate(bool back_pressed) {
+    if(!back_pressed) {
+        wavetable_offset_ = 0;
+        wavetable_ = 0;
+        frame_ = 0;
+        frame_offset_ = 0;
+        return;
+    }
+
     if(wavetable_ < wavetable_offset_) {
         wavetable_offset_ = wavetable_;
     }

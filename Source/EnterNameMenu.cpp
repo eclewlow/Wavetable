@@ -58,8 +58,8 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
             if(name_index > 0) {
                 if(exec_func)
                     (*exec_func)(name_chars);
-                if(back_state)
-                    context.setState(back_state);
+                if(back_menu_)
+                    context.setState(back_menu_, true);
             } else {
                 popup.show();
                 popup.SetLine(0, (char*)"PLEASE ENTER");
@@ -74,8 +74,8 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     if(key.getKeyCode() == BACK_BUTTON) {
-        if(back_state)
-            context.setState(back_state, true);
+        if(back_menu_)
+            context.setState(back_menu_, true);
     }
 
     return true;
@@ -92,13 +92,14 @@ void EnterNameMenu::paint(juce::Graphics& g) {
     
     int y_offset;
     int x_offset;
-    
-    x_offset = 10;
+        
     y_offset = 5;
-    
+    x_offset = 1 + 2 * 4;
+
     Display::put_string_5x5(x_offset, y_offset, strlen("ENTER NAME"), "ENTER NAME");
-    Display::invert_rectangle(0, y_offset - 3, 128, 5 + 6);
     
+    Display::invert_rectangle(0, 0, 128, 15);
+
     x_offset = 5;
     y_offset += 5 + 3 + 6;
     

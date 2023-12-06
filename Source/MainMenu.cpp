@@ -62,7 +62,6 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                     abModeMenu.setBackMenu(&mainMenu);
                     context.setState(&drumMode);
                 }
-//                getContext()->setState(new ModeMenu());
                 break;
             case SUBOSCILLATOR_CONFIG:
                 context.setState(&subOscillatorMenu);
@@ -71,7 +70,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
 //                setState(WAVETABLE_MANAGEMENT);
                 break;
             case WAVETABLE_MANAGEMENT:
-//                setState(MODULE_SETUP_CONFIG);
+                context.setState(&manageMenu);
                 break;
             case MODULE_SETUP_CONFIG:
                 context.setState(&deviceConfigurationMenu);

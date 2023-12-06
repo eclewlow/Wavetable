@@ -23,6 +23,14 @@ public:
         MANAGE_MENU_SELECT_WAVETABLE    = 1,
         MANAGE_MENU_SELECT_FRAME        = 2,
         MANAGE_MENU_WAVETABLE_OPTIONS   = 3,
+        MANAGE_MENU_CONFIRM_DELETE      = 4,
+    };
+    enum ManageMenuOptions {
+        MANAGE_MENU_EDIT                = 0,
+        MANAGE_MENU_RENAME              = 1,
+        MANAGE_MENU_DELETE              = 2,
+        MANAGE_MENU_NO                  = 3,
+        MANAGE_MENU_YES                 = 4,
     };
 
     ManageMenu();
@@ -32,9 +40,12 @@ public:
     void triggerUpdate(bool back_pressed);
     inline void setState(int8_t state) { state_ = state; }
     inline void setTarget(int8_t target) { target_ = target; }
+    inline void setOptionSelected(int8_t option_selected) { option_selected_ = option_selected; }
+    static void SaveWavetable(char* param);
 
 private:
     int8_t state_;
+    int8_t option_selected_;
     int16_t wavetable_offset_;
     int16_t frame_offset_;
     int16_t wavetable_;

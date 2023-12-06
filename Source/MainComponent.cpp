@@ -26,7 +26,6 @@ MainComponent::MainComponent()
 
 //    context.setState(&mainMenu);
 //    context.setState(&wavetableModeMenu);
-//    enterNameMenu.setBackState(&fxMenu);
     adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2048);
     adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2048);
     adc.setChannel(Adc::ADC_CHANNEL_FX_CV, 2048);
