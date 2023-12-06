@@ -116,6 +116,8 @@
         <FILE id="nWCjDy" name="LoadWaveMenu.h" compile="0" resource="0" file="Source/LoadWaveMenu.h"/>
         <FILE id="KQ3d6h" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
         <FILE id="JvbGPO" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
+        <FILE id="Pus9bo" name="ManageMenu.cpp" compile="1" resource="0" file="Source/ManageMenu.cpp"/>
+        <FILE id="IYbvWY" name="ManageMenu.h" compile="0" resource="0" file="Source/ManageMenu.h"/>
         <FILE id="isUK7H" name="MatrixMode.cpp" compile="1" resource="0" file="Source/MatrixMode.cpp"/>
         <FILE id="yQoyzM" name="MatrixMode.h" compile="0" resource="0" file="Source/MatrixMode.h"/>
         <FILE id="ZaqZt6" name="MemoryClearMenu.cpp" compile="1" resource="0"

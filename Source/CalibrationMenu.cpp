@@ -86,7 +86,7 @@ void CalibrationMenu::paint(juce::Graphics& g) {
     int octave = static_cast<int16_t>(floor(note + 0.5)) / 12 - 1;
     const char * note_text = note_letter.substr(note_index * 2, 2).c_str();
     y_offset = 10;
-    Display::put_string_9x9(64 - strlen(note_text) * 10 / 2, y_offset, strlen(note_text), note_text);
+    Display::put_string_9x9(64 - strlen(note_text) * 11 / 2, y_offset, strlen(note_text), note_text);
     snprintf(line, 20, "OCT:%d", octave);
     y_offset += 10 + 2;
     Display::put_string_5x5(64 - strlen(line) * 6 / 2, y_offset, strlen(line), line);
@@ -145,7 +145,7 @@ void CalibrationMenu::paint(juce::Graphics& g) {
             strncpy(line, "1.000V", 20);
         else
             strncpy(line, "5.000V", 20);
-        Display::put_string_9x9(63 - strlen(line) * 10 / 2, y_offset, strlen(line), line);
+        Display::put_string_9x9(63 - strlen(line) * 11 / 2, y_offset, strlen(line), line);
     } else {
         if(state_ == CALIBRATION_MENU_STATE_1V)
             strncpy(line, "PRESS R ENC FOR C1", 20);

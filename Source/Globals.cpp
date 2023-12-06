@@ -36,6 +36,7 @@ DrumMode drumMode;
 IOConfigurationMenu ioConfigurationMenu;
 CalibrationMenu calibrationMenu;
 QuantizerMenu quantizerMenu;
+ManageMenu manageMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

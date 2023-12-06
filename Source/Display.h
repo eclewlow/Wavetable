@@ -83,7 +83,7 @@ public:
     static void put_string(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input);
     static void put_string_3x5(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
     static void put_string_5x5(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
-    static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false);
+    static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false, int8_t padding=1);
     static void clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
     static void clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height, bool set = false);
     static void clear_rectangle_grey(uint8_t x,uint8_t y,uint8_t width,uint8_t height);

@@ -455,7 +455,7 @@ void Display::put_string_3x5(uint8_t x, int8_t y, uint8_t Field_Width, const cha
         Display::invert_rectangle(x - 1, y - 1, 6 * Field_Width + 1, 7);
 }
 
-void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted)
+void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted, int8_t padding)
 {
     uint8_t Terminator_Found;
     uint8_t Characters_Placed;
@@ -493,6 +493,8 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         
         for(uint8_t column = 0; column<9; column++)
         {
+            if(column == 0)
+                LCD_Memory += padding;
             Pixel_Data.as_word=((uint16_t)Font_09x09[(this_character-FONT_09X09_BASE)][column]);
             
             Pixel_Data.as_word <<= (y & 0x07);
@@ -500,12 +502,15 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
             LCD_Memory[0]|=Pixel_Data.as_bytes[0];
             if (row < 7)
                 LCD_Memory[128]|=Pixel_Data.as_bytes[1];
-            LCD_Memory++;
+            if(column == 8)
+                LCD_Memory += padding;
+            else
+                LCD_Memory += 1;
         }
         LCD_Memory++;
     }
     if(inverted)
-        Display::invert_rectangle(x - 1, y - 1, 10 * Field_Width + 1, 12);
+        Display::invert_rectangle(x - 2, y - 2, 10 * Field_Width + 2, 14);
     
 }
 

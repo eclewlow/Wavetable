@@ -99,15 +99,15 @@ void EnterNameMenu::paint(juce::Graphics& g) {
     
     for(int i=0; i < 8; i++) {
         int y = y_offset + 9 + 2;
-        int x = i * 11 + x_offset;
-        Display::LCD_Line(x, y, x + 9, y, true);
+        int x = i * 12 + x_offset;
+        Display::LCD_Line(x, y, x + 8, y, true);
         if(i == name_index)
-            Display::LCD_Line(x, y+1, x + 9, y+1, true);
+            Display::LCD_Line(x, y+1, x + 8, y+1, true);
 
         char theChar[2];
         snprintf(theChar, 2, "%c", name_chars[i]);
 
-        Display::put_string_9x9(x, y_offset, 1, theChar);
+        Display::put_string_9x9(x, y_offset, 1, theChar, false, 0);
         
     }
     

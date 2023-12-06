@@ -360,7 +360,7 @@ void FxMenu::paint(juce::Graphics& g) {
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
         char pot_value_string[4];
         snprintf(pot_value_string, 4, "%d", (fx * 100) / 4095);
-        Display::put_string_9x9(64 + (64-3) / 2 - strlen(pot_value_string) * 10 / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string);
+        Display::put_string_9x9(64 + (64-3) / 2 - strlen(pot_value_string) * 11 / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string);
     }
     else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
         Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, BUF1);

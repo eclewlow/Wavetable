@@ -50,8 +50,10 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 context.setState(&ioConfigurationMenu);
                 break;
             case DEVICE_CALIBRATION:
+                context.setState(&calibrationMenu);
                 break;
             case DEVICE_QUANTIZER:
+                context.setState(&quantizerMenu);
                 break;
             case DEVICE_MEMORY:
                 break;
@@ -92,7 +94,7 @@ void DeviceConfigurationMenu::paint(juce::Graphics& g) {
             caption = (char*)"CALIBRATE";
             break;
         case DEVICE_QUANTIZER:
-            caption = (char*)"QUANT";
+            caption = (char*)"QUANTIZER";
             break;
         case DEVICE_MEMORY:
             caption = (char*)"MEMORY";
@@ -102,7 +104,7 @@ void DeviceConfigurationMenu::paint(juce::Graphics& g) {
     }
 
     
-    Display::put_string_9x9(64-strlen(caption)*10/2,64-11,strlen(caption),caption);
+    Display::put_string_9x9(64-strlen(caption)*11/2,64-11,strlen(caption),caption);
     
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_setup_menu_info);
     

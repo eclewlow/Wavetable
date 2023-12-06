@@ -111,7 +111,7 @@ void SubOscillatorMenu::paint(juce::Graphics& g) {
     
     int y_offset = 5;
     
-    Display::put_string_9x9(128 / 2 - strlen("SUB OSC") * 10 / 2, y_offset, strlen("SUB OSC"), "SUB OSC");
+    Display::put_string_9x9(128 / 2 - strlen("SUB OSC") * 11 / 2, y_offset, strlen("SUB OSC"), "SUB OSC");
 
     y_offset += 10 + 5;
     

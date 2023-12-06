@@ -96,6 +96,7 @@
 #include "IOConfigurationMenu.h"
 #include "CalibrationMenu.h"
 #include "QuantizerMenu.h"
+#include "ManageMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -147,6 +148,7 @@ extern DrumMode drumMode;
 extern IOConfigurationMenu ioConfigurationMenu;
 extern CalibrationMenu calibrationMenu;
 extern QuantizerMenu quantizerMenu;
+extern ManageMenu manageMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;
