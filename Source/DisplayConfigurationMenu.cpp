@@ -91,7 +91,7 @@ void DisplayConfigurationMenu::paint(juce::Graphics& g) {
     
     int y_offset = 5;
     
-    Display::put_string_9x9(128 / 2 - strlen("DISPLAY") * 11 / 2, y_offset, strlen("DISPLAY"), "DISPLAY");
+    Display::put_string_9x9(128 / 2 - Display::get_string_9x9_width("DISPLAY", 3) / 2, y_offset, strlen("DISPLAY"), "DISPLAY", false, 3);
 
     y_offset += 10 + 5;
     

@@ -104,7 +104,7 @@ void DeviceConfigurationMenu::paint(juce::Graphics& g) {
     }
 
     
-    Display::put_string_9x9(64-strlen(caption)*11/2,64-11,strlen(caption),caption);
+    Display::put_string_9x9(64-Display::get_string_9x9_width(caption, 2)/2,64-11,strlen(caption),caption, false, 2);
     
     Display::put_image_22x23(col*(23+2)+x_offset, row*(22+2)+y_offset, Graphic_setup_menu_info);
     

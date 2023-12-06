@@ -194,15 +194,15 @@ void ManageMenu::paint(juce::Graphics& g) {
         y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
         
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("EDIT"), "EDIT", true);
+        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("EDIT"), "EDIT", true, 3);
 
         y_offset += 14;
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME");
+        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", false, 3);
 
         y_offset += 14;
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE");
+        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", false, 3);
 
     }
     else if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {

@@ -41,7 +41,7 @@ void OscilloscopeConfigurationMenu::paint(juce::Graphics& g) {
     
     int y_offset = 5;
     
-    Display::put_string_9x9(128 / 2 - strlen("OSC") * 11 / 2, y_offset, strlen("OSC"), "OSC");
+    Display::put_string_9x9(128 / 2 - Display::get_string_9x9_width("OSC", 3) / 2, y_offset, strlen("OSC"), "OSC", false, 3);
 
     y_offset += 10 + 5;
     

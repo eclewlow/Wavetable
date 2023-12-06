@@ -306,16 +306,16 @@ void FxMenu::paint(juce::Graphics& g) {
     
 
     int row_height = 9;
-    x_offset = 5;
-    Display::put_string_9x9(x_offset, y_offset, strlen("FX"), "FX");
+    x_offset = 4;
+    Display::put_string_9x9(x_offset, y_offset, strlen("FX"), "FX", false, 2);
     
-    int centered_effect_name = (69 + 5 + 10 * 2) / 2 - strlen(effectName) * 6 / 2;
+    int centered_effect_name = (69 + 5 + 10 * 2) / 2 - strlen(effectName) * 6 / 2 - 1;
     Display::put_string_5x5(centered_effect_name, y_offset + (row_height-5) / 2, strlen(effectName), effectName, left_state_ == FX_MENU_LEFT_FX);
     
     
     
     x_offset += 64;
-    Display::put_string_9x9(x_offset, y_offset, strlen("MOD"), "MOD");
+    Display::put_string_9x9(x_offset, y_offset, strlen("MOD"), "MOD", false, 2);
     
     char * controlName;
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL)
@@ -360,7 +360,7 @@ void FxMenu::paint(juce::Graphics& g) {
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
         char pot_value_string[4];
         snprintf(pot_value_string, 4, "%d", (fx * 100) / 4095);
-        Display::put_string_9x9(64 + (64-3) / 2 - strlen(pot_value_string) * 11 / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string);
+        Display::put_string_9x9(64 + (64-3) / 2 - Display::get_string_9x9_width(pot_value_string, 2) / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string, 2);
     }
     else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
         Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, BUF1);

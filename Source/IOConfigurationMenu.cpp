@@ -85,7 +85,7 @@ void IOConfigurationMenu::paint(juce::Graphics& g) {
     /****/
     int x_offset = (64) / 2;
     int y_offset = 10;
-    Display::put_string_9x9(x_offset - strlen("IO") * 11 / 2, y_offset, strlen("IO"), "IO");
+    Display::put_string_9x9(x_offset - Display::get_string_9x9_width("IO", 2) / 2, y_offset, strlen("IO"), "IO", false, 2);
     
     /****/
     // draw left side items

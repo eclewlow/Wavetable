@@ -34,7 +34,7 @@ void InfoMenu::paint(juce::Graphics& g) {
     
     int y_offset = 5;
     
-    Display::put_string_9x9(128 / 2 - strlen("INFO") * 11 / 2, y_offset, strlen("INFO"), "INFO");
+    Display::put_string_9x9(128 / 2 - Display::get_string_9x9_width("INFO", 3) / 2, y_offset, strlen("INFO"), "INFO", false, 3);
 
     y_offset += 10 + 5;
     

@@ -136,7 +136,7 @@ void MainMenu::paint(juce::Graphics& g) {
     }
 
     
-    Display::put_string_9x9(64-strlen(caption)*11/2,64-11,strlen(caption),caption);
+    Display::put_string_9x9(64-Display::get_string_9x9_width(caption, 2)/2,64-11,strlen(caption),caption, false, 2);
     
     if(false) {}
     else if(context.getEngine() == &abEngine)

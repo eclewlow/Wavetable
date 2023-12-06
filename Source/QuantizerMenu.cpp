@@ -41,7 +41,7 @@ void QuantizerMenu::paint(juce::Graphics& g) {
     
     int y_offset = 5;
     
-    Display::put_string_9x9(128 / 2 - strlen("QUANTIZER") * 11 / 2, y_offset, strlen("QUANTIZER"), "QUANTIZER");
+    Display::put_string_9x9(128 / 2 - Display::get_string_9x9_width("QUANTIZER", 2) / 2, y_offset, strlen("QUANTIZER"), "QUANTIZER", false, 2);
 
     char line[20];
     char * line2;

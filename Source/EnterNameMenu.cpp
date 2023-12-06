@@ -60,6 +60,11 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
                     (*exec_func)(name_chars);
                 if(back_state)
                     context.setState(back_state);
+            } else {
+                popup.show();
+                popup.SetLine(0, (char*)"PLEASE ENTER");
+                popup.SetLine(1, (char*)"A NAME!");
+                popup.SetLine(2, (char*)"\0");
             }
         }
         else {
