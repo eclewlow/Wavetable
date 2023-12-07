@@ -11,21 +11,17 @@
 #include "effect_manager.h"
 
 void EffectManager::Init() {
-    depth = 1.0f;
-    sync = false;
-    oscillatorShape = SINE_SHAPE;
-    effectType = FM;
-    controlType = INTERNAL_MODULATOR;
-    ratio_ = 0.1f;
+    depth_ = 1.0f;
+    sync_ = false;
+    oscillator_shape_ = SINE_SHAPE;
+    control_type_ = INTERNAL_MODULATOR;
 }
 
 void EffectManager::Reset() {
-    depth = 1.0f;
-    sync = false;
-    oscillatorShape = SINE_SHAPE;
-    effectType = FM;
-    controlType = INTERNAL_MODULATOR;
-    ratio_ = 0.1f;
+    depth_ = 1.0f;
+    sync_ = false;
+    oscillator_shape_ = SINE_SHAPE;
+    control_type_ = INTERNAL_MODULATOR;
 }
 
 float EffectManager::RenderSampleEffect(float sample, float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {

@@ -118,30 +118,7 @@ bool FxMenu::handleKeyRelease(int key) {
                 effect_manager.setScale(effect_manager.getScale() - 1);
                 break;
             case FX_MENU_RIGHT_WAVE:
-                if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SNH_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::TRIANGLE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SINE_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::TRIANGLE_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SAWTOOTH_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SNH_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SQUARE_SHAPE);
-                }
+                effect_manager.setOscillatorShape((effect_manager.getOscillatorShape() + EffectManager::OSCILLATOR_SHAPE_LAST - 1) % EffectManager::OSCILLATOR_SHAPE_LAST);
                 break;
             case FX_MENU_RIGHT_RATIO:
 //                effect_manager.setRatio(effect_manager.getRatio()-1);
@@ -172,30 +149,7 @@ bool FxMenu::handleKeyRelease(int key) {
                 effect_manager.setScale(effect_manager.getScale() + 1);
                 break;
             case FX_MENU_RIGHT_WAVE:
-                if(effect_manager.getOscillatorShape() == EffectManager::SINE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::TRIANGLE_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::TRIANGLE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SAWTOOTH_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SAWTOOTH_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::RAMP_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::RAMP_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SQUARE_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SQUARE_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SNH_SHAPE);
-                }
-                else if(effect_manager.getOscillatorShape() == EffectManager::SNH_SHAPE)
-                {
-                    effect_manager.setOscillatorShape(EffectManager::SINE_SHAPE);
-                }
+                effect_manager.setOscillatorShape((effect_manager.getOscillatorShape() + 1) % EffectManager::OSCILLATOR_SHAPE_LAST);
                 break;
             case FX_MENU_RIGHT_RATIO:
 //                effect_manager.setRatio(effect_manager.getRatio()+1);

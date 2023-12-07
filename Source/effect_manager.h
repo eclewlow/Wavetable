@@ -16,32 +16,40 @@
 class EffectManager {
 public:
     enum OscillatorShape {
-        SINE_SHAPE,
-        TRIANGLE_SHAPE,
-        SNH_SHAPE,
-        RAMP_SHAPE,
-        SAWTOOTH_SHAPE,
-        SQUARE_SHAPE,
-    };
-    enum EffectType {
-        FM,
-        RING_MODULATION,
-        WAVEFOLDER,
-        PHASE_DISTORTION,
-    };
-    enum ControlType {
-        MANUAL_CONTROL,
-        EXTERNAL_MODULATOR,
-        INTERNAL_MODULATOR,
+        SINE_SHAPE              = 0,
+        TRIANGLE_SHAPE          = 1,
+        SAWTOOTH_SHAPE          = 2,
+        RAMP_SHAPE              = 3,
+        SQUARE_SHAPE            = 4,
+        SNH_SHAPE               = 5,
+        OSCILLATOR_SHAPE_LAST   = 6,
     };
 
+    enum ControlType {
+        MANUAL_CONTROL      = 0,
+        EXTERNAL_MODULATOR  = 1,
+        INTERNAL_MODULATOR  = 2,
+        CONTROL_TYPE_LAST   = 3,
+    };
+    
+    enum EffectType {
+        EFFECT_TYPE_BYPASS              = 0,
+        EFFECT_TYPE_FM                  = 1,
+        EFFECT_TYPE_RING_MODULATOR      = 2,
+        EFFECT_TYPE_PHASE_DISTORTION    = 3,
+        EFFECT_TYPE_WAVEFOLDER          = 4,
+        EFFECT_TYPE_WAVEFOLDER          = 5,
+        EFFECT_TYPE_WAVEWRAPPER         = 6,
+        EFFECT_TYPE_BITCRUSH            = 7,
+        EFFECT_TYPE_DRIVE               = 8,
+    };
+
+    
     EffectManager() {
-        depth = 1.0f;
-        sync = false;
-        oscillatorShape = SINE_SHAPE;
-        effectType = FM;
-        controlType = INTERNAL_MODULATOR;
-        ratio_ = 1;
+        depth_ = 1.0f;
+        sync_ = false;
+        oscillator_shape_ = SINE_SHAPE;
+        control_type_ = INTERNAL_MODULATOR;
     }
     ~EffectManager() {}
     void Init();
@@ -53,20 +61,17 @@ public:
     float RenderPhaseEffect(float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false, bool downsampling=false);
     float GetSample(float phase);
     
-    inline ControlType getControlType() { return controlType; }
-    inline void setControlType(ControlType newControlType) { controlType = newControlType; }
+    inline int8_t getControlType() { return control_type_; }
+    inline void setControlType(int8_t control_type) { control_type_ = control_type; }
     
-    inline OscillatorShape getOscillatorShape() { return oscillatorShape; }
-    inline void setOscillatorShape(OscillatorShape newOscillatorShape) { oscillatorShape = newOscillatorShape; }
+    inline int8_t getOscillatorShape() { return oscillator_shape_; }
+    inline void setOscillatorShape(int8_t oscillator_shape) { oscillator_shape_ = oscillator_shape; }
 
-    inline EffectType getEffectType() { return effectType; }
-    inline void setEffectType(EffectType newEffectType) { effectType = newEffectType; }
+    inline bool getSync() { return sync_; }
+    inline void setSync(bool sync) { sync_ = sync; }
 
-    inline bool getSync() { return sync; }
-    inline void setSync(bool newSync) { sync = newSync; }
-
-    inline float getDepth() { return depth; }
-    inline void setDepth(float newDepth) { depth = std::clamp(newDepth, 0.0f, 1.0f); }
+    inline float getDepth() { return depth_; }
+    inline void setDepth(float depth) { depth_ = std::clamp(depth, 0.0f, 1.0f); }
 
     inline int getScale() { return scale_; }
     inline void setScale(int scale) { scale_ = std::clamp<int>(scale, 0, 100); }
@@ -75,14 +80,12 @@ public:
     inline void setRange(int range) { range_ = std::clamp<int>(range, 1, 10); }
 
 protected:
-    float depth;
-    bool sync;
-    float ratio_;
+    float depth_;
+    bool sync_;
     int scale_;
     int range_;
-    OscillatorShape oscillatorShape;
-    EffectType effectType;
-    ControlType controlType;
+    int8_t oscillator_shape_;
+    int8_t control_type_;
     Effect* effect_;
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EffectManager);

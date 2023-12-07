@@ -28,6 +28,58 @@ public:
         bool factory_preset;
     } WAVETABLE;
     
+    typedef struct {
+        char name[9];
+
+        // misc settings
+        int8_t scope_setting_;                  // (0, 1)
+        int8_t morph_setting_;                  // (0, 1)
+
+        // sub osc parameters
+        int8_t suboscOffset;                    // (-24, 24)
+        int8_t suboscDetune;                    // (-50, 50)
+        int8_t suboscMix;                       // (0, 100)
+        int8_t suboscWave;                      // (0, 5)
+        
+        // fx parameters
+        int8_t fx_depth;                        // (0, 0)
+        bool fx_sync;                           // (false, true)
+        int8_t fx_scale;                        // (0, 100)
+        int8_t fx_range;                        // (1, 10)
+        int8_t fx_oscillator_shape;             // (0, 5)
+        int8_t fx_control_type;                 // (0, 2)
+        int8_t fx_effect;                       // (0, 8)
+
+        // ab engine parameters
+        int8_t ab_engine_left_wavetable;        // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
+        int8_t ab_engine_left_frame;            // (0, 15)
+        int8_t ab_engine_right_wavetable;       // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
+        int8_t ab_engine_right_frame;           // (0, 15)
+//        bool ab_engine_is_editing; set to false for both left and right
+
+        // wavetable engine parameters
+        int8_t wavetable_engine_wavetable;      // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
+
+        // matrix engine parameters
+        int8_t matrix_engine_x1;                // (0, 15)
+        int8_t matrix_engine_x2;                // (x1, 15)
+        int8_t matrix_engine_y1;                // (0, 15)
+        int8_t matrix_engine_y2;                // (y1, 15)
+        int8_t matrix_engine_wavelist_offset;   // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 16 - 1)
+
+        // drum engine parameters
+        float drum_engine_amp_decay;            // (0.0, 1.0)
+        float drum_engine_fm_decay;             // (0.0, 1.0)
+        float drum_engine_fm_shape;             // (0.0, 1.0)
+        float drum_engine_fm_depth;             // (0.0, 1.0)
+        int8_t drum_engine_wavetable;           // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
+
+        // pot positions
+        uint16_t pot_fx_amount;                 // (0, 4095)
+        uint16_t pot_fx;                        // (0, 4095)
+        uint16_t pot_morph;                     // (0, 4095)
+    } SNAPSHOT;
+    
     Storage() {};
     ~Storage() {};
     int16_t LoadWaveSample(int table, int frame, int index);

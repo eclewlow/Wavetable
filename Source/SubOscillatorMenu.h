@@ -19,10 +19,10 @@ class SubOscillatorMenu: public State
 {
 public:
     enum SubOscillatorMenuState {
-        SUB_OSC_MENU_OFFSET,
-        SUB_OSC_MENU_DETUNE,
-        SUB_OSC_MENU_MIX,
-        SUB_OSC_MENU_WAVE,
+        SUB_OSC_MENU_OFFSET,    = 0,
+        SUB_OSC_MENU_DETUNE,    = 1,
+        SUB_OSC_MENU_MIX,       = 2,
+        SUB_OSC_MENU_WAVE,      = 3,
 
     };
     SubOscillatorMenu();
@@ -35,6 +35,6 @@ public:
     inline void setState(SubOscillatorMenuState state) { state_ = state; }
 
 private:
-    SubOscillatorMenuState state_;
+    int8_t state_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SubOscillatorMenu);
 };

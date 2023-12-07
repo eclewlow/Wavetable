@@ -55,10 +55,7 @@ private:
     int8_t x2_;
     int8_t y1_;
     int8_t y2_;
-    
-    float morph_x_;
-    float morph_y_;
-    
+        
     int8_t wavelist_offset_;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MatrixEngine);
