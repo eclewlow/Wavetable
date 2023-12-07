@@ -27,10 +27,11 @@ public:
     void mouseDown(const juce::MouseEvent &event) override;
 
     bool keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) override;
+    bool handleKey(int key);
 private:
     //==============================================================================
     // Your private member variables go here...
     float phase = 0.0f;
-    
+    bool key_map[128];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

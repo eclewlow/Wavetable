@@ -21,9 +21,9 @@ FxMenu::~FxMenu() {
     
 }
 
-bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
+bool FxMenu::handleKeyRelease(int key) {
     
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
@@ -58,7 +58,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
@@ -96,7 +96,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
     
     
     
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(right_state_) {
             case FX_MENU_RIGHT_MOD:
                 if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
@@ -150,7 +150,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(right_state_) {
             case FX_MENU_RIGHT_MOD:
                 if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL)
@@ -206,7 +206,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
     }
     
     
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 setLeftState(FX_MENU_LEFT_DEPTH);
@@ -218,7 +218,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         switch(right_state_) {
             case FX_MENU_RIGHT_MOD:
                 if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
@@ -257,7 +257,7 @@ bool FxMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&mainMenu);
     }
     

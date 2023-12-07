@@ -20,10 +20,10 @@ InfoMenu::~InfoMenu() {
     
 }
 
-bool InfoMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == BACK_BUTTON) {
+bool InfoMenu::handleKeyRelease(int key) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
-    } else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    } else if(key == LEFT_ENCODER_CLICK) {
         context.setState(&deviceConfigurationMenu);
     }
     return true;

@@ -18,7 +18,9 @@ class Popup
 public:
     Popup();
     ~Popup();
-    bool handleKeyPress(const juce::KeyPress &key);
+    bool handleKeyPress(int key) { return false; }
+    bool handleKeyRelease(int key);
+    bool handleKeyLongPress(int key) { return false; }
     void paint(juce::Graphics& g);
     void show(int32_t timer_length = 2000);
     void hide();

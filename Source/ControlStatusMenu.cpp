@@ -21,20 +21,20 @@ ControlStatusMenu::~ControlStatusMenu() {
     
 }
 
-bool ControlStatusMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool ControlStatusMenu::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         switch(currentState) {
             default:
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(currentState) {
             default:
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case CONTROL_STATUS_STATE_NONE:
                 context.setState(&oscilloscope);
@@ -43,7 +43,7 @@ bool ControlStatusMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         switch(currentState) {
             case CONTROL_STATUS_STATE_NONE:
                 context.setState(&oscilloscope);

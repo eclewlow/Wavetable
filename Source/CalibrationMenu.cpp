@@ -24,20 +24,20 @@ CalibrationMenu::~CalibrationMenu() {
     
 }
 
-bool CalibrationMenu::handleKeyPress(const juce::KeyPress &key) {
+bool CalibrationMenu::handleKeyRelease(int key) {
 //    DISPLAY_MENU_BRIGHTNESS,
 //    DISPLAY_MENU_CONTRAST,
 //    DISPLAY_MENU_INVERT,
 //    DISPLAY_MENU_SCOPE,
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    else if(key == RIGHT_ENCODER_CLICK) {
         if(state_ == CALIBRATION_MENU_STATE_1V && message_displayed_ == false) {
             message_displayed_ = true;
             timer_ = system_clock.milliseconds();
@@ -53,7 +53,7 @@ bool CalibrationMenu::handleKeyPress(const juce::KeyPress &key) {
             setState(CALIBRATION_MENU_STATE_1V);
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
     }
     return true;
 }

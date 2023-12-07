@@ -20,20 +20,20 @@ SubOscillatorMenu::~SubOscillatorMenu() {
     
 }
 
-bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
+bool SubOscillatorMenu::handleKeyRelease(int key) {
 //    SUB_OSC_MENU_OFFSET,
 //    SUB_OSC_MENU_DETUNE,
 //    SUB_OSC_MENU_MIX,
 //    SUB_OSC_MENU_WAVE,
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&mainMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
         context.getEngine()->reset_phase();
         suboscillator.reset_phase();
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    else if(key == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case SUB_OSC_MENU_OFFSET:
                 user_settings.setSubOscOffset(user_settings.getSubOscOffset()-1);
@@ -51,7 +51,7 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    else if(key == RIGHT_ENCODER_CW) {
         switch(state_) {
             case SUB_OSC_MENU_OFFSET:
                 user_settings.setSubOscOffset(user_settings.getSubOscOffset()+1);
@@ -69,7 +69,7 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
         switch(state_) {
             case SUB_OSC_MENU_OFFSET:
                 setState(SUB_OSC_MENU_DETUNE);
@@ -86,7 +86,7 @@ bool SubOscillatorMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
             case SUB_OSC_MENU_OFFSET:
                 break;

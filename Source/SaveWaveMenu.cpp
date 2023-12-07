@@ -50,8 +50,8 @@ void SaveWaveMenu::triggerUpdate(bool back_pressed) {
 
 }
 
-bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool SaveWaveMenu::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -75,7 +75,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -99,7 +99,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 break;
@@ -107,7 +107,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 break;
@@ -115,7 +115,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
 //                setState(LOAD_WAVE_MENU_SELECT_FRAME);
@@ -133,7 +133,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 if(storage.GetWavetable(wavetable_).name[0] == '\0') {
@@ -166,7 +166,7 @@ bool SaveWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
                 if(back_menu_)

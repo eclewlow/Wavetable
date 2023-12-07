@@ -20,16 +20,16 @@ DisplayConfigurationMenu::~DisplayConfigurationMenu() {
     
 }
 
-bool DisplayConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
+bool DisplayConfigurationMenu::handleKeyRelease(int key) {
 //    DISPLAY_MENU_BRIGHTNESS,
 //    DISPLAY_MENU_CONTRAST,
 //    DISPLAY_MENU_INVERT,
 //    DISPLAY_MENU_SCOPE,
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
             case DISPLAY_MENU_BRIGHTNESS:
                 user_settings.setBrightness(user_settings.getBrightness()-1);
@@ -47,7 +47,7 @@ bool DisplayConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
         switch(state_) {
             case DISPLAY_MENU_BRIGHTNESS:
                 user_settings.setBrightness(user_settings.getBrightness()+1);
@@ -65,7 +65,7 @@ bool DisplayConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case DISPLAY_MENU_BRIGHTNESS:
                 setState(DISPLAY_MENU_CONTRAST);

@@ -20,7 +20,7 @@ MainMenu::~MainMenu() {
     
 }
 
-bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
+bool MainMenu::handleKeyRelease(int key) {
     //    MAIN_WAVE_DESIGN,
     //    MODE_SELECT,
     //    FX_MANAGEMENT,
@@ -30,14 +30,14 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
     //    WAVETABLE_MANAGEMENT,
     //    MODULE_SETUP_CONFIG
     
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
         currentState = std::clamp<int8_t>(currentState - 1, MAIN_WAVE_DESIGN, MODULE_SETUP_CONFIG);
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         currentState = std::clamp<int8_t>(currentState + 1, MAIN_WAVE_DESIGN, MODULE_SETUP_CONFIG);
     }
-    //    printf("%d, %d\n", key.getKeyCode(), juce::KeyPress::returnKey, currentState, );
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    //    printf("%d, %d\n", key, juce::KeyPress::returnKey, currentState, );
+    if(key == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case MODE_SELECT:
                 context.setState(&modeMenu);
@@ -79,7 +79,7 @@ bool MainMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         setState(MAIN_WAVE_DESIGN);
     }
 

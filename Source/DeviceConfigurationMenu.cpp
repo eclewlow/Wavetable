@@ -20,7 +20,7 @@ DeviceConfigurationMenu::~DeviceConfigurationMenu() {
     
 }
 
-bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
+bool DeviceConfigurationMenu::handleKeyRelease(int key) {
 //    DEVICE_INFO,
 //    DEVICE_DISPLAY,
 //    DEVICE_OSCILLOSCOPE,
@@ -28,14 +28,14 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
 //    DEVICE_CALIBRATION,
 //    DEVICE_QUANTIZER,
 //    DEVICE_MEMORY,
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
         currentState = std::clamp<int8_t>(currentState - 1, DEVICE_INFO, DEVICE_MEMORY);
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         currentState = std::clamp<int8_t>(currentState + 1, DEVICE_INFO, DEVICE_MEMORY);
     }
 
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case DEVICE_INFO:
                 context.setState(&infoMenu);
@@ -61,7 +61,7 @@ bool DeviceConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&mainMenu);
     }
 

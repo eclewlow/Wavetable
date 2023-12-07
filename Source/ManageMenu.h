@@ -35,7 +35,9 @@ public:
 
     ManageMenu();
     ~ManageMenu();
-    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual bool handleKeyPress(int key);
+    virtual bool handleKeyRelease(int key);
+    virtual bool handleKeyLongPress(int key);
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed);
     inline void setState(int8_t state) { state_ = state; }
@@ -53,6 +55,7 @@ private:
     float morph_;
     int8_t target_;
     uint32_t ticker_timer_;
+    uint32_t press_timer_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ManageMenu);
 };

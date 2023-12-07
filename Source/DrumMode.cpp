@@ -32,7 +32,7 @@ void DrumMode::triggerUpdate(bool back_pressed) {
     edit_state_ = DRUM_MODE_EDIT_WAVETABLE;
 }
 
-bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
+bool DrumMode::handleKeyRelease(int key) {
 //    DRUM_MODE_EDIT_WAVETABLE = 0,
 //    DRUM_MODE_EDIT_AMP_DECAY = 1,
 //    DRUM_MODE_EDIT_FM_DECAY = 2,
@@ -40,15 +40,15 @@ bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
 //    DRUM_MODE_EDIT_FM_DEPTH = 4,
     float dx = 0.01f;
 
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
         edit_state_ = std::clamp<int8_t>(edit_state_ - 1, DRUM_MODE_EDIT_WAVETABLE, DRUM_MODE_EDIT_FM_DEPTH);
         setEditing(false);
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         edit_state_ = std::clamp<int8_t>(edit_state_ + 1, DRUM_MODE_EDIT_WAVETABLE, DRUM_MODE_EDIT_FM_DEPTH);
         setEditing(false);
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(edit_state_) {
             case DRUM_MODE_EDIT_WAVETABLE:
                 drumEngine.SetWavetable(drumEngine.GetWavetable() - 1);
@@ -73,7 +73,7 @@ bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(edit_state_) {
             case DRUM_MODE_EDIT_WAVETABLE:
                 drumEngine.SetWavetable(drumEngine.GetWavetable() + 1);
@@ -98,11 +98,11 @@ bool DrumMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         if(back_menu_)
             context.setState(back_menu_, true);
         else

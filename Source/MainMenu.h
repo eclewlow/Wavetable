@@ -30,7 +30,9 @@ public:
     };
     MainMenu();
     ~MainMenu();
-    virtual bool handleKeyPress(const juce::KeyPress &key);
+    virtual bool handleKeyPress(int key) { return false; }
+    virtual bool handleKeyRelease(int key);
+    virtual bool handleKeyLongPress(int key) { return false; }
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed) {};
     inline void setState(MainMenuState newState) { currentState = newState; }

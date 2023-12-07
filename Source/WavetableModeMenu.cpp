@@ -31,31 +31,31 @@ void WavetableModeMenu::triggerUpdate(bool back_pressed) {
     }
 }
 
-bool WavetableModeMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool WavetableModeMenu::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
         
         if(wavetable_ < wavetable_offset_) {
             wavetable_offset_ = wavetable_;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
         
         if(wavetable_ > wavetable_offset_ + 2) {
             wavetable_offset_ = wavetable_ - 2;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         wavetableEngine.SetWavetable(wavetable_);
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         if(back_menu_)
             context.setState(back_menu_, true);
         else

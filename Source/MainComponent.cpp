@@ -92,6 +92,13 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     float subosc_out[size];
 
     adc.handleKeyPress();
+    handleKey(LEFT_ENCODER_CW);
+    handleKey(LEFT_ENCODER_CCW);
+    handleKey(LEFT_ENCODER_CLICK);
+    handleKey(RIGHT_ENCODER_CW);
+    handleKey(RIGHT_ENCODER_CCW);
+    handleKey(RIGHT_ENCODER_CLICK);
+    handleKey(BACK_BUTTON);
 
     uint16_t tune = adc.getChannelProcessed(0);
     uint16_t fx_amount = adc.getChannelProcessed(1);
@@ -157,10 +164,44 @@ void MainComponent::paint (juce::Graphics& g)
     Display::paint(g);
 }
 
+bool MainComponent::handleKey(int key) {
+    if(key_map[key] || juce::KeyPress::isKeyCurrentlyDown(key)) {
+        if(!juce::KeyPress::isKeyCurrentlyDown(key)) {
+            // key was released!  call keyrelease
+            key_map[key] = false;
+            bool pass = popup.handleKeyRelease(key);
+            if(!pass) {
+                pass = context.handleKeyRelease(key);
+            }
+            return pass;
+
+        } else if (!key_map[key]) {
+            // key was pressed!  call keypress. start timer for managemenu
+            key_map[key] = true;
+            bool pass = popup.handleKeyPress(key);
+            if(!pass) {
+                pass = context.handleKeyPress(key);
+            }
+            return pass;
+        } else {
+            // key is being held. call keyheld.
+            bool pass = popup.handleKeyLongPress(key);
+            if(!pass) {
+                pass = context.handleKeyLongPress(key);
+            }
+            if(pass)
+                key_map[key] = false;
+            return pass;
+        }
+    }
+    return false;
+}
+
 void MainComponent::timerCallback()
 {
     for(int i = 0; i < 16; i++)
         system_clock.Tick();
+
     repaint();
 };
 
@@ -179,11 +220,20 @@ bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *origi
             adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2059);
         }
     }
-    bool pass = popup.handleKeyPress(key);
-    if(!pass) {
-        pass = context.handleKeyPress(key);
-    }
-    return pass;
+    
+//    handleKey(LEFT_ENCODER_CW);
+//    handleKey(LEFT_ENCODER_CCW);
+//    handleKey(LEFT_ENCODER_CLICK);
+//    handleKey(RIGHT_ENCODER_CW);
+//    handleKey(RIGHT_ENCODER_CCW);
+//    handleKey(RIGHT_ENCODER_CLICK);
+//    handleKey(BACK_BUTTON);
+//    bool pass = popup.handleKeyPress(key);
+//    if(!pass) {
+//        pass = context.handleKeyPress(key);
+//    }
+//    return pass;
+    return true;
 }
 
 void MainComponent::resized()

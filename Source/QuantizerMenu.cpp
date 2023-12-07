@@ -19,18 +19,18 @@ QuantizerMenu::~QuantizerMenu() {
     
 }
 
-bool QuantizerMenu::handleKeyPress(const juce::KeyPress &key) {
+bool QuantizerMenu::handleKeyRelease(int key) {
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
         quantizer.setScale((quantizer.getScale() + Quantizer::QUANTIZER_SCALE_LAST - 1) % Quantizer::QUANTIZER_SCALE_LAST);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
         quantizer.setScale((quantizer.getScale() + 1) % Quantizer::QUANTIZER_SCALE_LAST);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
 //        context.setState(&deviceConfigurationMenu);
     }
     return true;

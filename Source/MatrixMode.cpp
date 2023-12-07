@@ -26,8 +26,8 @@ void MatrixMode::triggerUpdate(bool back_pressed) {
     edit_state_ = MATRIX_MODE_EDIT_DEFAULT;
 }
 
-bool MatrixMode::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool MatrixMode::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         switch(edit_state_) {
             case MATRIX_MODE_EDIT_DEFAULT:
                 if(matrixEngine.GetX1() > 0) {
@@ -45,7 +45,7 @@ bool MatrixMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(edit_state_) {
             case MATRIX_MODE_EDIT_DEFAULT:
                 if(matrixEngine.GetX2() < 15) {
@@ -63,7 +63,7 @@ bool MatrixMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(edit_state_) {
             case MATRIX_MODE_EDIT_DEFAULT:
                 if(matrixEngine.GetY1() > 0) {
@@ -88,7 +88,7 @@ bool MatrixMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(edit_state_) {
             case MATRIX_MODE_EDIT_DEFAULT:
                 if(matrixEngine.GetY2() < 15) {
@@ -113,14 +113,14 @@ bool MatrixMode::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         edit_state_ = edit_state_ == MATRIX_MODE_EDIT_OFFSET ? MATRIX_MODE_EDIT_DEFAULT : MATRIX_MODE_EDIT_OFFSET;
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         edit_state_ = edit_state_ == MATRIX_MODE_EDIT_OFFSET ? MATRIX_MODE_EDIT_BOTTOMRIGHT : edit_state_;
         edit_state_ = (edit_state_ + 1) % (MATRIX_MODE_EDIT_LAST);
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         if(back_menu_)
             context.setState(back_menu_, true);
         else

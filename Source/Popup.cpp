@@ -22,18 +22,18 @@ Popup::~Popup() {
     
 }
 
-bool Popup::handleKeyPress(const juce::KeyPress &key) {
+bool Popup::handleKeyRelease(int key) {
     if(!is_showing_) {
         return false;
     }
 
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
     }
     return true;
 }

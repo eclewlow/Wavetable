@@ -20,18 +20,18 @@ ModeMenu::~ModeMenu() {
     
 }
 
-bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
+bool ModeMenu::handleKeyRelease(int key) {
     //    MODE_AB,
     //    MODE_WAVETABLE,
     //    MODE_MATRIX,
     //    MODE_DRUM,
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    if(key == LEFT_ENCODER_CCW) {
         currentState = std::clamp<int8_t>(currentState - 1, MODE_AB, MODE_DRUM);
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         currentState = std::clamp<int8_t>(currentState + 1, MODE_AB, MODE_DRUM);
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(currentState) {
             case MODE_AB:
                 abModeMenu.setBackMenu(&modeMenu);
@@ -58,7 +58,7 @@ bool ModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&mainMenu);
     }
     

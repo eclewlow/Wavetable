@@ -52,22 +52,22 @@ WaveEditor::~WaveEditor() {
 //AB_SELECT_WAVETABLE,
 //AB_SELECT_FRAME,
 
-bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
+bool WaveEditor::handleKeyRelease(int key) {
     if(state_ == WAVE_EDITOR_STATE_EDITOR) {
-        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        if(key == LEFT_ENCODER_CCW) {
             if(selection_x1_ > 0) {
                 selection_x1_ = std::clamp(--selection_x1_, 0, 127);
                 selection_x2_ = std::clamp(--selection_x2_, 0, 127);
             }
             
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        if(key == LEFT_ENCODER_CW) {
             if(selection_x2_ < 127) {
                 selection_x1_ = std::clamp(++selection_x1_, 0, 127);
                 selection_x2_ = std::clamp(++selection_x2_, 0, 127);
             }
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        if(key == RIGHT_ENCODER_CCW) {
             if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
                 if(selection_x2_ - selection_x1_ > 2) {
                     selection_x1_++;
@@ -141,7 +141,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             }
             
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        if(key == RIGHT_ENCODER_CW) {
             if(right_state_ == WAVE_EDITOR_RIGHT_ENCODER_EXPAND) {
                 selection_x1_--;
                 selection_x2_++;
@@ -214,10 +214,10 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 
             }
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        if(key == RIGHT_ENCODER_CLICK) {
             right_state_ = right_state_ == WAVE_EDITOR_RIGHT_ENCODER_DRAW ? WAVE_EDITOR_RIGHT_ENCODER_EXPAND : WAVE_EDITOR_RIGHT_ENCODER_DRAW;
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        if(key == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
 
@@ -230,7 +230,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             menu_target_offset_y_ = 0;
             timer_ = system_clock.milliseconds();
         }
-        if(key.getKeyCode() == BACK_BUTTON) {
+        if(key == BACK_BUTTON) {
             if(back_menu_)
                 context.setState(back_menu_);
             else
@@ -238,25 +238,25 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_MENU) {
-        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        if(key == LEFT_ENCODER_CCW) {
             selection_ = std::clamp<int8_t>(--selection_, WAVE_EDITOR_SELECTION_SQUARE, WAVE_EDITOR_SELECTION_SAVE);
             if(menu_selection_offset_ > selection_)
                 menu_selection_offset_ = selection_;
 
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        if(key == LEFT_ENCODER_CW) {
             selection_ = std::clamp<int8_t>(++selection_, WAVE_EDITOR_SELECTION_SQUARE, WAVE_EDITOR_SELECTION_SAVE);
 
             if(menu_selection_offset_ <= selection_ - 5)
                 menu_selection_offset_ = selection_ - 5;
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        if(key == RIGHT_ENCODER_CCW) {
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        if(key == RIGHT_ENCODER_CW) {
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        if(key == RIGHT_ENCODER_CLICK) {
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        if(key == LEFT_ENCODER_CLICK) {
             if(selection_ == WAVE_EDITOR_SELECTION_CLEAR) {
                 memset(wavedata_, 0, 2048*2);
                 if(mode_ == WAVE_EDITOR_SELECTION_SPECTRAL) {
@@ -298,7 +298,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
                 timer_ = system_clock.milliseconds();
             }
         }
-        if(key.getKeyCode() == BACK_BUTTON) {
+        if(key == BACK_BUTTON) {
             switch(mode_) {
                 case WAVE_EDITOR_SELECTION_SPECTRAL:
                     state_ = WAVE_EDITOR_STATE_SPECTRAL;
@@ -318,30 +318,30 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_SPECTRAL) {
-        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        if(key == LEFT_ENCODER_CCW) {
             spectral_cursor_ = std::clamp(--spectral_cursor_, 0, 31);
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        if(key == LEFT_ENCODER_CW) {
             spectral_cursor_ = std::clamp(++spectral_cursor_, 0, 31);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        if(key == RIGHT_ENCODER_CCW) {
             spectral_gain_[spectral_cursor_] = std::clamp(spectral_gain_[spectral_cursor_] - 0.1f, 0.0f, 1.0f);
             CalculateIFFT();
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        if(key == RIGHT_ENCODER_CW) {
             spectral_gain_[spectral_cursor_] = std::clamp(spectral_gain_[spectral_cursor_] + 0.1f, 0.0f, 1.0f);
             CalculateIFFT();
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        if(key == RIGHT_ENCODER_CLICK) {
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        if(key == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
             menu_offset_y_ = -30;
             menu_target_offset_y_ = 0;
             timer_ = system_clock.milliseconds();
         }
-        if(key.getKeyCode() == BACK_BUTTON) {
+        if(key == BACK_BUTTON) {
             if(back_menu_)
                 context.setState(back_menu_);
             else
@@ -349,35 +349,35 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_PEN) {
-        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        if(key == LEFT_ENCODER_CCW) {
             pen_y_ = std::clamp<int16_t>(--pen_y_, 0, 63);
             if(pen_drawing_)
                 for (int i = 0; i < 16; i++)
                     wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        if(key == LEFT_ENCODER_CW) {
             pen_y_ = std::clamp<int16_t>(++pen_y_, 0, 63);
             if(pen_drawing_)
                 for (int i = 0; i < 16; i++)
                     wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        if(key == RIGHT_ENCODER_CCW) {
             if(!pen_drawing_)
                 pen_x_ = std::clamp<int16_t>(--pen_x_, 0, 127);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        if(key == RIGHT_ENCODER_CW) {
             pen_x_ = std::clamp<int16_t>(++pen_x_, 0, 127);
             if(pen_drawing_)
                 for (int i = 0; i < 16; i++)
                     wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        if(key == RIGHT_ENCODER_CLICK) {
             pen_drawing_ = !pen_drawing_;
             if(pen_drawing_)
                 for (int i = 0; i < 16; i++)
                     wavedata_[pen_x_*16 + i] = (-pen_y_ + 32) * 1024 + (pen_y_ < 32 ? -1 : 0);
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        if(key == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
             menu_offset_y_ = -30;
@@ -385,7 +385,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             pen_drawing_ = false;
             timer_ = system_clock.milliseconds();
         }
-        if(key.getKeyCode() == BACK_BUTTON) {
+        if(key == BACK_BUTTON) {
             pen_drawing_ = false;
             if(back_menu_)
                 context.setState(back_menu_);
@@ -395,27 +395,27 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
     }
     else if(state_ == WAVE_EDITOR_STATE_LINE) {
         int pen_increment = 5;
-        if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+        if(key == LEFT_ENCODER_CCW) {
             pen_y_ = std::clamp<int16_t>(pen_y_ - pen_increment, 0, 63);
             if(pen_drawing_)
                 LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CW) {
+        if(key == LEFT_ENCODER_CW) {
             pen_y_ = std::clamp<int16_t>(pen_y_ + pen_increment, 0, 63);
             if(pen_drawing_)
                 LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+        if(key == RIGHT_ENCODER_CCW) {
             pen_x_ = std::clamp<int16_t>(pen_x_ - pen_increment, 0, 127);
             if(pen_drawing_)
                 LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+        if(key == RIGHT_ENCODER_CW) {
             pen_x_ = std::clamp<int16_t>(pen_x_ + pen_increment, 0, 127);
             if(pen_drawing_)
                 LineToWavedata(line_x_, line_y_, pen_x_, pen_y_);
         }
-        if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+        if(key == RIGHT_ENCODER_CLICK) {
             if(pen_drawing_) {
                 // draw line onto wavedata buffer
             } else {
@@ -424,7 +424,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             line_y_ = pen_y_;
             pen_drawing_ = !pen_drawing_;
         }
-        if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+        if(key == LEFT_ENCODER_CLICK) {
             state_ = WAVE_EDITOR_STATE_MENU;
             selection_ = mode_;
             menu_offset_y_ = -30;
@@ -432,7 +432,7 @@ bool WaveEditor::handleKeyPress(const juce::KeyPress &key) {
             pen_drawing_ = false;
             timer_ = system_clock.milliseconds();
         }
-        if(key.getKeyCode() == BACK_BUTTON) {
+        if(key == BACK_BUTTON) {
             pen_drawing_ = false;
             if(back_menu_)
                 context.setState(back_menu_);

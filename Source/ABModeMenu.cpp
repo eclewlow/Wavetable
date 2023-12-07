@@ -35,8 +35,8 @@ ABModeMenu::~ABModeMenu() {
 //AB_SELECT_WAVETABLE,
 //AB_SELECT_FRAME,
 
-bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool ABModeMenu::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         active_menu_ = LEFT;
         switch(left_state_) {
             case AB_LOAD_HOVER:
@@ -71,7 +71,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         active_menu_ = LEFT;
         switch(left_state_) {
             case AB_LOAD_HOVER:
@@ -106,7 +106,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         active_menu_ = LEFT;
         switch(left_state_) {
             case AB_LOAD_HOVER:
@@ -144,7 +144,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
     // *************************************************************************** //
     // RIGHT MENU //
     // *************************************************************************** //
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         active_menu_ = RIGHT;
         switch(right_state_) {
             case AB_LOAD_HOVER:
@@ -179,7 +179,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         active_menu_ = RIGHT;
         switch(right_state_) {
             case AB_LOAD_HOVER:
@@ -214,7 +214,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         active_menu_ = RIGHT;
         switch(right_state_) {
             case AB_LOAD_HOVER:
@@ -249,7 +249,7 @@ bool ABModeMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         if(active_menu_ == LEFT) {
             switch(left_state_) {
                 case AB_LOAD_HOVER:

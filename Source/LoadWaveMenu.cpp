@@ -48,8 +48,8 @@ void LoadWaveMenu::triggerUpdate(bool back_pressed) {
     }
 }
 
-bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool LoadWaveMenu::handleKeyRelease(int key) {
+    if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -77,7 +77,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }    
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -105,7 +105,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }   
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 morph_ = std::clamp<float>(morph_ - 1.0f / 30.0f, 0.0f, 1.0f);
@@ -114,7 +114,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 morph_ = std::clamp<float>(morph_ + 1.0f / 30.0f, 0.0f, 1.0f);
@@ -123,7 +123,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
 //                setState(LOAD_WAVE_MENU_SELECT_FRAME);
@@ -141,7 +141,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 ticker_timer_ = system_clock.milliseconds() - 2000;
@@ -177,7 +177,7 @@ bool LoadWaveMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         switch(state_) {
             case LOAD_WAVE_MENU_SELECT_WAVETABLE:
                 if(back_menu_)

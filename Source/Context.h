@@ -28,7 +28,9 @@ public:
     inline Engine* getLastEngine() { return last_engine_; }
     inline void setLastEngine(Engine* engine) { last_engine_ = engine; }
 
-    bool handleKeyPress(const juce::KeyPress &key);
+    bool handleKeyPress(int key);
+    bool handleKeyLongPress(int key);
+    bool handleKeyRelease(int key);
     void paint(juce::Graphics& g);
 
 private:

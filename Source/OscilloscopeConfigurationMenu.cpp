@@ -19,18 +19,18 @@ OscilloscopeConfigurationMenu::~OscilloscopeConfigurationMenu() {
     
 }
 
-bool OscilloscopeConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
+bool OscilloscopeConfigurationMenu::handleKeyRelease(int key) {
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
         user_settings.setMorphSetting(user_settings.getMorphSetting()==UserSettings::SETTING_MORPH_SMOOTH ? UserSettings::SETTING_MORPH_DISCRETE:UserSettings::SETTING_MORPH_SMOOTH);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
         user_settings.setMorphSetting(user_settings.getMorphSetting()==UserSettings::SETTING_MORPH_SMOOTH ? UserSettings::SETTING_MORPH_DISCRETE:UserSettings::SETTING_MORPH_SMOOTH);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
         context.setState(&deviceConfigurationMenu);
     }
     return true;

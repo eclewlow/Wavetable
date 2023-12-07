@@ -20,22 +20,22 @@ IOConfigurationMenu::~IOConfigurationMenu() {
     
 }
 
-bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
+bool IOConfigurationMenu::handleKeyRelease(int key) {
 //    DISPLAY_MENU_BRIGHTNESS,
 //    DISPLAY_MENU_CONTRAST,
 //    DISPLAY_MENU_INVERT,
 //    DISPLAY_MENU_SCOPE,
 
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         context.setState(&deviceConfigurationMenu);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+    else if(key == LEFT_ENCODER_CCW) {
         state_ = std::clamp<int8_t>(state_ - 1, IO_CONFIG_MENU_INPUT, IO_CONFIG_MENU_BIAS);
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    else if(key == LEFT_ENCODER_CW) {
         state_ = std::clamp<int8_t>(state_ + 1, IO_CONFIG_MENU_INPUT, IO_CONFIG_MENU_BIAS);
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    else if(key == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case IO_CONFIG_MENU_INPUT: {
                 input_ = (input_ + IO_CONFIG_LAST - 1) % IO_CONFIG_LAST;
@@ -53,7 +53,7 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    else if(key == RIGHT_ENCODER_CW) {
         switch(state_) {
             case IO_CONFIG_MENU_INPUT: {
                 input_ = (input_ + 1) % IO_CONFIG_LAST;
@@ -71,7 +71,7 @@ bool IOConfigurationMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    else if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    else if(key == LEFT_ENCODER_CLICK) {
     }
     return true;
 }

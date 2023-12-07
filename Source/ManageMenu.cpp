@@ -49,8 +49,28 @@ void ManageMenu::triggerUpdate(bool back_pressed) {
     }
 }
 
-bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == LEFT_ENCODER_CCW) {
+bool ManageMenu::handleKeyLongPress(int key) {
+    if( key == LEFT_ENCODER_CLICK ) {
+        if(system_clock.milliseconds() - press_timer_ > 1000) {
+            popup.show();
+            popup.SetLine(0, (char*)"CANNOT SELECT");
+            popup.SetLine(1, (char*)"EMPTY WAVETABLE!");
+            popup.SetLine(2, (char*)"\0");
+        }
+    }
+    return false;
+}
+
+bool ManageMenu::handleKeyPress(int key) {
+    if( key == LEFT_ENCODER_CLICK ) {
+        press_timer_ = system_clock.milliseconds();
+    }
+    return false;
+}
+
+bool ManageMenu::handleKeyRelease(int key) {
+
+    if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -84,7 +104,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CW) {
+    if(key == LEFT_ENCODER_CW) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 wavetable_ = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
@@ -118,7 +138,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+    if(key == RIGHT_ENCODER_CCW) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 morph_ = std::clamp<float>(morph_ - 1.0f / 30.0f, 0.0f, 1.0f);
@@ -127,7 +147,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    if(key == RIGHT_ENCODER_CW) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 morph_ = std::clamp<float>(morph_ + 1.0f / 30.0f, 0.0f, 1.0f);
@@ -136,7 +156,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
 //                setState(MANAGE_MENU_SELECT_FRAME);
@@ -154,7 +174,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == LEFT_ENCODER_CLICK) {
+    if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
 //                if(storage.GetWavetable(wavetable_).name[0] != '\0')
@@ -210,7 +230,7 @@ bool ManageMenu::handleKeyPress(const juce::KeyPress &key) {
                 break;
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 if(back_menu_)
@@ -313,7 +333,7 @@ void ManageMenu::paint(juce::Graphics& g) {
     }
     else if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {
 
-        char * title = (char *) "SELECT WAVETABLE";
+        char * title = (char *) "MANAGE WAVETABLE";
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;
@@ -370,7 +390,7 @@ void ManageMenu::paint(juce::Graphics& g) {
         Display::outline_rectangle(95 - bar_width / 2 + 1 + x_cursor_offset, y_offset - y_shift + bar_height - 3 + 1, 3, 1);
         Display::invert_rectangle(95 - bar_width / 2, y_offset - y_shift + bar_height - 3, bar_width, 3);
     } else {
-        char * title = (char *) "SELECT WAVE";
+        char * title = (char *) "MANAGE WAVE";
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;

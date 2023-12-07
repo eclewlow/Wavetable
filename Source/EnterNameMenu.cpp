@@ -25,16 +25,16 @@ EnterNameMenu::~EnterNameMenu() {
     
 }
 
-bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
-    if(key.getKeyCode() == RIGHT_ENCODER_CCW) {
+bool EnterNameMenu::handleKeyRelease(int key) {
+    if(key == RIGHT_ENCODER_CCW) {
         char_index --;
         char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
     }
-    else if(key.getKeyCode() == RIGHT_ENCODER_CW) {
+    else if(key == RIGHT_ENCODER_CW) {
         char_index ++;
         char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
     }
-    if(key.getKeyCode() == RIGHT_ENCODER_CLICK) {
+    if(key == RIGHT_ENCODER_CLICK) {
         if(char_index == num_of_chars - 2) {
             bool del = true;
             if(del) {
@@ -73,7 +73,7 @@ bool EnterNameMenu::handleKeyPress(const juce::KeyPress &key) {
             name_index = std::clamp<int>(name_index, 0, 8-1);
         }
     }
-    if(key.getKeyCode() == BACK_BUTTON) {
+    if(key == BACK_BUTTON) {
         if(back_menu_)
             context.setState(back_menu_, true);
     }
