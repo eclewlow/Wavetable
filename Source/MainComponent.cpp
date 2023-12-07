@@ -10,6 +10,19 @@ MainComponent::MainComponent()
     // you add any child components.
     setSize (800, 600);
     
+    storage.EraseAll();
+    memset(key_map, 0, 128);
+    memset(key_held, 0, 128);
+
+    abEngine.Init();
+    wavetableEngine.Init();
+    matrixEngine.Init();
+    drumEngine.Init();
+
+    context.setState(&manageMenu);
+    context.setEngine(&abEngine);
+
+    
     // Some platforms require permissions to open input channels so request that here
     if (juce::RuntimePermissions::isRequired (juce::RuntimePermissions::recordAudio)
         && ! juce::RuntimePermissions::isGranted (juce::RuntimePermissions::recordAudio))
@@ -23,7 +36,7 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
 //        setAudioChannels(1, 1);
     }
-
+    
 //    context.setState(&mainMenu);
 //    context.setState(&wavetableModeMenu);
     adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2048);
@@ -32,14 +45,6 @@ MainComponent::MainComponent()
     adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
 
     system_clock.Init();
-
-    abEngine.Init();
-    wavetableEngine.Init();
-    matrixEngine.Init();
-    drumEngine.Init();
-
-    context.setState(&manageMenu);
-    context.setEngine(&abEngine);
 
     effect_manager.Init();
     effect_manager.setEffect(&bypass);
@@ -185,12 +190,14 @@ bool MainComponent::handleKey(int key) {
             return pass;
         } else {
             // key is being held. call keyheld.
+            key_map[key] = true;
             bool pass = popup.handleKeyLongPress(key);
             if(!pass) {
                 pass = context.handleKeyLongPress(key);
             }
-            if(pass)
+            if(pass) {
                 key_map[key] = false;
+            }
             return pass;
         }
     }

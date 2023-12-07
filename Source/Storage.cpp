@@ -11,6 +11,31 @@
 #include "wavetables.h"
 #include "Globals.h"
 
+bool Storage::EraseAll() {
+    for(int table = 0; table < FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
+        if(table < FACTORY_WAVETABLE_COUNT) {
+            snprintf(WaveTables[table].name, 9, "TABLE %d", table);
+            WaveTables[table].factory_preset = true;
+        } else {
+            strncpy(WaveTables[table].name, "\0", 9);
+            WaveTables[table].factory_preset = false;
+        }
+        for(int frame = 0; frame < 16; frame++) {
+            WaveTables[table].waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
+            if(table < FACTORY_WAVETABLE_COUNT) {
+                snprintf(WaveTables[table].waves[frame].name, 9, "%02d", frame);
+            } else {
+                strncpy(WaveTables[table].waves[frame].name, "\0", 9);
+            }
+        }
+    }
+    for(int table = FACTORY_WAVETABLE_COUNT; table <  FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
+        for(int frame = 0; frame < 16; frame++)
+            for(int i = 0; i < 2048; i++)
+                ROM[WaveTables[table].waves[frame].memory_location + i] = 2048;
+    }
+}
+
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
     if(!WaveDoesExist(table, frame))
         return 0;
@@ -157,7 +182,13 @@ bool Storage::DeleteWavetable(int table) {
 }
 
 bool Storage::SwapWavetables(int table1, int table2) {
-    // swapping wavetables requires swapping of all wave data memory locations.
+        // easy swap
+    WAVETABLE wt = WaveTables[table1];
+    WaveTables[table1] = WaveTables[table2];
+    WaveTables[table2] = wt;
+    return true;
+    /*
+     // swapping wavetables requires swapping of all wave data memory locations.
     char name_buffer1[9];
     char name_buffer2[9];
 
@@ -191,6 +222,7 @@ bool Storage::SwapWavetables(int table1, int table2) {
     strncpy(WaveTables[table2].name, name_buffer1, 9);
 
     return false;
+     //*/
 }
 //
 //int16_t Storage::NumAvailableWaveSlots() {

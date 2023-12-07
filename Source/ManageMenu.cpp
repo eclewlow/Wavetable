@@ -17,6 +17,7 @@ ManageMenu::ManageMenu() {
     wavetable_ = 0;
     frame_ = 0;
     ticker_timer_ = 0;
+    absorb_keypress_ = false;
 }
 
 ManageMenu::~ManageMenu() {
@@ -54,6 +55,7 @@ bool ManageMenu::handleKeyLongPress(int key) {
         if(system_clock.milliseconds() - press_timer_ > 1000) {
             option_selected_ = MANAGE_MENU_EDIT;
             setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+            absorb_keypress_ = true;
             return true;
         }
     }
@@ -210,6 +212,10 @@ bool ManageMenu::handleKeyRelease(int key) {
         }
     }
     if(key == LEFT_ENCODER_CLICK) {
+        if(absorb_keypress_) {
+            absorb_keypress_ = false;
+            return true;
+        }
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
                 setState(MANAGE_MENU_MOVE_WAVETABLE);
@@ -231,6 +237,7 @@ bool ManageMenu::handleKeyRelease(int key) {
             case MANAGE_MENU_WAVETABLE_OPTIONS:
                 if(option_selected_ == MANAGE_MENU_EDIT) {
                     // TODO:  what does this do???
+//                    storage.EraseAll();
                 } else if(option_selected_ == MANAGE_MENU_RENAME) {
                     context.setState(&enterNameMenu);
                     enterNameMenu.setBackMenu(this);

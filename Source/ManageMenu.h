@@ -57,6 +57,6 @@ private:
     int8_t target_;
     uint32_t ticker_timer_;
     uint32_t press_timer_;
-
+    bool absorb_keypress_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ManageMenu);
 };
