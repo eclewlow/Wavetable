@@ -155,6 +155,43 @@ bool Storage::DeleteWavetable(int table) {
     memset(WaveTables[table].name, 0, 9);
     return true;
 }
+
+bool Storage::SwapWavetables(int table1, int table2) {
+    // swapping wavetables requires swapping of all wave data memory locations.
+    char name_buffer1[9];
+    char name_buffer2[9];
+
+    for(int frame = 0; frame < 16; frame++) {
+        // TODO: if the wave doesn't exist, we have to update the memory_location before swapping
+        if(!WaveDoesExist(table1, frame)) {
+            WaveTables[table1].waves[frame].memory_location = 2048 * 16 * table1 + 2048 * frame;
+        }
+        if(!WaveDoesExist(table2, frame)) {
+            WaveTables[table2].waves[frame].memory_location = 2048 * 16 * table2 + 2048 * frame;
+        }
+
+        // swap frames between tables
+        uint16_t swap_buffer1[2048];
+        uint16_t swap_buffer2[2048];
+
+        std::memcpy(swap_buffer1, &ROM[WaveTables[table1].waves[frame].memory_location], 2048 * 2);
+        std::memcpy(swap_buffer2, &ROM[WaveTables[table2].waves[frame].memory_location], 2048 * 2);
+        strncpy(name_buffer1, WaveTables[table1].waves[frame].name, 9);
+        strncpy(name_buffer2, WaveTables[table2].waves[frame].name, 9);
+
+        std::memcpy(&ROM[WaveTables[table1].waves[frame].memory_location], swap_buffer2, 2048 * 2);
+        std::memcpy(&ROM[WaveTables[table2].waves[frame].memory_location], swap_buffer1, 2048 * 2);
+        strncpy(WaveTables[table1].waves[frame].name, name_buffer2, 9);
+        strncpy(WaveTables[table2].waves[frame].name, name_buffer1, 9);
+    }
+
+    strncpy(name_buffer1, WaveTables[table1].name, 9);
+    strncpy(name_buffer2, WaveTables[table2].name, 9);
+    strncpy(WaveTables[table1].name, name_buffer2, 9);
+    strncpy(WaveTables[table2].name, name_buffer1, 9);
+
+    return false;
+}
 //
 //int16_t Storage::NumAvailableWaveSlots() {
 //    int16_t count = 0;

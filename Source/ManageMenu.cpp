@@ -52,10 +52,9 @@ void ManageMenu::triggerUpdate(bool back_pressed) {
 bool ManageMenu::handleKeyLongPress(int key) {
     if( key == LEFT_ENCODER_CLICK ) {
         if(system_clock.milliseconds() - press_timer_ > 1000) {
-            popup.show();
-            popup.SetLine(0, (char*)"CANNOT SELECT");
-            popup.SetLine(1, (char*)"EMPTY WAVETABLE!");
-            popup.SetLine(2, (char*)"\0");
+            option_selected_ = MANAGE_MENU_EDIT;
+            setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+            return true;
         }
     }
     return false;
@@ -84,6 +83,24 @@ bool ManageMenu::handleKeyRelease(int key) {
                 ticker_timer_ = system_clock.milliseconds() - 2000;
 
                 break;
+            case MANAGE_MENU_MOVE_WAVETABLE: {
+                int16_t target_wavetable = std::clamp<int16_t>(wavetable_ - 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+                
+                // wavetable swap
+                storage.SwapWavetables(wavetable_, target_wavetable);
+                
+                wavetable_ = target_wavetable;
+                
+                if(wavetable_ < wavetable_offset_) {
+                    wavetable_offset_ = wavetable_;
+                }
+                
+                morph_ = 0.0f;
+                
+                ticker_timer_ = system_clock.milliseconds() - 2000;
+                
+                break;
+            }
             case MANAGE_MENU_SELECT_FRAME:
                 frame_ = std::clamp<int16_t>(frame_ - 1, 0, 15);
 
@@ -118,6 +135,24 @@ bool ManageMenu::handleKeyRelease(int key) {
                 ticker_timer_ = system_clock.milliseconds() - 2000;
                 
                 break;
+            case MANAGE_MENU_MOVE_WAVETABLE: {
+                int16_t target_wavetable = std::clamp<int16_t>(wavetable_ + 1, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+                
+                // wavetable swap
+                storage.SwapWavetables(wavetable_, target_wavetable);
+                
+                wavetable_ = target_wavetable;
+                
+                if(wavetable_ > wavetable_offset_ + 5) {
+                    wavetable_offset_ = wavetable_ - 5;
+                }
+
+                morph_ = 0.0f;
+                
+                ticker_timer_ = system_clock.milliseconds() - 2000;
+                
+                break;
+            }            
             case MANAGE_MENU_SELECT_FRAME:
                 frame_ = std::clamp<int16_t>(frame_ + 1, 0, 15);
 
@@ -177,20 +212,10 @@ bool ManageMenu::handleKeyRelease(int key) {
     if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
-//                if(storage.GetWavetable(wavetable_).name[0] != '\0')
-                option_selected_ = MANAGE_MENU_EDIT;
-                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
-//                else {
-//                    popup.show();
-//                    popup.SetLine(0, (char*)"CANNOT SELECT");
-//                    popup.SetLine(1, (char*)"EMPTY WAVETABLE!");
-//                    popup.SetLine(2, (char*)"\0");
-//
-//                }
-//                ticker_timer_ = juce::Time::currentTimeMillis() - 2000;
-//                setState(MANAGE_MENU_SELECT_FRAME);
-//                frame_ = 0;
-//                frame_offset_ = 0;
+                setState(MANAGE_MENU_MOVE_WAVETABLE);
+                break;
+            case MANAGE_MENU_MOVE_WAVETABLE:
+                setState(MANAGE_MENU_SELECT_WAVETABLE);
                 break;
             case MANAGE_MENU_SELECT_FRAME: {
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
@@ -296,22 +321,11 @@ void ManageMenu::paint(juce::Graphics& g) {
 
     }
     else if(state_ == MANAGE_MENU_CONFIRM_DELETE) {
-//        char * title;
-//        if(storage.GetWavetable(wavetable_).name[0] == '\0')
-//            title = (char*) "--------";
-//        else
-//            title = (char *) storage.GetWavetable(wavetable_).name;
-
         int y_offset = 16 - 6 / 2;
         int x_offset = 0;
 
         Display::put_string_5x5(64 - strlen("DELETE?") * 6 / 2, y_offset, strlen("DELETE?"), "DELETE?");
         
-//        Display::invert_rectangle(0, 0, 128, 15);
-//        
-//        x_offset = 20;
-//        y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
-//
         y_offset = 48 - 10 / 2;
         x_offset = 32 - (16 + Display::get_string_9x9_width("NO", 3)) / 2;
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_cancel_11x11, 11);
@@ -320,16 +334,65 @@ void ManageMenu::paint(juce::Graphics& g) {
         x_offset = 96 - (16 + Display::get_string_9x9_width("YES", 3)) / 2;
         Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
         Display::put_string_9x9(x_offset + 16, y_offset, strlen("YES"), "YES", option_selected_ == MANAGE_MENU_YES, 3);
+    }
+    else if(state_ == MANAGE_MENU_MOVE_WAVETABLE) {
 
-        //
-//        y_offset += 14;
-//        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
-//        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
-//
-//        y_offset += 14;
-//        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
-//        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
+        char * title = (char *) "MOVE WAVETABLE";
 
+        int y_offset = 5;
+        int x_offset = 1 + 2 * 4;
+
+        Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
+        
+        Display::invert_rectangle(0, 0, 128, 15);
+        
+        x_offset = 64 - 5;
+        y_offset += 15;
+
+        for(int i = 0; i < 6; i++)
+        {
+            char line[20];
+            snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
+            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            
+            char * name = storage.GetWavetable(i + wavetable_offset_).name;
+
+            char line2[20];
+            memset(line2, 0, 20);
+            if(name[0] == '\0')
+                strncpy(line2, "-------", 7);
+            else {
+                int name_index = 0;
+                uint32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+
+                if (elapsed_time > 4000) {
+                    ticker_timer_ = system_clock.milliseconds();
+                }
+                if(i + wavetable_offset_ == wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                    name_index = (elapsed_time) / 1000;
+                    name_index = std::clamp(name_index, 0, 1);
+                }
+                // if timer is passed 2000, name_index = 1
+                strncpy(line2, &name[name_index], 7);
+            }
+
+            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
+        }
+
+        int y_shift = 2;
+        int bar_height = 64 - y_offset - 1;
+        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+        Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
+        Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
+
+        storage.LoadWaveSample(BUF1, wavetable_, morph_);
+
+        Display::Draw_Wave(64, y_offset - y_shift, 64, bar_height - 3, BUF1);
+
+        int bar_width = 48;
+        int x_cursor_offset = morph_ * (bar_width - 5);
+        Display::outline_rectangle(95 - bar_width / 2 + 1 + x_cursor_offset, y_offset - y_shift + bar_height - 3 + 1, 3, 1);
+        Display::invert_rectangle(95 - bar_width / 2, y_offset - y_shift + bar_height - 3, bar_width, 3);
     }
     else if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {
 

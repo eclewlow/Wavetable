@@ -33,6 +33,7 @@ public:
     void LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame);
     bool SaveWavetable(char * name, int table);
     bool SaveWave(const char * name, int16_t * data, int table, int frame);
+    bool SwapWavetables(int table1, int table2);
     bool DeleteWavetable(int table);
     bool WaveDoesExist(int table, int frame);
     int8_t GetNumberOfWavesInTable(int16_t table);

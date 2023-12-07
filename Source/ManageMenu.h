@@ -24,6 +24,7 @@ public:
         MANAGE_MENU_SELECT_FRAME        = 2,
         MANAGE_MENU_WAVETABLE_OPTIONS   = 3,
         MANAGE_MENU_CONFIRM_DELETE      = 4,
+        MANAGE_MENU_MOVE_WAVETABLE      = 5,
     };
     enum ManageMenuOptions {
         MANAGE_MENU_EDIT                = 0,
