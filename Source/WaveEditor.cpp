@@ -232,9 +232,9 @@ bool WaveEditor::handleKeyRelease(int key) {
         }
         if(key == BACK_BUTTON) {
             if(back_menu_)
-                context.setState(back_menu_);
+                context.setState(back_menu_, true);
             else
-                context.setState(&abModeMenu);
+                context.setState(&abModeMenu, true);
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_MENU) {
@@ -286,10 +286,27 @@ bool WaveEditor::handleKeyRelease(int key) {
                     loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_A);
                 else if(wavedata_ == BUF4)
                     loadWaveMenu.setTarget(LoadWaveMenu::AB_ENGINE_B);
+                else if (wavedata_ == BUF5)
+                    loadWaveMenu.setTarget(LoadWaveMenu::WAVE_MANAGER);
             } else if (selection_ == WAVE_EDITOR_SELECTION_SAVE) {
-                context.setState(&saveWaveMenu);
-                saveWaveMenu.setWavedata(wavedata_);
-                saveWaveMenu.setBackMenu(&waveEditor);
+                if(wavedata_ == BUF5) {
+                    bool success = storage.SaveWave(storage.GetWavetable(wavetable_)->waves[frame_].name, BUF5, wavetable_, frame_);
+                    if(success) {
+                        popup.show();
+                        popup.SetLine(0, (char*)"SAVE");
+                        popup.SetLine(1, (char*)"SUCCESSFUL!");
+                        popup.SetLine(2, (char*)"\0");
+                    } else {
+                        popup.show();
+                        popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+                        popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                        popup.SetLine(2, (char*)"\0");
+                    }
+                } else {
+                    context.setState(&saveWaveMenu);
+                    saveWaveMenu.setWavedata(wavedata_);
+                    saveWaveMenu.setBackMenu(&waveEditor);
+                }
             }
             else {
                 mode_ = selection_;
@@ -343,9 +360,9 @@ bool WaveEditor::handleKeyRelease(int key) {
         }
         if(key == BACK_BUTTON) {
             if(back_menu_)
-                context.setState(back_menu_);
+                context.setState(back_menu_, true);
             else
-                context.setState(&abModeMenu);
+                context.setState(&abModeMenu, true);
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_PEN) {
@@ -388,9 +405,9 @@ bool WaveEditor::handleKeyRelease(int key) {
         if(key == BACK_BUTTON) {
             pen_drawing_ = false;
             if(back_menu_)
-                context.setState(back_menu_);
+                context.setState(back_menu_, true);
             else
-                context.setState(&abModeMenu);
+                context.setState(&abModeMenu, true);
         }
     }
     else if(state_ == WAVE_EDITOR_STATE_LINE) {
@@ -435,9 +452,9 @@ bool WaveEditor::handleKeyRelease(int key) {
         if(key == BACK_BUTTON) {
             pen_drawing_ = false;
             if(back_menu_)
-                context.setState(back_menu_);
+                context.setState(back_menu_, true);
             else
-                context.setState(&abModeMenu);
+                context.setState(&abModeMenu, true);
         }
     }
     return true;

@@ -31,8 +31,8 @@ bool Storage::EraseAll() {
     }
     for(int table = FACTORY_WAVETABLE_COUNT; table <  FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
         for(int frame = 0; frame < 16; frame++)
-            for(int i = 0; i < 2048; i++)
-                ROM[WaveTables[table].waves[frame].memory_location + i] = 2048;
+            memset(&ROM[WaveTables[table].waves[frame].memory_location], 0, 2048 * 2);
+
     }
 }
 
@@ -167,11 +167,20 @@ bool Storage::DeleteWavetable(int table) {
 
     for (int8_t i = 0; i < 16; i++) {
         memset(t->waves[i].name, 0, 9);
-        for(int j = 0; j < 2048; j++)
-            ROM[t->waves[i].memory_location + j] = 2048;
+        memset(&ROM[t->waves[i].memory_location], 0, 2048 * 2);
 
     }
     memset(t->name, 0, 9);
+    return true;
+}
+
+bool Storage::DeleteWave(int table, int frame) {
+    WAVETABLE * t = GetWavetable(table);
+    if(t->factory_preset)
+        return false;
+    
+    memset(t->waves[frame].name, 0, 9);
+    memset(&ROM[t->waves[frame].memory_location], 0, 2048 * 2);
     return true;
 }
 

@@ -27,12 +27,13 @@ EnterNameMenu::~EnterNameMenu() {
 
 bool EnterNameMenu::handleKeyRelease(int key) {
     if(key == RIGHT_ENCODER_CCW) {
-        char_index --;
-        char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
+        char_index = (char_index + num_of_chars - 1) % num_of_chars;
+//        char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
     }
     else if(key == RIGHT_ENCODER_CW) {
-        char_index ++;
-        char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
+        char_index = (char_index + 1) % num_of_chars;
+//        char_index ++;
+//        char_index = std::clamp<int>(char_index, 0, num_of_chars-1);
     }
     if(key == RIGHT_ENCODER_CLICK) {
         if(char_index == num_of_chars - 2) {

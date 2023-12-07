@@ -52,16 +52,25 @@ void ManageMenu::triggerUpdate(bool back_pressed) {
 
 bool ManageMenu::handleKeyLongPress(int key) {
     if( key == LEFT_ENCODER_CLICK ) {
-        if(system_clock.milliseconds() - press_timer_ > 1000) {
-            if(storage.GetWavetable(wavetable_)->factory_preset) {
-                popup.show();
-                popup.SetLine(0, (char*)"CANNOT EDIT");
-                popup.SetLine(1, (char*)"FACTORY PRESETS!");
-                popup.SetLine(2, (char*)"\0");
-                return true;
-            } else {
+        if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {
+            if(system_clock.milliseconds() - press_timer_ > 1000) {
+                if(storage.GetWavetable(wavetable_)->factory_preset) {
+                    popup.show();
+                    popup.SetLine(0, (char*)"CANNOT EDIT");
+                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                    popup.SetLine(2, (char*)"\0");
+                    return true;
+                } else {
+                    option_selected_ = MANAGE_MENU_EDIT;
+                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+                    absorb_keypress_ = true;
+                    return true;
+                }
+            }
+        } else if(state_ == MANAGE_MENU_SELECT_FRAME) {
+            if(system_clock.milliseconds() - press_timer_ > 1000) {
                 option_selected_ = MANAGE_MENU_EDIT;
-                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+                setState(MANAGE_MENU_FRAME_OPTIONS);
                 absorb_keypress_ = true;
                 return true;
             }
@@ -139,7 +148,13 @@ bool ManageMenu::handleKeyRelease(int key) {
             case MANAGE_MENU_WAVETABLE_OPTIONS:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE:
+            case MANAGE_MENU_FRAME_OPTIONS:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WT:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
                 break;
             default:
@@ -206,7 +221,13 @@ bool ManageMenu::handleKeyRelease(int key) {
             case MANAGE_MENU_WAVETABLE_OPTIONS:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE:
+            case MANAGE_MENU_FRAME_OPTIONS:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WT:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
                 break;
             default:
@@ -281,17 +302,43 @@ bool ManageMenu::handleKeyRelease(int key) {
                     enterNameMenu.setNameChars(storage.GetWavetable(wavetable_)->name);
                 } else if(option_selected_ == MANAGE_MENU_DELETE) {
                     option_selected_ = MANAGE_MENU_NO;
-                    setState(MANAGE_MENU_CONFIRM_DELETE);
+                    setState(MANAGE_MENU_CONFIRM_DELETE_WT);
                 }
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE:
+            case MANAGE_MENU_FRAME_OPTIONS:
+                if(option_selected_ == MANAGE_MENU_EDIT) {
+                    waveEditor.setBackMenu(this);
+                    storage.LoadWaveSample(BUF5, wavetable_, frame_);
+                    waveEditor.setWavedata(BUF5);
+                    waveEditor.setWavetable(wavetable_);
+                    waveEditor.setFrame(frame_);
+                    context.setState(&waveEditor);
+                } else if(option_selected_ == MANAGE_MENU_RENAME) {
+                    context.setState(&enterNameMenu);
+                    enterNameMenu.setBackMenu(this);
+                    enterNameMenu.setExecFunc(ManageMenu::SaveWave);
+                    enterNameMenu.setNameChars(storage.GetWavetable(wavetable_)->waves[frame_].name);
+                } else if(option_selected_ == MANAGE_MENU_DELETE) {
+                    option_selected_ = MANAGE_MENU_NO;
+                    setState(MANAGE_MENU_CONFIRM_DELETE_WAVE);
+                }
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WT:
                 if(option_selected_ == MANAGE_MENU_NO) {
                     option_selected_ = MANAGE_MENU_EDIT;
                     setState(MANAGE_MENU_WAVETABLE_OPTIONS);
                 } else if(option_selected_ == MANAGE_MENU_YES) {
-//                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
                     storage.DeleteWavetable(wavetable_);
                     setState(MANAGE_MENU_SELECT_WAVETABLE);
+                }
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+                if(option_selected_ == MANAGE_MENU_NO) {
+                    option_selected_ = MANAGE_MENU_EDIT;
+                    setState(MANAGE_MENU_FRAME_OPTIONS);
+                } else if(option_selected_ == MANAGE_MENU_YES) {
+                    storage.DeleteWave(wavetable_, frame_);
+                    setState(MANAGE_MENU_SELECT_FRAME);
                 }
                 break;
             default:
@@ -314,9 +361,17 @@ bool ManageMenu::handleKeyRelease(int key) {
             case MANAGE_MENU_WAVETABLE_OPTIONS:
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE:
+            case MANAGE_MENU_FRAME_OPTIONS:
+                setState(MANAGE_MENU_SELECT_FRAME);
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WT:
                 option_selected_ = MANAGE_MENU_EDIT;
                 setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+                break;
+            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+                option_selected_ = MANAGE_MENU_EDIT;
+                setState(MANAGE_MENU_FRAME_OPTIONS);
+                break;
             default:
                 break;
         }
@@ -330,16 +385,29 @@ void ManageMenu::SaveWavetable(char* param) {
     manageMenu.setState(MANAGE_MENU_SELECT_WAVETABLE);
 }
 
+void ManageMenu::SaveWave(char* param) {
+    Storage::WAVETABLE * wt = storage.GetWavetable(manageMenu.wavetable_);
+    strncpy(wt->waves[manageMenu.frame_].name, param, 9);
+    manageMenu.setState(MANAGE_MENU_SELECT_FRAME);
+}
+
 
 
 void ManageMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
-    if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS) {
+    if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS || state_ == MANAGE_MENU_FRAME_OPTIONS) {
         char * title;
-        if(storage.GetWavetable(wavetable_)->name[0] == '\0')
-            title = (char*) "--------";
-        else
-            title = (char *) storage.GetWavetable(wavetable_)->name;
+        if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS) {
+            if(storage.GetWavetable(wavetable_)->name[0] == '\0')
+                title = (char*) "--------";
+            else
+                title = (char *) storage.GetWavetable(wavetable_)->name;
+        } else {
+            if(storage.GetWavetable(wavetable_)->waves[frame_].name[0] == '\0')
+                title = (char*) "--------";
+            else
+                title = (char *) storage.GetWavetable(wavetable_)->waves[frame_].name;
+        }
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;
@@ -363,7 +431,7 @@ void ManageMenu::paint(juce::Graphics& g) {
         Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
 
     }
-    else if(state_ == MANAGE_MENU_CONFIRM_DELETE) {
+    else if(state_ == MANAGE_MENU_CONFIRM_DELETE_WT || state_ == MANAGE_MENU_CONFIRM_DELETE_WAVE) {
         int y_offset = 16 - 6 / 2;
         int x_offset = 0;
 

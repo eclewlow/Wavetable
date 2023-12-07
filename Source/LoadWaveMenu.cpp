@@ -159,6 +159,9 @@ bool LoadWaveMenu::handleKeyRelease(int key) {
                     success = abEngine.SetRightWave(wavetable_, frame_);
                     if(success)
                         abEngine.FillWaveform(BUF4, wavetable_, frame_);
+                } else if(target_ == WAVE_MANAGER) {
+                    storage.LoadWaveSample(BUF5, wavetable_, frame_);
+                    success = true;
                 }
                 
                 if(success) {
@@ -183,7 +186,7 @@ bool LoadWaveMenu::handleKeyRelease(int key) {
                 if(back_menu_)
                     context.setState(back_menu_, true);
                 else
-                    context.setState(&mainMenu);
+                    context.setState(&mainMenu, true);
                 break;
             case LOAD_WAVE_MENU_SELECT_FRAME:
                 ticker_timer_ = system_clock.milliseconds() - 2000;

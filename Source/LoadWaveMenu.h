@@ -24,8 +24,9 @@ public:
         LOAD_WAVE_MENU_SELECT_FRAME,
     };
     enum LoadWaveMenuTarget {
-        AB_ENGINE_A,
-        AB_ENGINE_B,
+        AB_ENGINE_A     = 0,
+        AB_ENGINE_B     = 1,
+        WAVE_MANAGER    = 2,
     };
     LoadWaveMenu();
     ~LoadWaveMenu();
@@ -38,13 +39,13 @@ public:
     inline void setTarget(LoadWaveMenuTarget target) { target_ = target; }
 
 private:
-    LoadWaveMenuState state_;
+    int8_t state_;
     int16_t wavetable_offset_;
     int16_t frame_offset_;
     int16_t wavetable_;
     int16_t frame_;
     float morph_;
-    LoadWaveMenuTarget target_;
+    int8_t target_;
     uint32_t ticker_timer_ = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoadWaveMenu);

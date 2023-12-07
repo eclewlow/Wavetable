@@ -221,10 +221,10 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
 //    printf("%d\n", key.getKeyCode());
     if(key.getKeyCode() == FX_AMOUNT_CV_TRIGGER) {
-        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_PITCH_CV) == 2059) {
-            adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 4022);
+        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_AMOUNT_CV) == 2059) {
+            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 4022);
         } else {
-            adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, 2059);
+            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2059);
         }
     }
     

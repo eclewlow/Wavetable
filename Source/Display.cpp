@@ -88,7 +88,7 @@ void Display::Draw_Wave(uint8_t x, uint8_t y, uint8_t width, uint8_t height, int
         for(int j = i * 2048 / width; j < i * 2048 / width + 2048 / width; j++) {
             average += waveform_data[j];
         }
-        average /= (2048 / width);
+        average /= (2048.0f / width);
         
         average = std::clamp<float>(0 - average, -32768.0f, 32767.0f);
         

@@ -176,6 +176,7 @@ extern int16_t BUF1[2048];
 extern int16_t BUF2[2048];
 extern int16_t BUF3[2048];
 extern int16_t BUF4[2048];
+extern int16_t BUF5[2048];
 
 inline double clamp(double input, double low, double high) {
     return std::min(std::max(input, low), high);

@@ -63,6 +63,10 @@ public:
     void DrawMenu();
     void DrawTriangle(int x, int y, bool reversed);
     inline void setWavedata(int16_t * data) { wavedata_ = data; }
+    
+    inline void setFrame(uint16_t frame) { frame_ = frame; }
+    inline void setWavetable(uint16_t wavetable) { wavetable_ = wavetable; }
+    
 private:
     int16_t * wavedata_;
     WaveEditorRightEncoderState right_state_;
@@ -84,5 +88,7 @@ private:
     int16_t line_x_;
     int16_t line_y_;
     bool pen_drawing_;
+    int16_t wavetable_;
+    int16_t frame_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveEditor);
 };

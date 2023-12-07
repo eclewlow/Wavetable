@@ -38,6 +38,7 @@ public:
     bool SwapWavetables(int table1, int table2);
     bool SwapWaves(int table, int frame1, int frame2);
     bool DeleteWavetable(int table);
+    bool DeleteWave(int table, int frame);
     bool EraseAll();
     int8_t GetNumberOfWavesInTable(int16_t table);
     inline WAVETABLE* GetWavetable(int8_t table) { return &WaveTables[table]; }
