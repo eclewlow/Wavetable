@@ -189,19 +189,13 @@ void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint
 }
 
 bool ABEngine::SetLeftWave(int table, int frame) {
-    if(storage.WaveDoesExist(table, frame)) {
-        left_wavetable_ = table;
-        left_frame_ = frame;
-        return true;
-    }
-    return false;
+    left_wavetable_ = table;
+    left_frame_ = frame;
+    return true;
 }
 
 bool ABEngine::SetRightWave(int table, int frame) {
-    if(storage.WaveDoesExist(table, frame)) {
-        right_wavetable_ = table;
-        right_frame_ = frame;
-        return true;
-    }
-    return false;
+    right_wavetable_ = table;
+    right_frame_ = frame;
+    return true;
 }

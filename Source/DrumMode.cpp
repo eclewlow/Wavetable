@@ -145,10 +145,10 @@ void DrumMode::paint(juce::Graphics& g) {
     // draw wave name
     /****/
     char * line;
-    if(storage.GetWavetable(drumEngine.GetWavetable()).name[0] == '\0')
+    if(storage.GetWavetable(drumEngine.GetWavetable())->name[0] == '\0')
         line = (char*)"--------";
     else
-        line = storage.GetWavetable(drumEngine.GetWavetable()).name;
+        line = storage.GetWavetable(drumEngine.GetWavetable())->name;
     //    snprintf(line, 20, "", 1.0 + matrixEngine.GetX1() + (matrixEngine.GetX2() - matrixEngine.GetX1()) * fx * 1.0f / 4095.0f);
     y_offset += wave_height + 2;
     x_offset = 64 - strlen("WAVETABLE:") * 6 + 6;

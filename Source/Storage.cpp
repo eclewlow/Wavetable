@@ -37,37 +37,25 @@ bool Storage::EraseAll() {
 }
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
-    if(!WaveDoesExist(table, frame))
-        return 0;
 
-    WAVETABLE wavetable = WaveTables[table];
+    WAVETABLE t = WaveTables[table];
         
     // TODO: this should be a read to ROM data
     // the wavetable struct data exists in MCU flash
     // and the wave struct data exists in MCU flash
     // but the wave struct data field points to a memory location in ROM.
-    return ROM[wavetable.waves[frame].memory_location + index];
+    return ROM[t.waves[frame].memory_location + index];
 }
 
-void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, int16_t frame) {
-    if(!WaveDoesExist(wavetable, frame))
-    {
-        memset(waveform, 0, 2048 * 2);
-        return;
-    }
+void Storage::LoadWaveSample(int16_t * wavedata, int16_t table, int16_t frame) {
+    WAVETABLE t = WaveTables[table];
 
-    const int16_t * data = &ROM[WaveTables[wavetable].waves[frame].memory_location];
-    memcpy(waveform, data, 2048 * 2);
+    const int16_t * data = &ROM[t.waves[frame].memory_location];
+    memcpy(wavedata, data, 2048 * 2);
 }
 
 
-void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph) {
-    
-    if(WaveTables[wavetable].name[0] == '\0')
-    {
-        memset(waveform, 0, 2048 * 2);
-        return;
-    }
+void Storage::LoadWaveSample(int16_t * wavedata, int16_t table, float morph) {
     
     float frequency = 23.4375;
 
@@ -92,8 +80,8 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
 
         if(frame_fractional > 0.0f) {
             // we need to morph between frames
-            float sample1 = LoadWaveSample(wavetable, frame_integral, integral);
-            float sample2 = LoadWaveSample(wavetable, frame_integral, nextIntegral);
+            float sample1 = LoadWaveSample(table, frame_integral, integral);
+            float sample2 = LoadWaveSample(table, frame_integral, nextIntegral);
             
             float interpolated16 = sample1 + (sample2 - sample1) * fractional;
             
@@ -101,8 +89,8 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
             
             sample = interpolatedFloat;
             
-            sample1 = LoadWaveSample(wavetable, next_frame_integral, integral);
-            sample2 = LoadWaveSample(wavetable, next_frame_integral, nextIntegral);
+            sample1 = LoadWaveSample(table, next_frame_integral, integral);
+            sample2 = LoadWaveSample(table, next_frame_integral, nextIntegral);
             
             interpolated16 = sample1 + (sample2 - sample1) * fractional;
             
@@ -112,8 +100,8 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
 
         } else {
             // just do the phase morph
-            float sample1 = LoadWaveSample(wavetable, frame_integral, integral);
-            float sample2 = LoadWaveSample(wavetable, frame_integral, nextIntegral);
+            float sample1 = LoadWaveSample(table, frame_integral, integral);
+            float sample2 = LoadWaveSample(table, frame_integral, nextIntegral);
             
             float interpolated16 = sample1 + (sample2 - sample1) * fractional;
             
@@ -127,20 +115,19 @@ void Storage::LoadWaveSample(int16_t * waveform, int16_t wavetable, float morph)
         if(phase >= 1.0f)
             phase -= 1.0f;
         
-        waveform[i] = static_cast<int16_t>(sample * 32767.0f);
+        wavedata[i] = static_cast<int16_t>(sample * 32767.0f);
     }
 }
 
 int8_t Storage::GetNumberOfWavesInTable(int16_t table) {
     int8_t count = 0;
     
-//    if(table < FACTORY_WAVETABLE_COUNT)
-//        return 16;
-    if(WaveTables[table].name[0] == '\0')
-        return 0;
+    WAVETABLE t = WaveTables[table];
+    if(t.factory_preset)
+        return 16;
     
     for(int8_t i = 0; i < 16; i++) {
-        if(WaveTables[table].waves[i].name[0] != '\0')
+        if(t.waves[i].name[0] != '\0')
             count++;
     }
     
@@ -149,35 +136,55 @@ int8_t Storage::GetNumberOfWavesInTable(int16_t table) {
 
 bool Storage::SaveWavetable(char * name, int table) {
     // make sure wavetable is not in factory memory
-    if(table < FACTORY_WAVETABLE_COUNT)
+    WAVETABLE * t = GetWavetable(table);
+
+    if(t->factory_preset)
         return false;
-    
-    memcpy(WaveTables[table].name, name, 9);
+
+    strncpy(t->name, name, 9);
     
     return true;
 }
 
 bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) {
-    if(table < FACTORY_WAVETABLE_COUNT)
+    WAVETABLE * t = GetWavetable(table);
+    if(t->factory_preset)
         return false;
 
-    std::strncpy(WaveTables[table].waves[frame].name, name, 9);
+    std::strncpy(t->waves[frame].name, name, 9);
     
-    WaveTables[table].waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
+    t->waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
     
-    std::memcpy((void*)&ROM[WaveTables[table].waves[frame].memory_location], data, 2048 * 2);
+    std::memcpy((void*)&ROM[t->waves[frame].memory_location], data, 2048 * 2);
 
     return true;
 }
 
 bool Storage::DeleteWavetable(int table) {
-    if(table < FACTORY_WAVETABLE_COUNT)
+    WAVETABLE * t = GetWavetable(table);
+    if(t->factory_preset)
         return false;
 
     for (int8_t i = 0; i < 16; i++) {
-        memset(WaveTables[table].waves[i].name, 0, 9);
+        memset(t->waves[i].name, 0, 9);
+        for(int j = 0; j < 2048; j++)
+            ROM[t->waves[i].memory_location + j] = 2048;
+
     }
-    memset(WaveTables[table].name, 0, 9);
+    memset(t->name, 0, 9);
+    return true;
+}
+
+bool Storage::SwapWaves(int table, int frame1, int frame2) {
+    WAVETABLE wt = WaveTables[table];
+    
+    if(wt.factory_preset)
+        return false;
+    
+    WAVE w = WaveTables[table].waves[frame1];
+    
+    WaveTables[table].waves[frame1] = WaveTables[table].waves[frame2];
+    WaveTables[table].waves[frame2] = w;
     return true;
 }
 
@@ -242,9 +249,3 @@ bool Storage::SwapWavetables(int table1, int table2) {
 //    return -1;
 //}
 
-bool Storage::WaveDoesExist(int table, int frame) {
-    if(table < FACTORY_WAVETABLE_COUNT)
-        return true;
-
-    return WaveTables[table].name[0] != '\0' && WaveTables[table].waves[frame].name[0] != '\0';
-}

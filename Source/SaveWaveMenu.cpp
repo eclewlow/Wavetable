@@ -136,7 +136,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
     if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
-                if(storage.GetWavetable(wavetable_).name[0] == '\0') {
+                if(storage.GetWavetable(wavetable_)->name[0] == '\0') {
                     context.setState(&enterNameMenu);
                     enterNameMenu.setBackMenu(&saveWaveMenu);
                     enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
@@ -149,7 +149,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
                 }
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME: {
-                if(wavetable_ < FACTORY_WAVETABLE_COUNT) {
+                if(storage.GetWavetable(wavetable_)->factory_preset) {
                     popup.show();
                     popup.SetLine(0, (char*)"CANNOT OVERWRITE");
                     popup.SetLine(1, (char*)"FACTORY PRESETS!");
@@ -159,6 +159,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
                     context.setState(&enterNameMenu);
                     enterNameMenu.setBackMenu(&saveWaveMenu);
                     enterNameMenu.setExecFunc(SaveWaveMenu::SaveWave);
+                    enterNameMenu.setNameChars(storage.GetWavetable(wavetable_)->waves[frame_].name);
                 }
                 break;
             }
@@ -218,11 +219,11 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
             
             char line2[20];
             memset(line2, 0, 20);
-            if(storage.GetWavetable(i + wavetable_offset_).name[0] == '\0') {
+            if(storage.GetWavetable(i + wavetable_offset_)->name[0] == '\0') {
                 strncpy(line2, "+NEW WAVETABLE", strlen("+NEW WAVETABLE"));
             }
             else {
-                snprintf(line2, 20, "%-8s    [%02d]", storage.GetWavetable(i + wavetable_offset_).name, storage.GetNumberOfWavesInTable(i + wavetable_offset_));
+                snprintf(line2, 20, "%-8s    [%02d]", storage.GetWavetable(i + wavetable_offset_)->name, storage.GetNumberOfWavesInTable(i + wavetable_offset_));
             }
             
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
@@ -254,7 +255,7 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
             Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
             
             
-            char * name = storage.GetWavetable(wavetable_).waves[i + frame_offset_].name;
+            char * name = storage.GetWavetable(wavetable_)->waves[i + frame_offset_].name;
 
             char line2[20];
             memset(line2, 0, 20);

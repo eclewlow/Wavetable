@@ -348,7 +348,7 @@ void ABModeMenu::DrawSide(int side) {
             snprintf(line, 20, "%*d", 2, i + wavetable_offset + 1);
             Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
             
-            char * name = storage.GetWavetable(i + wavetable_offset).name;
+            char * name = storage.GetWavetable(i + wavetable_offset)->name;
 
             char line2[20];
             memset(line2, 0, 20);
@@ -385,7 +385,7 @@ void ABModeMenu::DrawSide(int side) {
             snprintf(line, 20, "%*d", 2, i + frame_offset + 1);
             Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
 
-            char * name = storage.GetWavetable(wavetable).waves[i + frame_offset].name;
+            char * name = storage.GetWavetable(wavetable)->waves[i + frame_offset].name;
 
             char line2[20];
             memset(line2, 0, 20);
