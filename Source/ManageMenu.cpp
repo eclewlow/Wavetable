@@ -66,6 +66,15 @@ bool ManageMenu::handleKeyLongPress(int key) {
                 } else {
                     option_selected_ = MANAGE_MENU_EDIT;
                 }
+                
+                if(option_selected_ < option_offset_) {
+                    option_offset_ = option_selected_;
+                }
+                if(option_selected_ > option_offset_ + 1) {
+                    option_offset_ = option_selected_ - 1;
+                }
+
+
                 setState(MANAGE_MENU_FRAME_OPTIONS);
                 absorb_keypress_ = true;
                 return true;
@@ -244,8 +253,8 @@ bool ManageMenu::handleKeyRelease(int key) {
                 else {
                     setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
 
-                    if(option_selected_ > option_offset_ + 2) {
-                        option_offset_ = option_selected_ - 2;
+                    if(option_selected_ > option_offset_ + 1) {
+                        option_offset_ = option_selected_ - 1;
                     }
 
                 }
@@ -448,7 +457,10 @@ bool ManageMenu::handleKeyRelease(int key) {
     if(key == BACK_BUTTON) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
-                copy_state_ == MANAGE_MENU_COPY_STATE_NONE;
+                if(copy_state_ != MANAGE_MENU_COPY_STATE_NONE) {
+                    copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+                    break;
+                }
                 if(back_menu_)
                     context.setState(back_menu_, true);
                 else
@@ -613,18 +625,33 @@ void ManageMenu::paint(juce::Graphics& g) {
             
             const uint8_t * list[] = {
                 &Graphic_icon_edit_11x11[0][0],
-                &Graphic_icon_edit_11x11[0][0],
+                &Graphic_icon_copy_11x11[0][0],
                 &Graphic_icon_rename_11x11[0][0],
                 &Graphic_icon_delete_11x11[0][0],
             };
             
-            for (int i = 0; i < 3; i++) {
+            y_offset += 7;
+            for (int i = 0; i < 2; i++) {
                 Display::put_image_16bit(x_offset, y_offset, (const unsigned char (*)[2])list[i + option_offset_], 11);
                 Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen(names[i + option_offset_]), names[i + option_offset_], option_selected_ == MANAGE_MENU_EDIT + i + option_offset_, 3);
 
                 y_offset += 14;
             }
             
+            y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
+            y_offset += 7;
+
+            if(option_offset_ > 0) {
+//                y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
+//                y_offset -= 4;
+                Display::put_image_16bit(128 - 12, y_offset, Graphic_icon_arrow_up_9x9, 9);
+            }
+            y_offset += 14;
+            if(option_offset_ < 2) {
+//                y_offset = 64 - 9;
+                Display::put_image_16bit(128 - 12, y_offset, Graphic_icon_arrow_down_9x9, 9);
+            }
+
 //            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
 //            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
 //            
