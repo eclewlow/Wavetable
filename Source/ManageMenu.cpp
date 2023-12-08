@@ -61,7 +61,11 @@ bool ManageMenu::handleKeyLongPress(int key) {
             }
         } else if(state_ == MANAGE_MENU_SELECT_FRAME) {
             if(system_clock.milliseconds() - press_timer_ > 1000) {
-                option_selected_ = MANAGE_MENU_COPY;
+                if(storage.GetWavetable(wavetable_)->factory_preset) {
+                    option_selected_ = MANAGE_MENU_COPY;
+                } else {
+                    option_selected_ = MANAGE_MENU_EDIT;
+                }
                 setState(MANAGE_MENU_FRAME_OPTIONS);
                 absorb_keypress_ = true;
                 return true;
@@ -150,8 +154,15 @@ bool ManageMenu::handleKeyRelease(int key) {
                 {
                     
                 }
-                else
-                    setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
+                else {
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                    
+                    if(option_selected_ < option_offset_) {
+                        option_offset_ = option_selected_;
+                    }
+
+
+                }
                 break;
             case MANAGE_MENU_CONFIRM:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
@@ -230,8 +241,14 @@ bool ManageMenu::handleKeyRelease(int key) {
                 {
                     
                 }
-                else
-                    setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
+                else {
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+
+                    if(option_selected_ > option_offset_ + 2) {
+                        option_offset_ = option_selected_ - 2;
+                    }
+
+                }
                 break;
             case MANAGE_MENU_CONFIRM:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
@@ -575,16 +592,33 @@ void ManageMenu::paint(juce::Graphics& g) {
             Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("COPY"), "COPY", option_selected_ == MANAGE_MENU_COPY, 3);
         }
         else {
-            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
-            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("EDIT"), "EDIT", option_selected_ == MANAGE_MENU_EDIT, 3);
+            char *names[4] = {
+                (char*)"EDIT",
+                (char*)"COPY",
+                (char*)"RENAME",
+                (char*)"DELETE"
+            };
             
-            y_offset += 14;
-            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
-            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
+            const uint8_t * list[] = {
+                &Graphic_icon_edit_11x11[0][0],
+                &Graphic_icon_edit_11x11[0][0],
+                &Graphic_icon_rename_11x11[0][0],
+                &Graphic_icon_delete_11x11[0][0],
+            };
             
-            y_offset += 14;
-            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
-            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
+            for (int i = 0; i < 3; i++) {
+                Display::put_image_16bit(x_offset, y_offset, (const unsigned char (*)[2])list[i + option_offset_], 11);
+                Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen(names[i + option_offset_]), names[i + option_offset_], option_selected_ == MANAGE_MENU_EDIT + i + option_offset_, 3);
+
+                y_offset += 14;
+            }
+            
+//            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
+//            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
+//            
+//            y_offset += 14;
+//            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
+//            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
         }
     }
     else if(state_ == MANAGE_MENU_CONFIRM) {

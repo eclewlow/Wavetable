@@ -73,6 +73,8 @@ public:
 private:
     int8_t state_;
     int8_t option_selected_;
+    int8_t option_offset_;
+
     int16_t wavetable_offset_;
     int16_t frame_offset_;
     int16_t wavetable_;
