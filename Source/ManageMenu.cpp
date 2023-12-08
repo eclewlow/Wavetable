@@ -300,7 +300,13 @@ bool ManageMenu::handleKeyRelease(int key) {
         }
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
-                if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE) {
+                if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE && storage.GetWavetable(wavetable_)->factory_preset) {
+                    popup.show();
+                    popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                    popup.SetLine(2, (char*)"\0");
+                }
+                else if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE) {
                     // overwrite ok?
                     // TODO:  set yes func and no func
                     SetLine(0, (char*)"OVERWRITE?");
@@ -323,7 +329,13 @@ bool ManageMenu::handleKeyRelease(int key) {
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
                 break;
             case MANAGE_MENU_SELECT_FRAME: {
-                if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME) {
+                if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME && storage.GetWavetable(wavetable_)->factory_preset) {
+                    popup.show();
+                    popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                    popup.SetLine(2, (char*)"\0");
+                }
+                else if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME) {
                     // overwrite ok?
                     // TODO:  set yes func and no func
                     SetLine(0, (char*)"OVERWRITE?");
