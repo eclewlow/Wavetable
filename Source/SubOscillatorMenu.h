@@ -19,10 +19,10 @@ class SubOscillatorMenu: public State
 {
 public:
     enum SubOscillatorMenuState {
-        SUB_OSC_MENU_OFFSET,    = 0,
-        SUB_OSC_MENU_DETUNE,    = 1,
-        SUB_OSC_MENU_MIX,       = 2,
-        SUB_OSC_MENU_WAVE,      = 3,
+        SUB_OSC_MENU_OFFSET     = 0,
+        SUB_OSC_MENU_DETUNE     = 1,
+        SUB_OSC_MENU_MIX        = 2,
+        SUB_OSC_MENU_WAVE       = 3,
 
     };
     SubOscillatorMenu();

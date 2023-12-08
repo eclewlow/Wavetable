@@ -289,24 +289,24 @@ bool WaveEditor::handleKeyRelease(int key) {
                 else if (wavedata_ == BUF5)
                     loadWaveMenu.setTarget(LoadWaveMenu::WAVE_MANAGER);
             } else if (selection_ == WAVE_EDITOR_SELECTION_SAVE) {
-                if(wavedata_ == BUF5) {
-                    bool success = storage.SaveWave(storage.GetWavetable(wavetable_)->waves[frame_].name, BUF5, wavetable_, frame_);
-                    if(success) {
-                        popup.show();
-                        popup.SetLine(0, (char*)"SAVE");
-                        popup.SetLine(1, (char*)"SUCCESSFUL!");
-                        popup.SetLine(2, (char*)"\0");
-                    } else {
-                        popup.show();
-                        popup.SetLine(0, (char*)"CANNOT OVERWRITE");
-                        popup.SetLine(1, (char*)"FACTORY PRESETS!");
-                        popup.SetLine(2, (char*)"\0");
-                    }
-                } else {
-                    context.setState(&saveWaveMenu);
-                    saveWaveMenu.setWavedata(wavedata_);
-                    saveWaveMenu.setBackMenu(&waveEditor);
-                }
+//                if(wavedata_ == BUF5) {
+//                    bool success = storage.SaveWave(storage.GetWavetable(wavetable_)->waves[frame_].name, BUF5, wavetable_, frame_);
+//                    if(success) {
+//                        popup.show();
+//                        popup.SetLine(0, (char*)"SAVE");
+//                        popup.SetLine(1, (char*)"SUCCESSFUL!");
+//                        popup.SetLine(2, (char*)"\0");
+//                    } else {
+//                        popup.show();
+//                        popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+//                        popup.SetLine(1, (char*)"FACTORY PRESETS!");
+//                        popup.SetLine(2, (char*)"\0");
+//                    }
+//                } else {
+                context.setState(&saveWaveMenu);
+                saveWaveMenu.setWavedata(wavedata_);
+                saveWaveMenu.setBackMenu(&waveEditor);
+//                }
             }
             else {
                 mode_ = selection_;

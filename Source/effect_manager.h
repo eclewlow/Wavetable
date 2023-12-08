@@ -38,10 +38,9 @@ public:
         EFFECT_TYPE_RING_MODULATOR      = 2,
         EFFECT_TYPE_PHASE_DISTORTION    = 3,
         EFFECT_TYPE_WAVEFOLDER          = 4,
-        EFFECT_TYPE_WAVEFOLDER          = 5,
-        EFFECT_TYPE_WAVEWRAPPER         = 6,
-        EFFECT_TYPE_BITCRUSH            = 7,
-        EFFECT_TYPE_DRIVE               = 8,
+        EFFECT_TYPE_WAVEWRAPPER         = 5,
+        EFFECT_TYPE_BITCRUSH            = 6,
+        EFFECT_TYPE_DRIVE               = 7,
     };
 
     

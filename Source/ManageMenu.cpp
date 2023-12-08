@@ -54,22 +54,14 @@ bool ManageMenu::handleKeyLongPress(int key) {
     if( key == LEFT_ENCODER_CLICK ) {
         if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {
             if(system_clock.milliseconds() - press_timer_ > 1000) {
-                if(storage.GetWavetable(wavetable_)->factory_preset) {
-                    popup.show();
-                    popup.SetLine(0, (char*)"CANNOT EDIT");
-                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
-                    popup.SetLine(2, (char*)"\0");
-                    return true;
-                } else {
-                    option_selected_ = MANAGE_MENU_EDIT;
-                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
-                    absorb_keypress_ = true;
-                    return true;
-                }
+                option_selected_ = MANAGE_MENU_COPY;
+                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+                absorb_keypress_ = true;
+                return true;
             }
         } else if(state_ == MANAGE_MENU_SELECT_FRAME) {
             if(system_clock.milliseconds() - press_timer_ > 1000) {
-                option_selected_ = MANAGE_MENU_EDIT;
+                option_selected_ = MANAGE_MENU_COPY;
                 setState(MANAGE_MENU_FRAME_OPTIONS);
                 absorb_keypress_ = true;
                 return true;
@@ -146,15 +138,22 @@ bool ManageMenu::handleKeyRelease(int key) {
                 break;
             }
             case MANAGE_MENU_WAVETABLE_OPTIONS:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                if(storage.GetWavetable(wavetable_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
                 break;
             case MANAGE_MENU_FRAME_OPTIONS:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                if(storage.GetWavetable(wavetable_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WT:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
-                break;
-            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+            case MANAGE_MENU_CONFIRM:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
                 break;
             default:
@@ -219,15 +218,22 @@ bool ManageMenu::handleKeyRelease(int key) {
                 break;
             }
             case MANAGE_MENU_WAVETABLE_OPTIONS:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                if(storage.GetWavetable(wavetable_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
                 break;
             case MANAGE_MENU_FRAME_OPTIONS:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_EDIT, MANAGE_MENU_DELETE));
+                if(storage.GetWavetable(wavetable_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_COPY, MANAGE_MENU_DELETE));
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WT:
-                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
-                break;
-            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+            case MANAGE_MENU_CONFIRM:
                 setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, MANAGE_MENU_NO, MANAGE_MENU_YES));
                 break;
             default:
@@ -277,13 +283,41 @@ bool ManageMenu::handleKeyRelease(int key) {
         }
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
-                setState(MANAGE_MENU_MOVE_WAVETABLE);
+                if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE) {
+                    // overwrite ok?
+                    // TODO:  set yes func and no func
+                    SetLine(0, (char*)"OVERWRITE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&ManageMenu::CancelCopyWavetable);
+                    setConfirmFunc(&ManageMenu::ConfirmCopyWavetable);
+
+                    option_selected_ = MANAGE_MENU_NO;
+                    setState(MANAGE_MENU_CONFIRM);
+                }
+                else {
+                    ticker_timer_ = system_clock.milliseconds() - 2000;
+                    setState(MANAGE_MENU_SELECT_FRAME);
+                    frame_ = 0;
+                    frame_offset_ = 0;
+                }
                 break;
             case MANAGE_MENU_MOVE_WAVETABLE:
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
                 break;
             case MANAGE_MENU_SELECT_FRAME: {
-                setState(MANAGE_MENU_MOVE_FRAME);
+                if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME) {
+                    // overwrite ok?
+                    // TODO:  set yes func and no func
+                    SetLine(0, (char*)"OVERWRITE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&ManageMenu::CancelCopyWave);
+                    setConfirmFunc(&ManageMenu::ConfirmCopyWave);
+
+                    option_selected_ = MANAGE_MENU_NO;
+                    setState(MANAGE_MENU_CONFIRM);
+                }
                 break;
             }
             case MANAGE_MENU_MOVE_FRAME:
@@ -295,6 +329,11 @@ bool ManageMenu::handleKeyRelease(int key) {
                     setState(MANAGE_MENU_SELECT_FRAME);
                     frame_ = 0;
                     frame_offset_ = 0;
+                } else if(option_selected_ == MANAGE_MENU_COPY) {
+                    copy_state_ = MANAGE_MENU_COPY_STATE_WAVETABLE;
+                    blink_timer_ = system_clock.milliseconds();
+                    selected_wavetable_ = wavetable_;
+                    setState(MANAGE_MENU_SELECT_WAVETABLE);
                 } else if(option_selected_ == MANAGE_MENU_RENAME) {
                     context.setState(&enterNameMenu);
                     enterNameMenu.setBackMenu(this);
@@ -302,7 +341,13 @@ bool ManageMenu::handleKeyRelease(int key) {
                     enterNameMenu.setNameChars(storage.GetWavetable(wavetable_)->name);
                 } else if(option_selected_ == MANAGE_MENU_DELETE) {
                     option_selected_ = MANAGE_MENU_NO;
-                    setState(MANAGE_MENU_CONFIRM_DELETE_WT);
+                    setState(MANAGE_MENU_CONFIRM);
+                    // TODO:  set yes func and no func
+                    SetLine(0, (char*)"DELETE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&ManageMenu::CancelDeleteWavetable);
+                    setConfirmFunc(&ManageMenu::ConfirmDeleteWavetable);
                 }
                 break;
             case MANAGE_MENU_FRAME_OPTIONS:
@@ -313,6 +358,13 @@ bool ManageMenu::handleKeyRelease(int key) {
                     waveEditor.setWavetable(wavetable_);
                     waveEditor.setFrame(frame_);
                     context.setState(&waveEditor);
+                    setState(MANAGE_MENU_SELECT_FRAME);
+                } else if(option_selected_ == MANAGE_MENU_COPY) {
+                    copy_state_ = MANAGE_MENU_COPY_STATE_FRAME;
+                    blink_timer_ = system_clock.milliseconds();
+                    selected_wavetable_ = wavetable_;
+                    selected_frame_ = frame_;
+                    setState(MANAGE_MENU_SELECT_FRAME);
                 } else if(option_selected_ == MANAGE_MENU_RENAME) {
                     context.setState(&enterNameMenu);
                     enterNameMenu.setBackMenu(this);
@@ -320,27 +372,46 @@ bool ManageMenu::handleKeyRelease(int key) {
                     enterNameMenu.setNameChars(storage.GetWavetable(wavetable_)->waves[frame_].name);
                 } else if(option_selected_ == MANAGE_MENU_DELETE) {
                     option_selected_ = MANAGE_MENU_NO;
-                    setState(MANAGE_MENU_CONFIRM_DELETE_WAVE);
+                    setState(MANAGE_MENU_CONFIRM);
+                    // TODO:  set yes func and no func
+                    SetLine(0, (char*)"DELETE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&ManageMenu::CancelDeleteFrame);
+                    setConfirmFunc(&ManageMenu::ConfirmDeleteFrame);
                 }
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WT:
+            case MANAGE_MENU_CONFIRM:
                 if(option_selected_ == MANAGE_MENU_NO) {
-                    option_selected_ = MANAGE_MENU_EDIT;
-                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+                    if(cancel_func_)
+                        (this->*cancel_func_)();
+//                    option_selected_ = MANAGE_MENU_EDIT;
+//                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
                 } else if(option_selected_ == MANAGE_MENU_YES) {
-                    storage.DeleteWavetable(wavetable_);
-                    setState(MANAGE_MENU_SELECT_WAVETABLE);
+                    if(confirm_func_)
+                        (this->*confirm_func_)();
+//                    storage.DeleteWavetable(wavetable_);
+//                    setState(MANAGE_MENU_SELECT_WAVETABLE);
                 }
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
-                if(option_selected_ == MANAGE_MENU_NO) {
-                    option_selected_ = MANAGE_MENU_EDIT;
-                    setState(MANAGE_MENU_FRAME_OPTIONS);
-                } else if(option_selected_ == MANAGE_MENU_YES) {
-                    storage.DeleteWave(wavetable_, frame_);
-                    setState(MANAGE_MENU_SELECT_FRAME);
-                }
-                break;
+//            case MANAGE_MENU_CONFIRM_DELETE_WT:
+//                if(option_selected_ == MANAGE_MENU_NO) {
+//                    option_selected_ = MANAGE_MENU_EDIT;
+//                    setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+//                } else if(option_selected_ == MANAGE_MENU_YES) {
+//                    storage.DeleteWavetable(wavetable_);
+//                    setState(MANAGE_MENU_SELECT_WAVETABLE);
+//                }
+//                break;
+//            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+//                if(option_selected_ == MANAGE_MENU_NO) {
+//                    option_selected_ = MANAGE_MENU_EDIT;
+//                    setState(MANAGE_MENU_FRAME_OPTIONS);
+//                } else if(option_selected_ == MANAGE_MENU_YES) {
+//                    storage.DeleteWave(wavetable_, frame_);
+//                    setState(MANAGE_MENU_SELECT_FRAME);
+//                }
+//                break;
             default:
                 break;
         }
@@ -348,6 +419,7 @@ bool ManageMenu::handleKeyRelease(int key) {
     if(key == BACK_BUTTON) {
         switch(state_) {
             case MANAGE_MENU_SELECT_WAVETABLE:
+                copy_state_ == MANAGE_MENU_COPY_STATE_NONE;
                 if(back_menu_)
                     context.setState(back_menu_, true);
                 else
@@ -364,20 +436,71 @@ bool ManageMenu::handleKeyRelease(int key) {
             case MANAGE_MENU_FRAME_OPTIONS:
                 setState(MANAGE_MENU_SELECT_FRAME);
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WT:
-                option_selected_ = MANAGE_MENU_EDIT;
-                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+            case MANAGE_MENU_CONFIRM:
+                if(cancel_func_)
+                    (this->*cancel_func_)();
+//                option_selected_ = MANAGE_MENU_EDIT;
+//                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
                 break;
-            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
-                option_selected_ = MANAGE_MENU_EDIT;
-                setState(MANAGE_MENU_FRAME_OPTIONS);
-                break;
+//            case MANAGE_MENU_CONFIRM_DELETE_WT:
+//                option_selected_ = MANAGE_MENU_EDIT;
+//                setState(MANAGE_MENU_WAVETABLE_OPTIONS);
+//                break;
+//            case MANAGE_MENU_CONFIRM_DELETE_WAVE:
+//                option_selected_ = MANAGE_MENU_EDIT;
+//                setState(MANAGE_MENU_FRAME_OPTIONS);
+//                break;
             default:
                 break;
         }
     }
 
     return true;
+}
+
+void ManageMenu::SetLine(int line_no, char* str) {
+    char* line = confirm_lines_[line_no];
+    memset(line, 0, 20);
+    strncpy(line, str, strlen(str));
+}
+
+void ManageMenu::ConfirmCopyWavetable() {
+    storage.CopyWavetable(wavetable_, selected_wavetable_);
+    setState(MANAGE_MENU_SELECT_WAVETABLE);
+    copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+}
+
+void ManageMenu::CancelCopyWavetable() {
+    setState(MANAGE_MENU_SELECT_WAVETABLE);
+    copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+}
+
+void ManageMenu::ConfirmCopyWave() {
+    storage.CopyWave(wavetable_, frame_, selected_wavetable_, selected_frame_);
+    setState(MANAGE_MENU_SELECT_FRAME);
+    copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+}
+
+void ManageMenu::CancelCopyWave() {
+    setState(MANAGE_MENU_SELECT_FRAME);
+    copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+}
+
+void ManageMenu::ConfirmDeleteWavetable() {
+    storage.DeleteWavetable(wavetable_);
+    setState(MANAGE_MENU_SELECT_WAVETABLE);
+}
+void ManageMenu::CancelDeleteWavetable() {
+    setState(MANAGE_MENU_SELECT_WAVETABLE);
+}
+
+
+void ManageMenu::ConfirmDeleteFrame() {
+    storage.DeleteWave(wavetable_, frame_);
+    setState(MANAGE_MENU_SELECT_FRAME);
+}
+void ManageMenu::CancelDeleteFrame() {
+    setState(MANAGE_MENU_SELECT_FRAME);
 }
 
 void ManageMenu::SaveWavetable(char* param) {
@@ -395,19 +518,13 @@ void ManageMenu::SaveWave(char* param) {
 
 void ManageMenu::paint(juce::Graphics& g) {
     Display::clear_screen();
-    if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS || state_ == MANAGE_MENU_FRAME_OPTIONS) {
+    if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS) {
         char * title;
-        if(state_ == MANAGE_MENU_WAVETABLE_OPTIONS) {
-            if(storage.GetWavetable(wavetable_)->name[0] == '\0')
-                title = (char*) "--------";
-            else
-                title = (char *) storage.GetWavetable(wavetable_)->name;
-        } else {
-            if(storage.GetWavetable(wavetable_)->waves[frame_].name[0] == '\0')
-                title = (char*) "--------";
-            else
-                title = (char *) storage.GetWavetable(wavetable_)->waves[frame_].name;
-        }
+
+        if(storage.GetWavetable(wavetable_)->name[0] == '\0')
+            title = (char*) "--------";
+        else
+            title = (char *) storage.GetWavetable(wavetable_)->name;
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;
@@ -419,23 +536,79 @@ void ManageMenu::paint(juce::Graphics& g) {
         x_offset = 20;
         y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
         
-        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("EDIT"), "EDIT", option_selected_ == MANAGE_MENU_EDIT, 3);
-
-        y_offset += 14;
-        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
-
-        y_offset += 14;
-        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
-        Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
-
+        if(storage.GetWavetable(wavetable_)->factory_preset) {
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("COPY"), "COPY", option_selected_ == MANAGE_MENU_COPY, 3);
+        }
+        else {
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("COPY"), "COPY", option_selected_ == MANAGE_MENU_COPY, 3);
+            
+            y_offset += 14;
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
+            
+            y_offset += 14;
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
+        }
     }
-    else if(state_ == MANAGE_MENU_CONFIRM_DELETE_WT || state_ == MANAGE_MENU_CONFIRM_DELETE_WAVE) {
-        int y_offset = 16 - 6 / 2;
+    else if(state_ == MANAGE_MENU_FRAME_OPTIONS) {
+        char * title;
+        if(storage.GetWavetable(wavetable_)->waves[frame_].name[0] == '\0')
+            title = (char*) "--------";
+        else
+            title = (char *) storage.GetWavetable(wavetable_)->waves[frame_].name;
+
+        int y_offset = 5;
+        int x_offset = 1 + 2 * 4;
+
+        Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
+        
+        Display::invert_rectangle(0, 0, 128, 15);
+        
+        x_offset = 20;
+        y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
+        
+        if(storage.GetWavetable(wavetable_)->factory_preset) {
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("COPY"), "COPY", option_selected_ == MANAGE_MENU_COPY, 3);
+        }
+        else {
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("EDIT"), "EDIT", option_selected_ == MANAGE_MENU_EDIT, 3);
+            
+            y_offset += 14;
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_rename_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("RENAME"), "RENAME", option_selected_ == MANAGE_MENU_RENAME, 3);
+            
+            y_offset += 14;
+            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
+            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
+        }
+    }
+    else if(state_ == MANAGE_MENU_CONFIRM) {
+        int y_offset = 16;
         int x_offset = 0;
 
-        Display::put_string_5x5(64 - strlen("DELETE?") * 6 / 2, y_offset, strlen("DELETE?"), "DELETE?");
+        int line_count = 0;
+        for(int i = 0; i < 3; i++) {
+            if(strlen(confirm_lines_[i]) > 0)
+                line_count++;
+        }
+        
+        y_offset -= line_count * 6 / 2;
+        
+//        int y_offset = 32 - line_count * 3;
+        
+        for(int i = 0; i < 3; i++) {
+            if(strlen(confirm_lines_[i]) > 0) {
+                int x_offset = 64 - strlen(confirm_lines_[i]) * 6 / 2;
+                Display::put_string_5x5(x_offset, y_offset, strlen(confirm_lines_[i]), confirm_lines_[i]);
+            }
+            y_offset += 6;
+        }
+//        Display::put_string_5x5(64 - strlen("DELETE?") * 6 / 2, y_offset, strlen("DELETE?"), "DELETE?");
         
         y_offset = 48 - 10 / 2;
         x_offset = 32 - (16 + Display::get_string_9x9_width("NO", 3)) / 2;
@@ -449,7 +622,11 @@ void ManageMenu::paint(juce::Graphics& g) {
     else if(state_ == MANAGE_MENU_MOVE_WAVETABLE || state_ == MANAGE_MENU_SELECT_WAVETABLE) {
 
         char * title;
-        if(state_ == MANAGE_MENU_MOVE_WAVETABLE)
+        if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE)
+            title = (char *) "COPY WAVETABLE TO:";
+        else if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME)
+            title = (char *) "COPY WAVE TO:";
+        else if(state_ == MANAGE_MENU_MOVE_WAVETABLE)
             title = (char *) "MOVE WAVETABLE";
         else
             title = (char *) "MANAGE WAVETABLE";
@@ -459,8 +636,14 @@ void ManageMenu::paint(juce::Graphics& g) {
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
-        
+        if(copy_state_ != MANAGE_MENU_COPY_STATE_WAVETABLE && copy_state_ != MANAGE_MENU_COPY_STATE_FRAME)
+            Display::invert_rectangle(0, 0, 128, 15);
+        else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
+            Display::invert_rectangle(0, 0, 128, 15);
+        else{
+            
+        }
+
         x_offset = 64 - 5;
         y_offset += 15;
 
@@ -513,6 +696,10 @@ void ManageMenu::paint(juce::Graphics& g) {
         char * title;
         if(state_ == MANAGE_MENU_MOVE_FRAME)
             title = (char *) "MOVE WAVE";
+        if(copy_state_ == MANAGE_MENU_COPY_STATE_WAVETABLE)
+            title = (char *) "COPY WAVETABLE TO:";
+        else if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME)
+            title = (char *) "COPY WAVE TO:";
         else
             title = (char *) "MANAGE WAVE";
         
@@ -521,8 +708,13 @@ void ManageMenu::paint(juce::Graphics& g) {
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
-        
+        if(copy_state_ != MANAGE_MENU_COPY_STATE_FRAME)
+            Display::invert_rectangle(0, 0, 128, 15);
+        else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
+            Display::invert_rectangle(0, 0, 128, 15);
+        else{
+        }
+
         x_offset = 64 - 5;
         y_offset += 15;
 

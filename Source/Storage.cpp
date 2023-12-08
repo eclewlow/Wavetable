@@ -24,8 +24,10 @@ bool Storage::EraseAll() {
             WaveTables[table].waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
             if(table < FACTORY_WAVETABLE_COUNT) {
                 snprintf(WaveTables[table].waves[frame].name, 9, "%02d", frame);
+                WaveTables[table].waves[frame].factory_preset = true;
             } else {
                 strncpy(WaveTables[table].waves[frame].name, "\0", 9);
+                WaveTables[table].waves[frame].factory_preset = false;
             }
         }
     }
@@ -159,6 +161,36 @@ bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) 
 
     return true;
 }
+
+bool Storage::CopyWavetable(int table_dst, int table_src) {
+    WAVETABLE * t_dst = GetWavetable(table_dst);
+    WAVETABLE * t_src = GetWavetable(table_src);
+    
+    if(t_dst->factory_preset) return false;
+    
+    t_dst->factory_preset = false;
+    strncpy(t_dst->name, t_src->name, 9);
+    for(int i = 0; i < 16; i++) {
+        strncpy(t_dst->waves[i].name, t_src->waves[i].name, 9);
+        std::memcpy((void*)&ROM[t_dst->waves[i].memory_location], (void*)&ROM[t_src->waves[i].memory_location], 2048 * 2);
+        
+    }
+    return true;
+}
+
+bool Storage::CopyWave(int table_dst, int frame_dst, int table_src, int frame_src) {
+    WAVETABLE * t_dst = GetWavetable(table_dst);
+    WAVETABLE * t_src = GetWavetable(table_src);
+    
+    if(t_dst->factory_preset) return false;
+    
+    t_dst->factory_preset = false;
+
+    strncpy(t_dst->waves[frame_dst].name, t_src->waves[frame_src].name, 9);
+    std::memcpy((void*)&ROM[t_dst->waves[frame_dst].memory_location], (void*)&ROM[t_src->waves[frame_src].memory_location], 2048 * 2);
+    return true;
+}
+
 
 bool Storage::DeleteWavetable(int table) {
     WAVETABLE * t = GetWavetable(table);

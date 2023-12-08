@@ -78,6 +78,13 @@ public:
         uint16_t pot_fx_amount;                 // (0, 4095)
         uint16_t pot_fx;                        // (0, 4095)
         uint16_t pot_morph;                     // (0, 4095)
+        
+        // wavetables list
+        // TODO: we need a way of backing up out master wavetables list in memory
+        // TODO: so we can recall a snapshot, or revert back to the master list.
+//        WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
+        // TODO: can we randomize this?  not the factory presets. but the table order (prioritized for
+        // first sixteen waves of wavetables that have 16 waves present, and the wave order can be randomized for non-factory tables.
     } SNAPSHOT;
     
     Storage() {};
@@ -91,7 +98,11 @@ public:
     bool SwapWaves(int table, int frame1, int frame2);
     bool DeleteWavetable(int table);
     bool DeleteWave(int table, int frame);
+    bool CopyWavetable(int table_dst, int table_src);
+    bool CopyWave(int table_dst, int frame_dst, int table_src, int frame_src);
     bool EraseAll();
+//    bool SaveAllData();
+//    bool RestoreAllData();
     int8_t GetNumberOfWavesInTable(int16_t table);
     inline WAVETABLE* GetWavetable(int8_t table) { return &WaveTables[table]; }
     inline WAVETABLE* GetWavetables() { return WaveTables; }
