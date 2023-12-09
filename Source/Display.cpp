@@ -514,8 +514,96 @@ void Display::put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const ch
         }
         LCD_Memory++;
     }
-    if(inverted)
-        Display::invert_rectangle(x - 2, y - 2, get_string_9x9_width(save_input, gap) + 4, 9 + 4);
+    if(inverted) {
+        uint8_t gap_round_up = (gap + 2 - 1) / 2;
+        Display::invert_rectangle(x - gap_round_up, y - gap_round_up, get_string_9x9_width(save_input, gap) + gap_round_up * 2, 9 + gap_round_up * 2);
+    }
+    
+}
+
+void Display::put_string_9x9_loop(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted, int8_t gap, int8_t num_chars, int8_t position)
+{
+    uint8_t Terminator_Found;
+    uint8_t Characters_Placed;
+    uint8_t this_character;
+    uint8_t *LCD_Memory;
+    uint8_t counter = 0;
+    uint8_t row;
+    WORD_UNION Pixel_Data;
+    const char * save_input = input;
+    
+    // num_chars will be 7
+    
+    // string width is     return strlen(input) * 9 + (strlen(input) - 1) * gap;
+    // we want to draw n pixel columns. where for(n=offset, n <
+    // position is from 0 to string width
+    
+    //Get the first row of the display character.
+    row=y>>3;
+    //Calculate the address of the first uint8_t in display in LCD_Memory
+    LCD_Memory=&Display::framebuffer[row][x];
+    
+    //Initialize Terminator_Found.
+    Terminator_Found=0;
+    //Move across the field. We will either put the character or a blank
+    //in every position of Field_Width.
+    for(Characters_Placed=0;Characters_Placed<Field_Width;Characters_Placed++)
+    {
+        //If we have not passed the terminator, then get the next
+        //character in the string. If we find the terminator,
+        //remember that we are out of characters.
+        if(!Terminator_Found)
+        {
+            this_character=*input++;
+            if(!this_character)
+            {
+                Terminator_Found=1;
+                this_character=' ';
+            }
+        }
+        else
+            this_character=' ';
+        
+        for(uint8_t column = 0; column<9; column++)
+        {
+            if(counter >= position && counter < position + (num_chars * 9 + (num_chars - 1) * gap)) {
+                Pixel_Data.as_word=((uint16_t)Font_09x09[(this_character-FONT_09X09_BASE)][column]);
+                
+                Pixel_Data.as_word <<= (y & 0x07);
+                
+                LCD_Memory[0]|=Pixel_Data.as_bytes[0];
+                if (row < 7)
+                    LCD_Memory[128]|=Pixel_Data.as_bytes[1];
+
+                LCD_Memory ++;
+                counter++;
+            } else {
+                counter++;
+            }
+        }
+        if(counter == position) {
+            counter += gap;
+            LCD_Memory += gap;
+        } else if (counter + 1 == position) {
+            counter++;
+            LCD_Memory++;
+        }
+        else if(counter >= position && counter < position + (num_chars * 9 + (num_chars) * gap)) {
+            counter += gap;
+            LCD_Memory += gap;
+        } else {
+            counter += gap;
+        }
+
+//        counter+=gap;
+//        LCD_Memory+=gap;
+    }
+    if(inverted) {
+        uint8_t gap_round_up = (gap + 2 - 1) / 2;
+        uint8_t str_len = std::min<uint8_t>(strlen(save_input), num_chars);
+        uint8_t str_width = str_len * 9 + (str_len - 1) * gap;
+        Display::invert_rectangle(x - gap_round_up, y - gap_round_up, str_width + gap_round_up * 2, 9 + gap_round_up * 2);
+    }
     
 }
 

@@ -33,6 +33,5 @@ private:
     // Your private member variables go here...
     float phase = 0.0f;
     bool key_map[128];
-    bool key_held[128];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

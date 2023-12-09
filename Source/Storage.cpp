@@ -93,6 +93,69 @@ bool Storage::EraseAll() {
             memset(&ROM[GetWavetable(table)->waves[frame].memory_location], 0, 2048 * 2);
 
     }
+    
+    for(int snapshot = 0; snapshot < FACTORY_SNAPSHOT_COUNT + USER_SNAPSHOT_COUNT; snapshot++) {
+        SNAPSHOT * snapshot_ptr = GetSnapshot(snapshot);
+        snapshot_ptr->factory_preset = snapshot < FACTORY_SNAPSHOT_COUNT;
+        snapshot_ptr->is_empty = !snapshot_ptr->factory_preset;
+        strncpy(snapshot_ptr->name, "INIT", 9);
+        snapshot_ptr->scope_setting_ = UserSettings::SETTING_SCOPE_LINE;
+        snapshot_ptr->morph_setting_ = UserSettings::SETTING_MORPH_SMOOTH;
+        // sub osc parameters
+        snapshot_ptr->suboscOffset = 0;
+        snapshot_ptr->suboscDetune = 0;
+        snapshot_ptr->suboscMix = 100;
+        snapshot_ptr->suboscWave = 0;
+        
+        snapshot_ptr->fx_depth = 1.0f;
+        snapshot_ptr->fx_sync = false;
+        snapshot_ptr->fx_scale = 0;
+        snapshot_ptr->fx_range = 1;
+        snapshot_ptr->fx_oscillator_shape = EffectManager::SINE_SHAPE;
+        snapshot_ptr->fx_control_type = EffectManager::INTERNAL_MODULATOR;
+        snapshot_ptr->fx_effect = EffectManager::EFFECT_TYPE_BYPASS;
+
+        // ab engine parameters
+        snapshot_ptr->ab_engine_left_wavetable = 0;
+        snapshot_ptr->ab_engine_left_frame = 0;
+        snapshot_ptr->ab_engine_right_wavetable = 0;
+        snapshot_ptr->ab_engine_right_frame = 0;
+        snapshot_ptr->ab_engine_is_editing_left = false;
+        snapshot_ptr->ab_engine_is_editing_right = false;
+
+        // wavetable engine parameters
+        snapshot_ptr->wavetable_engine_wavetable = 0;
+        
+        // matrix engine parameters
+        snapshot_ptr->matrix_engine_x1 = 0;
+        snapshot_ptr->matrix_engine_x2 = 7;
+        snapshot_ptr->matrix_engine_y1 = 0;
+        snapshot_ptr->matrix_engine_y2 = 7;
+        snapshot_ptr->matrix_engine_wavelist_offset = 0;
+        
+        // drum engine parameters
+        snapshot_ptr->drum_engine_amp_decay = 1.0f;
+        snapshot_ptr->drum_engine_fm_decay = 1.0f;
+        snapshot_ptr->drum_engine_fm_shape = 0.5f;
+        snapshot_ptr->drum_engine_fm_depth = 0.5f;
+        snapshot_ptr->drum_engine_wavetable = 0;
+
+        // pot settings
+        snapshot_ptr->pot_fx_amount = 2048;
+        snapshot_ptr->pot_fx = 2048;
+        snapshot_ptr->pot_morph = 2048;
+        
+        // calibration settings
+        for(int i = 0; i < 4; i++) {
+            snapshot_ptr->io_gain_[i] = 1.0f;   // don't randomize this, but save in snapshot
+            snapshot_ptr->io_bias_[i] = 0.0f;   // don't randomize this, but save in snapshot
+        }
+
+        snapshot_ptr->calibration_x_ = 0.029304029304029;    // don't randomize this, but save in snapshot
+        snapshot_ptr->calibration_y_ = -48;    // don't randomize this, but save in snapshot
+
+    }
+    return true;
 }
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {

@@ -12,14 +12,13 @@ MainComponent::MainComponent()
     
     storage.Init();
     memset(key_map, 0, 128);
-    memset(key_held, 0, 128);
 
     abEngine.Init();
     wavetableEngine.Init();
     matrixEngine.Init();
     drumEngine.Init();
 
-    context.setState(&manageMenu);
+    context.setState(&snapshotMenu);
     context.setEngine(&abEngine);
 
     

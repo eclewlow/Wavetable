@@ -37,6 +37,7 @@ IOConfigurationMenu ioConfigurationMenu;
 CalibrationMenu calibrationMenu;
 QuantizerMenu quantizerMenu;
 ManageMenu manageMenu;
+SnapshotMenu snapshotMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

@@ -30,7 +30,7 @@ public:
     virtual bool handleKeyLongPress(int key) { return false; }
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed);
-    inline void setState(SaveWaveMenuState state) { state_ = state; }
+    inline void setState(int8_t state) { state_ = state; }
     static void SaveWavetable(char* param);
     static void SaveWave(char* param);
 
@@ -38,7 +38,7 @@ public:
 
 private:
     int16_t * wavedata_;
-    SaveWaveMenuState state_;
+    int8_t state_;
     int16_t wavetable_offset_;
     int16_t frame_offset_;
     int16_t wavetable_;

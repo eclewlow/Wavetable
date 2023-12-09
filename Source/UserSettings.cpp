@@ -38,5 +38,9 @@ UserSettings::~UserSettings() {}
 
 void UserSettings::Calibrate(uint16_t c1, uint16_t c5) {
     calibration_x_ = 48.0f / (c5 - c1);
+    // c1 2457 4095
+    // perfect pitch
+    // x = 0.029304029304029
+    // y = -48
     calibration_y_ = 24.0f - c1 * calibration_x_;
 }

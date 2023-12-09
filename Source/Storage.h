@@ -32,6 +32,8 @@ public:
     
     typedef struct {
         char name[9];
+        bool factory_preset;
+        bool is_empty;
 
         // misc settings
         int8_t scope_setting_;                  // (0, 1)
@@ -57,6 +59,8 @@ public:
         int8_t ab_engine_left_frame;            // (0, 15)
         int8_t ab_engine_right_wavetable;       // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
         int8_t ab_engine_right_frame;           // (0, 15)
+        bool ab_engine_is_editing_left;
+        bool ab_engine_is_editing_right;
 //        bool ab_engine_is_editing; set to false for both left and right
 
         // wavetable engine parameters
@@ -116,6 +120,7 @@ public:
     int8_t GetNumberOfWavesInTable(int16_t table);
     inline WAVETABLE* GetWavetable(int8_t table) { return &persistent_storage_.wavetables[table]; }
     inline WAVETABLE* GetWavetables() { return persistent_storage_.wavetables; }
+    inline SNAPSHOT* GetSnapshot(int8_t snapshot) { return &persistent_storage_.snapshots[snapshot]; }
     //    int16_t NumAvailableWaveSlots();
     //    int16_t NextAvailableWaveSlot();
 private:
