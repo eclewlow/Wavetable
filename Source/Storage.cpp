@@ -11,13 +11,64 @@
 #include "wavetables.h"
 #include "Globals.h"
 
+void Storage::Init() {
+//    save_file_ = juce::File::getCurrentWorkingDirectory().getChildFile ("file.txt");
+    
+//    printf("%s\n", juce::File::getCurrentWorkingDirectory().getFullPathName().toStdString().c_str());
+    save_file_ = juce::File("/Users/eclewlow/file.txt");
+    if( !save_file_.existsAsFile() )
+    {
+        auto result = save_file_.create();
+        if( !result.wasOk() )
+        {
+            printf("failed creating file!");
+            DBG("failed creating file!");
+            jassertfalse; //pause so we can see the error message
+            return;  //bail
+        }
+        EraseAll();
+        SaveAll();
+    } else {
+        LoadAll();
+    }
+}
+
+bool Storage::SaveAll() {
+    save_file_.replaceWithData(WaveTables, sizeof(WAVETABLE) * FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+}
+
+bool Storage::LoadAll() {
+    juce::FileInputStream input_stream(save_file_);
+    input_stream.read(WaveTables, sizeof(WAVETABLE) * FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+}
+
 bool Storage::EraseAll() {
+    
+    char *names[16] = {
+        (char*)"SQUISH",
+        (char*)"HARMONIX",
+        (char*)"CLICKY",
+        (char*)"PHASER",
+        (char*)"TOILET",
+        (char*)"SOLAR",
+        (char*)"JUICE",
+        (char*)"SQROWL",
+        (char*)"GRANULAR",
+        (char*)"H SERIES",
+        (char*)"FOLD",
+        (char*)"SOLRPOWR",
+        (char*)"FLANGE",
+        (char*)"NOISE",
+        (char*)"VITAL 1",
+        (char*)"VITAL 2",
+    };
+
     for(int table = 0; table < FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
         if(table < FACTORY_WAVETABLE_COUNT) {
-            snprintf(WaveTables[table].name, 9, "TABLE %d", table);
+            snprintf(WaveTables[table].name, 9, names[table], table);
             WaveTables[table].factory_preset = true;
         } else {
-            strncpy(WaveTables[table].name, "\0", 9);
+            strncpy(WaveTables[table].name, "INIT", 9);
             WaveTables[table].factory_preset = false;
         }
         for(int frame = 0; frame < 16; frame++) {
@@ -26,7 +77,7 @@ bool Storage::EraseAll() {
                 snprintf(WaveTables[table].waves[frame].name, 9, "%02d", frame);
                 WaveTables[table].waves[frame].factory_preset = true;
             } else {
-                strncpy(WaveTables[table].waves[frame].name, "\0", 9);
+                strncpy(WaveTables[table].waves[frame].name, "INIT", 9);
                 WaveTables[table].waves[frame].factory_preset = false;
             }
         }
@@ -145,6 +196,8 @@ bool Storage::SaveWavetable(char * name, int table) {
 
     strncpy(t->name, name, 9);
     
+    SaveAll();
+
     return true;
 }
 
@@ -158,6 +211,8 @@ bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) 
     t->waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
     
     std::memcpy((void*)&ROM[t->waves[frame].memory_location], data, 2048 * 2);
+
+    SaveAll();
 
     return true;
 }
@@ -173,8 +228,9 @@ bool Storage::CopyWavetable(int table_dst, int table_src) {
     for(int i = 0; i < 16; i++) {
         strncpy(t_dst->waves[i].name, t_src->waves[i].name, 9);
         std::memcpy((void*)&ROM[t_dst->waves[i].memory_location], (void*)&ROM[t_src->waves[i].memory_location], 2048 * 2);
-        
     }
+
+    SaveAll();
     return true;
 }
 
@@ -188,6 +244,8 @@ bool Storage::CopyWave(int table_dst, int frame_dst, int table_src, int frame_sr
 
     strncpy(t_dst->waves[frame_dst].name, t_src->waves[frame_src].name, 9);
     std::memcpy((void*)&ROM[t_dst->waves[frame_dst].memory_location], (void*)&ROM[t_src->waves[frame_src].memory_location], 2048 * 2);
+
+    SaveAll();
     return true;
 }
 
@@ -198,11 +256,13 @@ bool Storage::DeleteWavetable(int table) {
         return false;
 
     for (int8_t i = 0; i < 16; i++) {
-        memset(t->waves[i].name, 0, 9);
+        strncpy(t->waves[i].name, "INIT", 9);
         memset(&ROM[t->waves[i].memory_location], 0, 2048 * 2);
 
     }
-    memset(t->name, 0, 9);
+    strncpy(t->name, "INIT", 9);
+
+    SaveAll();
     return true;
 }
 
@@ -211,8 +271,10 @@ bool Storage::DeleteWave(int table, int frame) {
     if(t->factory_preset)
         return false;
     
-    memset(t->waves[frame].name, 0, 9);
+    strncpy(t->waves[frame].name, "INIT", 9);
     memset(&ROM[t->waves[frame].memory_location], 0, 2048 * 2);
+    
+    SaveAll();
     return true;
 }
 

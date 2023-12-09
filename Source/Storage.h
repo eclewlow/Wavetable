@@ -89,6 +89,7 @@ public:
     
     Storage() {};
     ~Storage() {};
+    void Init();
     int16_t LoadWaveSample(int table, int frame, int index);
     void LoadWaveSample(int16_t * wavedata, int16_t table, float morph);
     void LoadWaveSample(int16_t * wavedata, int16_t table, int16_t frame);
@@ -101,6 +102,8 @@ public:
     bool CopyWavetable(int table_dst, int table_src);
     bool CopyWave(int table_dst, int frame_dst, int table_src, int frame_src);
     bool EraseAll();
+    bool SaveAll();
+    bool LoadAll();
 //    bool SaveAllData();
 //    bool RestoreAllData();
     int8_t GetNumberOfWavesInTable(int16_t table);
@@ -116,5 +119,7 @@ private:
     
     WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
     
+    juce::File save_file_;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Storage);
 };

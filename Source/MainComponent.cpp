@@ -10,7 +10,7 @@ MainComponent::MainComponent()
     // you add any child components.
     setSize (800, 600);
     
-    storage.EraseAll();
+    storage.Init();
     memset(key_map, 0, 128);
     memset(key_held, 0, 128);
 
