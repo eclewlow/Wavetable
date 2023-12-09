@@ -34,12 +34,14 @@ void Storage::Init() {
 }
 
 bool Storage::SaveAll() {
-    save_file_.replaceWithData(WaveTables, sizeof(WAVETABLE) * FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+    save_file_.replaceWithData(&persistent_storage_, sizeof(PERSISTENT_STORAGE));
+    return true;
 }
 
 bool Storage::LoadAll() {
     juce::FileInputStream input_stream(save_file_);
-    input_stream.read(WaveTables, sizeof(WAVETABLE) * FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+    input_stream.read(&persistent_storage_, sizeof(PERSISTENT_STORAGE));
+    return true;
 }
 
 bool Storage::EraseAll() {
@@ -65,45 +67,49 @@ bool Storage::EraseAll() {
 
     for(int table = 0; table < FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
         if(table < FACTORY_WAVETABLE_COUNT) {
-            snprintf(WaveTables[table].name, 9, names[table], table);
-            WaveTables[table].factory_preset = true;
+            snprintf(GetWavetable(table)->name, 9, names[table], table);
+            GetWavetable(table)->factory_preset = true;
+            GetWavetable(table)->is_empty = false;
         } else {
-            strncpy(WaveTables[table].name, "INIT", 9);
-            WaveTables[table].factory_preset = false;
+            strncpy(GetWavetable(table)->name, "INIT", 9);
+            GetWavetable(table)->factory_preset = false;
+            GetWavetable(table)->is_empty = true;
         }
         for(int frame = 0; frame < 16; frame++) {
-            WaveTables[table].waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
+            GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
             if(table < FACTORY_WAVETABLE_COUNT) {
-                snprintf(WaveTables[table].waves[frame].name, 9, "%02d", frame);
-                WaveTables[table].waves[frame].factory_preset = true;
+                snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
+                GetWavetable(table)->waves[frame].factory_preset = true;
+                GetWavetable(table)->waves[frame].is_empty = false;
             } else {
-                strncpy(WaveTables[table].waves[frame].name, "INIT", 9);
-                WaveTables[table].waves[frame].factory_preset = false;
+                strncpy(GetWavetable(table)->waves[frame].name, "INIT", 9);
+                GetWavetable(table)->waves[frame].factory_preset = false;
+                GetWavetable(table)->waves[frame].is_empty = true;
             }
         }
     }
     for(int table = FACTORY_WAVETABLE_COUNT; table <  FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
         for(int frame = 0; frame < 16; frame++)
-            memset(&ROM[WaveTables[table].waves[frame].memory_location], 0, 2048 * 2);
+            memset(&ROM[GetWavetable(table)->waves[frame].memory_location], 0, 2048 * 2);
 
     }
 }
 
 int16_t Storage::LoadWaveSample(int table, int frame, int index) {
 
-    WAVETABLE t = WaveTables[table];
+    WAVETABLE * t = GetWavetable(table);
         
     // TODO: this should be a read to ROM data
     // the wavetable struct data exists in MCU flash
     // and the wave struct data exists in MCU flash
     // but the wave struct data field points to a memory location in ROM.
-    return ROM[t.waves[frame].memory_location + index];
+    return ROM[t->waves[frame].memory_location + index];
 }
 
 void Storage::LoadWaveSample(int16_t * wavedata, int16_t table, int16_t frame) {
-    WAVETABLE t = WaveTables[table];
+    WAVETABLE * t = GetWavetable(table);
 
-    const int16_t * data = &ROM[t.waves[frame].memory_location];
+    const int16_t * data = &ROM[t->waves[frame].memory_location];
     memcpy(wavedata, data, 2048 * 2);
 }
 
@@ -175,12 +181,12 @@ void Storage::LoadWaveSample(int16_t * wavedata, int16_t table, float morph) {
 int8_t Storage::GetNumberOfWavesInTable(int16_t table) {
     int8_t count = 0;
     
-    WAVETABLE t = WaveTables[table];
-    if(t.factory_preset)
+    WAVETABLE * t = GetWavetable(table);
+    if(t->factory_preset)
         return 16;
     
     for(int8_t i = 0; i < 16; i++) {
-        if(t.waves[i].name[0] != '\0')
+        if(t->waves[i].is_empty)
             count++;
     }
     
@@ -194,6 +200,8 @@ bool Storage::SaveWavetable(char * name, int table) {
     if(t->factory_preset)
         return false;
 
+    t->is_empty = GetNumberOfWavesInTable(table) == 0;
+    
     strncpy(t->name, name, 9);
     
     SaveAll();
@@ -209,6 +217,7 @@ bool Storage::SaveWave(const char * name, int16_t * data, int table, int frame) 
     std::strncpy(t->waves[frame].name, name, 9);
     
     t->waves[frame].memory_location = 2048 * 16 * table + 2048 * frame;
+    t->waves[frame].is_empty = false;
     
     std::memcpy((void*)&ROM[t->waves[frame].memory_location], data, 2048 * 2);
 
@@ -227,6 +236,7 @@ bool Storage::CopyWavetable(int table_dst, int table_src) {
     strncpy(t_dst->name, t_src->name, 9);
     for(int i = 0; i < 16; i++) {
         strncpy(t_dst->waves[i].name, t_src->waves[i].name, 9);
+        t_dst->waves[i].is_empty = t_src->waves[i].is_empty;
         std::memcpy((void*)&ROM[t_dst->waves[i].memory_location], (void*)&ROM[t_src->waves[i].memory_location], 2048 * 2);
     }
 
@@ -245,6 +255,8 @@ bool Storage::CopyWave(int table_dst, int frame_dst, int table_src, int frame_sr
     strncpy(t_dst->waves[frame_dst].name, t_src->waves[frame_src].name, 9);
     std::memcpy((void*)&ROM[t_dst->waves[frame_dst].memory_location], (void*)&ROM[t_src->waves[frame_src].memory_location], 2048 * 2);
 
+    t_dst->waves[frame_dst].is_empty = t_src->waves[frame_src].is_empty;
+    
     SaveAll();
     return true;
 }
@@ -258,9 +270,11 @@ bool Storage::DeleteWavetable(int table) {
     for (int8_t i = 0; i < 16; i++) {
         strncpy(t->waves[i].name, "INIT", 9);
         memset(&ROM[t->waves[i].memory_location], 0, 2048 * 2);
+        t->waves[i].is_empty = true;
 
     }
     strncpy(t->name, "INIT", 9);
+    t->is_empty = true;
 
     SaveAll();
     return true;
@@ -273,29 +287,30 @@ bool Storage::DeleteWave(int table, int frame) {
     
     strncpy(t->waves[frame].name, "INIT", 9);
     memset(&ROM[t->waves[frame].memory_location], 0, 2048 * 2);
+    t->waves[frame].is_empty = true;
     
     SaveAll();
     return true;
 }
 
 bool Storage::SwapWaves(int table, int frame1, int frame2) {
-    WAVETABLE wt = WaveTables[table];
+    WAVETABLE * wt = GetWavetable(table);
     
-    if(wt.factory_preset)
+    if(wt->factory_preset)
         return false;
     
-    WAVE w = WaveTables[table].waves[frame1];
+    WAVE w = GetWavetable(table)->waves[frame1];
     
-    WaveTables[table].waves[frame1] = WaveTables[table].waves[frame2];
-    WaveTables[table].waves[frame2] = w;
+    GetWavetable(table)->waves[frame1] = GetWavetable(table)->waves[frame2];
+    GetWavetable(table)->waves[frame2] = w;
     return true;
 }
 
 bool Storage::SwapWavetables(int table1, int table2) {
         // easy swap
-    WAVETABLE wt = WaveTables[table1];
-    WaveTables[table1] = WaveTables[table2];
-    WaveTables[table2] = wt;
+    WAVETABLE wt = persistent_storage_.wavetables[table1];
+    persistent_storage_.wavetables[table1] = persistent_storage_.wavetables[table2];
+    persistent_storage_.wavetables[table2] = wt;
     return true;
     /*
      // swapping wavetables requires swapping of all wave data memory locations.

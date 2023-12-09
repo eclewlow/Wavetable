@@ -263,6 +263,7 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
         Display::invert_rectangle(95 - bar_width / 2, y_offset - y_shift + bar_height - 3, bar_width, 3);
     } else {
         char * title = (char *) "SELECT WAVE";
+        title = storage.GetWavetable(wavetable_)->name;
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;

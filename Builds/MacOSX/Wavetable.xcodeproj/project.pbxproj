@@ -55,6 +55,7 @@
 		6EC37FB8C3B8DE65E38E342B /* adc.cpp */ = {isa = PBXBuildFile; fileRef = F16B6981CEBD543A1BF8E84E; };
 		72BE0E92942035A0DF176411 /* OscilloscopeConfigurationMenu.cpp */ = {isa = PBXBuildFile; fileRef = 46BD5B32830DC3F4E765545F; };
 		7477B3F299AF70BDB972214C /* drive.cpp */ = {isa = PBXBuildFile; fileRef = 4F05C10B30ACD995D4450020; };
+		75AB6219FF440B7E4364C8D6 /* SnapshotMenu.cpp */ = {isa = PBXBuildFile; fileRef = 287456F904FCA0F069A83699; };
 		77E21DD46196151F97DB9C38 /* fnt08x08.cpp */ = {isa = PBXBuildFile; fileRef = 0847718B8FB90887C06DB247; };
 		7C6F89A5B4C8A03709A64171 /* suboscillator.cpp */ = {isa = PBXBuildFile; fileRef = B869266141DB9C03C8433529; };
 		802DF1F6EF2AC8B8BF70CF9C /* phase_distortion.cpp */ = {isa = PBXBuildFile; fileRef = 8A8A3AA3A426897E2704DDB0; };
@@ -123,6 +124,7 @@
 		257C6B05EF654B3FC5C05F50 /* ControlStatusMenu.h */ /* ControlStatusMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControlStatusMenu.h; path = ../../Source/ControlStatusMenu.h; sourceTree = SOURCE_ROOT; };
 		25E284BA4EBB277BFD5600C5 /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_events"; sourceTree = "<absolute>"; };
 		26B31D2DFAA0292FE58C49D7 /* ab_engine.h */ /* ab_engine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ab_engine.h; path = ../../Source/ab_engine.h; sourceTree = SOURCE_ROOT; };
+		287456F904FCA0F069A83699 /* SnapshotMenu.cpp */ /* SnapshotMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SnapshotMenu.cpp; path = ../../Source/SnapshotMenu.cpp; sourceTree = SOURCE_ROOT; };
 		2C9CB3AD7137D5AC3D4F0145 /* ModeMenu.cpp */ /* ModeMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModeMenu.cpp; path = ../../Source/ModeMenu.cpp; sourceTree = SOURCE_ROOT; };
 		2D44DDAA80F737CD56E8D560 /* drive.h */ /* drive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = drive.h; path = ../../Source/drive.h; sourceTree = SOURCE_ROOT; };
 		2D5AB9AC05C69AD7CCD30DA8 /* juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_audio_basics"; sourceTree = "<absolute>"; };
@@ -183,6 +185,7 @@
 		8B075495A200BE366B36BE74 /* juce_audio_devices */ /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = "/Users/eclewlow/Downloads/JUCE-develop/modules/juce_audio_devices"; sourceTree = "<absolute>"; };
 		8B73C61466B9E25FA61B0370 /* QuantizerMenu.h */ /* QuantizerMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = QuantizerMenu.h; path = ../../Source/QuantizerMenu.h; sourceTree = SOURCE_ROOT; };
 		8CBE321954AD7FE362AB5C82 /* MainMenu.h */ /* MainMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainMenu.h; path = ../../Source/MainMenu.h; sourceTree = SOURCE_ROOT; };
+		8CEE42CBCA7F52243D370CCE /* SnapshotMenu.h */ /* SnapshotMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SnapshotMenu.h; path = ../../Source/SnapshotMenu.h; sourceTree = SOURCE_ROOT; };
 		8D20F6D44136657534CF0296 /* Display.cpp */ /* Display.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Display.cpp; path = ../../Source/Display.cpp; sourceTree = SOURCE_ROOT; };
 		8FEECE36E013EA33BBDF489E /* SubOscillatorMenu.cpp */ /* SubOscillatorMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SubOscillatorMenu.cpp; path = ../../Source/SubOscillatorMenu.cpp; sourceTree = SOURCE_ROOT; };
 		913ECDA88601FB758D5F861D /* include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../../JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
@@ -550,6 +553,8 @@
 				8B73C61466B9E25FA61B0370,
 				BE0B378AE12EE05AF202B3B0,
 				2EAA24F4D6BD3C1FED2803ED,
+				287456F904FCA0F069A83699,
+				8CEE42CBCA7F52243D370CCE,
 				8FEECE36E013EA33BBDF489E,
 				8AAAB93A310F7B8D2777AF05,
 				D90E331107E8B8E89E1E3B4A,
@@ -690,6 +695,7 @@
 				4A5BA30807712129BBC942CB,
 				ECAB79706E640B6C5DB83377,
 				87311A66B320A4D3754F8C1F,
+				75AB6219FF440B7E4364C8D6,
 				200F94DACA3AD8912493738C,
 				5689D0DAD383DB7160FC4712,
 				0A88AAD5F754C5E6A1B2DBDC,

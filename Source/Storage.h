@@ -20,12 +20,14 @@ public:
         char name[9];
         uint32_t memory_location;
         bool factory_preset;
+        bool is_empty;
     } WAVE;
     
     typedef struct {
         char name[9];
         WAVE waves[16];
         bool factory_preset;
+        bool is_empty;
     } WAVETABLE;
     
     typedef struct {
@@ -79,13 +81,18 @@ public:
         uint16_t pot_fx;                        // (0, 4095)
         uint16_t pot_morph;                     // (0, 4095)
         
-        // wavetables list
-        // TODO: we need a way of backing up out master wavetables list in memory
-        // TODO: so we can recall a snapshot, or revert back to the master list.
-//        WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
-        // TODO: can we randomize this?  not the factory presets. but the table order (prioritized for
-        // first sixteen waves of wavetables that have 16 waves present, and the wave order can be randomized for non-factory tables.
+        // calibration data
+        float io_gain_[4];                      // (1, 10.0)    // don't randomize this, but save in snapshot
+        float io_bias_[4];                      // (-1.0, 1.0)  // don't randomize this, but save in snapshot
+
+        float calibration_x_;                   // ()  // don't randomize this, but save in snapshot
+        float calibration_y_;                   // ()  // don't randomize this, but save in snapshot
     } SNAPSHOT;
+    
+    typedef struct {
+        WAVETABLE wavetables[USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT];
+        SNAPSHOT snapshots[USER_SNAPSHOT_COUNT + FACTORY_SNAPSHOT_COUNT];
+    } PERSISTENT_STORAGE;
     
     Storage() {};
     ~Storage() {};
@@ -107,8 +114,8 @@ public:
 //    bool SaveAllData();
 //    bool RestoreAllData();
     int8_t GetNumberOfWavesInTable(int16_t table);
-    inline WAVETABLE* GetWavetable(int8_t table) { return &WaveTables[table]; }
-    inline WAVETABLE* GetWavetables() { return WaveTables; }
+    inline WAVETABLE* GetWavetable(int8_t table) { return &persistent_storage_.wavetables[table]; }
+    inline WAVETABLE* GetWavetables() { return persistent_storage_.wavetables; }
     //    int16_t NumAvailableWaveSlots();
     //    int16_t NextAvailableWaveSlot();
 private:
@@ -117,7 +124,8 @@ private:
     // 64 snapshots.  64 user.
     int16_t USER_ROM[2048 * USER_WAVE_COUNT];
     
-    WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
+//    WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
+    PERSISTENT_STORAGE persistent_storage_;
     
     juce::File save_file_;
 

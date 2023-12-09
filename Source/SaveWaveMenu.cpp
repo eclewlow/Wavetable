@@ -136,17 +136,17 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
     if(key == LEFT_ENCODER_CLICK) {
         switch(state_) {
             case SAVE_WAVE_MENU_SELECT_WAVETABLE:
-                if(storage.GetWavetable(wavetable_)->name[0] == '\0') {
-                    context.setState(&enterNameMenu);
-                    enterNameMenu.setBackMenu(&saveWaveMenu);
-                    enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
-                } else {
-                    ticker_timer_ = system_clock.milliseconds() - 2000;
+//                if(storage.GetWavetable(wavetable_)->name[0] == '\0') {
+//                    context.setState(&enterNameMenu);
+//                    enterNameMenu.setBackMenu(&saveWaveMenu);
+//                    enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
+//                } else {
+                ticker_timer_ = system_clock.milliseconds() - 2000;
 
-                    setState(SAVE_WAVE_MENU_SELECT_FRAME);
-                    frame_ = 0;
-                    frame_offset_ = 0;
-                }
+                setState(SAVE_WAVE_MENU_SELECT_FRAME);
+                frame_ = 0;
+                frame_offset_ = 0;
+//                }
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME: {
                 if(storage.GetWavetable(wavetable_)->factory_preset) {
@@ -219,12 +219,12 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
             
             char line2[20];
             memset(line2, 0, 20);
-            if(storage.GetWavetable(i + wavetable_offset_)->name[0] == '\0') {
-                strncpy(line2, "+NEW WAVETABLE", strlen("+NEW WAVETABLE"));
-            }
-            else {
-                snprintf(line2, 20, "%-8s    [%02d]", storage.GetWavetable(i + wavetable_offset_)->name, storage.GetNumberOfWavesInTable(i + wavetable_offset_));
-            }
+//            if(storage.GetWavetable(i + wavetable_offset_)->name[0] == '\0') {
+//                strncpy(line2, "+NEW WAVETABLE", strlen("+NEW WAVETABLE"));
+//            }
+//            else {
+            snprintf(line2, 20, "%-8s    [%02d]", storage.GetWavetable(i + wavetable_offset_)->name, storage.GetNumberOfWavesInTable(i + wavetable_offset_));
+//            }
             
             Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
         }
@@ -237,6 +237,7 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
 
     } else {
         char * title = (char *) "SELECT WAVE SLOT";
+        title = storage.GetWavetable(wavetable_)->name;
 
         int y_offset = 5;
         int x_offset = 1 + 2 * 4;
@@ -259,22 +260,22 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
 
             char line2[20];
             memset(line2, 0, 20);
-            if(name[0] == '\0')
-                strncpy(line2, "[EMPTY]", strlen("[EMPTY]"));
-            else {
-                int name_index = 0;
-                int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+//            if(name[0] == '\0')
+//                strncpy(line2, "[EMPTY]", strlen("[EMPTY]"));
+//            else {
+            int name_index = 0;
+            int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 
-                if (elapsed_time > 4000) {
-                    ticker_timer_ = system_clock.milliseconds();
-                }
-                if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
-                    name_index = (elapsed_time) / 1000;
-                    name_index = std::clamp(name_index, 0, 1);
-                }
-                // if timer is passed 2000, name_index = 1
-                strncpy(line2, &name[name_index], 7);
+            if (elapsed_time > 4000) {
+                ticker_timer_ = system_clock.milliseconds();
             }
+            if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
+                name_index = (elapsed_time) / 1000;
+                name_index = std::clamp(name_index, 0, 1);
+            }
+            // if timer is passed 2000, name_index = 1
+            strncpy(line2, &name[name_index], 7);
+//            }
 //
 //            char line2[20];
 //            memset(line2, 0, 20);
