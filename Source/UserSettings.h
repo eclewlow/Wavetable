@@ -11,6 +11,9 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Storage.h"
+
+class Storage;
 
 class UserSettings {
 public:
@@ -44,64 +47,67 @@ public:
         IO_CONFIG_GAIN_LAST = 4,
     };
 
-    inline void setBrightness(int8_t brightness) { brightness_ = std::clamp<int8_t>(brightness, 0, 100); }
-    inline int8_t getBrightness() {return brightness_;}
+    inline void setBrightness(int8_t brightness) { settings_.brightness = std::clamp<int8_t>(brightness, 0, 100); }
+    inline int8_t getBrightness() {return settings_.brightness;}
 
-    inline void setContrast(int8_t contrast) { contrast_ = std::clamp<int8_t>(contrast, 0, 100); }
-    inline int8_t getContrast() {return contrast_;}
+    inline void setContrast(int8_t contrast) { settings_.contrast = std::clamp<int8_t>(contrast, 0, 100); }
+    inline int8_t getContrast() {return settings_.contrast;}
 
-    inline void setInvert(bool invert) { invert_ = invert; }
-    inline bool getInvert() {return invert_;}
+    inline void setInvert(bool invert) { settings_.invert = invert; }
+    inline bool getInvert() {return settings_.invert;}
 
-    inline void setScopeSetting(int8_t scope_setting) { scope_setting_ = scope_setting; }
-    inline int8_t getScopeSetting() {return scope_setting_;}
+    inline void setScopeSetting(int8_t scope_setting) { settings_.scope_setting = scope_setting; }
+    inline int8_t getScopeSetting() {return settings_.scope_setting;}
 
-    inline void setMorphSetting(int8_t morph_setting) { morph_setting_ = morph_setting; }
-    inline int8_t getMorphSetting() {return morph_setting_;}
+    inline void setMorphSetting(int8_t morph_setting) { settings_.morph_setting = morph_setting; }
+    inline int8_t getMorphSetting() {return settings_.morph_setting;}
 
-    inline void setSubOscOffset(int8_t offset) { suboscOffset_ = std::clamp<int8_t>(offset, -24, 24); }
-    inline int8_t getSubOscOffset() {return suboscOffset_;}
+    inline void setSubOscOffset(int8_t offset) { settings_.subosc_offset = std::clamp<int8_t>(offset, -24, 24); }
+    inline int8_t getSubOscOffset() {return settings_.subosc_offset;}
 
-    inline void setSubOscDetune(int8_t detune) { suboscDetune_ = std::clamp<int8_t>(detune, -50, 50); }
-    inline int8_t getSubOscDetune() {return suboscDetune_;}
+    inline void setSubOscDetune(int8_t detune) { settings_.subosc_detune = std::clamp<int8_t>(detune, -50, 50); }
+    inline int8_t getSubOscDetune() {return settings_.subosc_detune;}
 
-    inline void setSubOscMix(uint8_t mix) { suboscMix_ = std::clamp<int8_t>(mix, 0, 100); }
-    inline int8_t getSubOscMix() {return suboscMix_;}
+    inline void setSubOscMix(uint8_t mix) { settings_.subosc_mix = std::clamp<int8_t>(mix, 0, 100); }
+    inline int8_t getSubOscMix() {return settings_.subosc_mix;}
 
-    inline void setSubOscWave(int8_t wave) { suboscWave_ = wave; }
-    inline int8_t getSubOscWave() {return suboscWave_;}
+    inline void setSubOscWave(int8_t wave) { settings_.subosc_wave = wave; }
+    inline int8_t getSubOscWave() {return settings_.subosc_wave;}
     
     inline int32_t getAppStartTime() { return app_start_time_; }
 
-    inline void setIOGain(int8_t channel, float gain) { io_gain_[channel] = std::clamp<float>(gain, 0.1, 10.0); }
-    inline float getIOGain(int8_t channel) { return io_gain_[channel]; }
+    inline void setIOGain(int8_t channel, float gain) { settings_.io_gain[channel] = std::clamp<float>(gain, 0.1, 10.0); }
+    inline float getIOGain(int8_t channel) { return settings_.io_gain[channel]; }
 
-    inline void setIOBias(int8_t channel, float bias) { io_bias_[channel] = std::clamp<float>(bias, -1.0, 1.0); }
-    inline float getIOBias(int8_t channel) { return io_bias_[channel]; }
+    inline void setIOBias(int8_t channel, float bias) { settings_.io_bias[channel] = std::clamp<float>(bias, -1.0, 1.0); }
+    inline float getIOBias(int8_t channel) { return settings_.io_bias[channel]; }
 
     void Calibrate(uint16_t c1, uint16_t c5);
-    inline float getCalibrationX() { return calibration_x_; }
-    inline float getCalibrationY() { return calibration_y_; }
+    inline float getCalibrationX() { return settings_.calibration_x; }
+    inline float getCalibrationY() { return settings_.calibration_y; }
 
+    inline Storage::SNAPSHOT * settings_ptr() { return &settings_; }
     
 private:
-    int8_t brightness_;
-    int8_t contrast_;
-    bool invert_;
-    int8_t scope_setting_;
-    int8_t morph_setting_;
-    
-    int8_t suboscOffset_;
-    int8_t suboscDetune_;
-    int8_t suboscMix_;
-    int8_t suboscWave_;
+//    int8_t brightness_;
+//    int8_t contrast_;
+//    bool invert_;
+//    int8_t scope_setting_;
+//    int8_t morph_setting_;
+//    
+//    int8_t suboscOffset_;
+//    int8_t suboscDetune_;
+//    int8_t suboscMix_;
+//    int8_t suboscWave_;
     uint32_t app_start_time_;
+//    
+//    float io_gain_[4];
+//    float io_bias_[4];
+//
+//    float calibration_x_;
+//    float calibration_y_;
     
-    float io_gain_[4];
-    float io_bias_[4];
-
-    float calibration_x_;
-    float calibration_y_;
+    Storage::SNAPSHOT settings_;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);
 };

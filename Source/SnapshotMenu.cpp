@@ -16,6 +16,7 @@ SnapshotMenu::SnapshotMenu() {
     setState(SNAPSHOT_MENU_NONE);
     snapshot_ = 0;
     snapshot_offset_ = 0;
+    function_selected_ = SNAPSHOT_MENU_DICE;
 }
 
 SnapshotMenu::~SnapshotMenu() {
@@ -77,8 +78,12 @@ bool SnapshotMenu::handleKeyRelease(int key) {
         }
     }
     if(key == RIGHT_ENCODER_CCW) {
+        if(function_selected_ == SNAPSHOT_MENU_HOME)
+            function_selected_ = SNAPSHOT_MENU_DICE;
     }
     if(key == RIGHT_ENCODER_CW) {
+        if(function_selected_ == SNAPSHOT_MENU_DICE)
+            function_selected_ = SNAPSHOT_MENU_HOME;
     }
     if(key == RIGHT_ENCODER_CLICK) {
     }
@@ -195,31 +200,17 @@ void SnapshotMenu::paint(juce::Graphics& g) {
         y_offset = 11;
 
         int action_height = 64 - y_offset;
-//        x_offset = 96;
 
-//        y_offset +=
         int center_x = x_offset + action_width / 2;
         int center_y = y_offset + action_height / 4;
         Display::put_image_22x23(center_x - 23 / 2, center_y - 22 / 2, Graphic_snapshot_menu_dice);
+        if(function_selected_ == SNAPSHOT_MENU_DICE)
+            Display::invert_rectangle(center_x - 23 / 2 + 1, center_y - 22 / 2 + 1, 21, 20);
 
-//        Display::outline_rectangle(center_x - 21 / 2, center_y - 21 / 2, 21, 21);
-//        Display::put_string_5x5(center_x - strlen("RND") * 6, center_y - 3, strlen("RND"), "RND");
         center_y = y_offset + 3 * action_height / 4;
         Display::put_image_22x23(center_x - 23 / 2, center_y - 22 / 2, Graphic_snapshot_menu_home);
-
-        //        Display::outline_rectangle(center_x - 21 / 2, center_y - 21/2, 21, 21);
-//        Display::outline_rectangle(x_offset, y_offset, 21, 21);
-
-        //        Display::put_image_22x23(x_offset, y_offset, Graphic_mode_menu_ab);
-//        Graphic_icon_line_15x15[0][0],
-//        &Graphic_icon_spectral_15x15[0][0],
-//        &Graphic_icon_delete_15x15[0][0],
-//        &Graphic_icon_load_15x15[0][0],
-//        &Graphic_icon_save_15x15[0][0],
-//    };
-//    list[0]
-//    for(int i = menu_selection_offset_; i < menu_selection_offset_ + 6; i++) {
-//        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_save_15x15, 15);
+        if(function_selected_ == SNAPSHOT_MENU_HOME)
+            Display::invert_rectangle(center_x - 23 / 2 + 1, center_y - 22 / 2 + 1, 21, 20);
 
     } else {
         char * title;

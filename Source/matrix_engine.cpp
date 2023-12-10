@@ -16,10 +16,6 @@
 
 MatrixEngine::MatrixEngine() {
     phase_ = 0;
-    x1_ = 0;
-    y1_ = 0;
-    x2_ = 7;
-    y2_ = 7;
     wavelist_offset_ = 0;
 }
 
@@ -29,10 +25,6 @@ MatrixEngine::~MatrixEngine() {
 
 void MatrixEngine::Init() {
     phase_ = 0.0f;
-    x1_ = 0;
-    y1_ = 0;
-    x2_ = 7;
-    y2_ = 7;
     wavelist_offset_ = 0;
 }
 
@@ -55,13 +47,13 @@ float MatrixEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {
 
 float MatrixEngine::GetSampleBetweenFrames(float phase, float morph_x, float morph_y) {
     // if x1 = 8 and x2 = 12. and morph_x = 0.5, then x1 + morph_x * (x2 - x1)
-    float frame_x = x1_ + morph_x * (x2_ - x1_);
+    float frame_x = GetX1() + morph_x * ( GetX2() -  GetX1());
     uint16_t frame_x_integral = floor(frame_x);
     float frame_x_fractional = frame_x - frame_x_integral;
 
     uint16_t next_frame_x_integral = (frame_x_integral + 1) % 16;
 
-    float frame_y = y1_ + morph_y * (y2_ - y1_);
+    float frame_y =  GetY1() + morph_y * ( GetY2() -  GetY1());
     uint16_t frame_y_integral = floor(frame_y);
     float frame_y_fractional = frame_y - frame_y_integral;
 
@@ -167,3 +159,24 @@ void MatrixEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, 
         *aux++ = sample;
     }
 }
+
+void MatrixEngine::SetX1(int8_t x1) { user_settings.settings_ptr()->matrix_engine_x1 = x1; }
+void MatrixEngine::SetY1(int8_t y1) { user_settings.settings_ptr()->matrix_engine_y1 = y1; }
+void MatrixEngine::SetX2(int8_t x2) { user_settings.settings_ptr()->matrix_engine_x2 = x2; }
+void MatrixEngine::SetY2(int8_t y2) { user_settings.settings_ptr()->matrix_engine_y2 = y2; }
+void MatrixEngine::IncrementX1(int8_t dx) {
+    user_settings.settings_ptr()->matrix_engine_x1 = std::clamp<int8_t>(user_settings.settings_ptr()->matrix_engine_x1 + dx, 0, user_settings.settings_ptr()->matrix_engine_x2);
+}
+void MatrixEngine::IncrementY1(int8_t dy) {
+    user_settings.settings_ptr()->matrix_engine_y1 = std::clamp<int8_t>(user_settings.settings_ptr()->matrix_engine_y1 + dy, 0, user_settings.settings_ptr()->matrix_engine_y2);
+}
+void MatrixEngine::IncrementX2(int8_t dx) {
+    user_settings.settings_ptr()->matrix_engine_x2 = std::clamp<int8_t>(user_settings.settings_ptr()->matrix_engine_x2 + dx, user_settings.settings_ptr()->matrix_engine_x1, 15);
+}
+void MatrixEngine::IncrementY2(int8_t dy) {
+    user_settings.settings_ptr()->matrix_engine_y2 = std::clamp<int8_t>(user_settings.settings_ptr()->matrix_engine_y2 + dy, user_settings.settings_ptr()->matrix_engine_y1, 15);
+}
+int8_t MatrixEngine::GetX1() { return user_settings.settings_ptr()->matrix_engine_x1; }
+int8_t MatrixEngine::GetY1() { return user_settings.settings_ptr()->matrix_engine_y1; }
+int8_t MatrixEngine::GetX2() { return user_settings.settings_ptr()->matrix_engine_x2; }
+int8_t MatrixEngine::GetY2() { return user_settings.settings_ptr()->matrix_engine_y2; }

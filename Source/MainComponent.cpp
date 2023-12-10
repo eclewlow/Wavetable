@@ -46,7 +46,7 @@ MainComponent::MainComponent()
     system_clock.Init();
 
     effect_manager.Init();
-    effect_manager.setEffect(&bypass);
+    effect_manager.setEffect(EffectManager::EFFECT_TYPE_BYPASS);
 //    fx_engine.Init();
     
     startTimer(16); // 60 / second.  1000/60
@@ -220,11 +220,12 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
 //    printf("%d\n", key.getKeyCode());
     if(key.getKeyCode() == FX_AMOUNT_CV_TRIGGER) {
-        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_AMOUNT_CV) == 2059) {
-            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 4022);
-        } else {
-            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2059);
-        }
+        printf("%d\n", adc.getChannel(0));
+//        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_AMOUNT_CV) == 2059) {
+//            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 4022);
+//        } else {
+//            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2059);
+//        }
     }
     
 //    handleKey(LEFT_ENCODER_CW);

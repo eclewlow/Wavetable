@@ -31,6 +31,11 @@ public:
         SNAPSHOT_MENU_YES               = 5,
     };
     
+    enum SnapshotMenuFunctions {
+        SNAPSHOT_MENU_DICE              = 0,
+        SNAPSHOT_MENU_HOME              = 1,
+    };
+
 
     SnapshotMenu();
     ~SnapshotMenu();
@@ -56,6 +61,8 @@ private:
 
     int8_t option_selected_;
     int8_t option_offset_;
+    
+    int8_t function_selected_;
 
     uint32_t ticker_timer_ = 0;
     uint8_t ticker_ = 0;

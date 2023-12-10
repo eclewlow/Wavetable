@@ -36,14 +36,17 @@ public:
         bool is_empty;
 
         // misc settings
-        int8_t scope_setting_;                  // (0, 1)
-        int8_t morph_setting_;                  // (0, 1)
+        int8_t brightness;
+        int8_t contrast;
+        bool invert;
+        int8_t scope_setting;                  // (0, 1)
+        int8_t morph_setting;                  // (0, 1)
 
         // sub osc parameters
-        int8_t suboscOffset;                    // (-24, 24)
-        int8_t suboscDetune;                    // (-50, 50)
-        int8_t suboscMix;                       // (0, 100)
-        int8_t suboscWave;                      // (0, 5)
+        int8_t subosc_offset;                    // (-24, 24)
+        int8_t subosc_detune;                    // (-50, 50)
+        int8_t subosc_mix;                       // (0, 100)
+        int8_t subosc_wave;                      // (0, 5)
         
         // fx parameters
         int8_t fx_depth;                        // (0, 0)
@@ -86,11 +89,11 @@ public:
         uint16_t pot_morph;                     // (0, 4095)
         
         // calibration data
-        float io_gain_[4];                      // (1, 10.0)    // don't randomize this, but save in snapshot
-        float io_bias_[4];                      // (-1.0, 1.0)  // don't randomize this, but save in snapshot
+        float io_gain[4];                      // (1, 10.0)    // don't randomize this, but save in snapshot
+        float io_bias[4];                      // (-1.0, 1.0)  // don't randomize this, but save in snapshot
 
-        float calibration_x_;                   // ()  // don't randomize this, but save in snapshot
-        float calibration_y_;                   // ()  // don't randomize this, but save in snapshot
+        float calibration_x;                   // ()  // don't randomize this, but save in snapshot
+        float calibration_y;                   // ()  // don't randomize this, but save in snapshot
     } SNAPSHOT;
     
     typedef struct {
@@ -113,6 +116,7 @@ public:
     bool CopyWavetable(int table_dst, int table_src);
     bool CopyWave(int table_dst, int frame_dst, int table_src, int frame_src);
     bool EraseAll();
+    bool EraseSnapshot(SNAPSHOT * snapshot, uint8_t index);
     bool SaveAll();
     bool LoadAll();
 //    bool SaveAllData();

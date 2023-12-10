@@ -27,28 +27,28 @@ bool FxMenu::handleKeyRelease(int key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
-                    effect_manager.setEffect(&bypass);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_BYPASS);
                 }
                 else if(effect_manager.getEffect() == &ring_modulator) {
-                    effect_manager.setEffect(&fm);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_FM);
                 }
                 else if(effect_manager.getEffect() == &phase_distortion) {
-                    effect_manager.setEffect(&ring_modulator);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_RING_MODULATOR);
                 }
                 else if(effect_manager.getEffect() == &wavefolder) {
-                    effect_manager.setEffect(&phase_distortion);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_PHASE_DISTORTION);
                 }
                 else if(effect_manager.getEffect() == &wavewrapper) {
-                    effect_manager.setEffect(&wavefolder);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_WAVEFOLDER);
                 }
                 else if(effect_manager.getEffect() == &bitcrush) {
-                    effect_manager.setEffect(&wavewrapper);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_WAVEWRAPPER);
                 }
                 else if(effect_manager.getEffect() == &drive) {
-                    effect_manager.setEffect(&bitcrush);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_BITCRUSH);
                 }
                 else if(effect_manager.getEffect() == &bypass) {
-                    effect_manager.setEffect(&drive);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_DRIVE);
                 }
                 break;
             case FX_MENU_LEFT_DEPTH:
@@ -62,28 +62,28 @@ bool FxMenu::handleKeyRelease(int key) {
         switch(left_state_) {
             case FX_MENU_LEFT_FX:
                 if(effect_manager.getEffect() == &fm) {
-                    effect_manager.setEffect(&ring_modulator);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_RING_MODULATOR);
                 }
                 else if(effect_manager.getEffect() == &ring_modulator) {
-                    effect_manager.setEffect(&phase_distortion);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_PHASE_DISTORTION);
                 }
                 else if(effect_manager.getEffect() == &phase_distortion) {
-                    effect_manager.setEffect(&wavefolder);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_WAVEFOLDER);
                 }
                 else if(effect_manager.getEffect() == &wavefolder) {
-                    effect_manager.setEffect(&wavewrapper);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_WAVEWRAPPER);
                 }
                 else if(effect_manager.getEffect() == &wavewrapper) {
-                    effect_manager.setEffect(&bitcrush);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_BITCRUSH);
                 }
                 else if(effect_manager.getEffect() == &bitcrush) {
-                    effect_manager.setEffect(&drive);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_DRIVE);
                 }
                 else if(effect_manager.getEffect() == &drive) {
-                    effect_manager.setEffect(&bypass);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_BYPASS);
                 }
                 else if(effect_manager.getEffect() == &bypass) {
-                    effect_manager.setEffect(&fm);
+                    effect_manager.setEffect(EffectManager::EFFECT_TYPE_FM);
                 }
                 break;
             case FX_MENU_LEFT_DEPTH:
@@ -314,7 +314,7 @@ void FxMenu::paint(juce::Graphics& g) {
     if(effect_manager.getControlType() == EffectManager::MANUAL_CONTROL) {
         char pot_value_string[4];
         snprintf(pot_value_string, 4, "%d", (fx * 100) / 4095);
-        Display::put_string_9x9(64 + (64-3) / 2 - Display::get_string_9x9_width(pot_value_string, 2) / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string, 2);
+        Display::put_string_9x9(64 + (64-3) / 2 - Display::get_string_9x9_width(pot_value_string, 2) / 2, graph_y_offset + graph_height / 2 - 4, strlen(pot_value_string), pot_value_string, false, 2);
     }
     else if(effect_manager.getControlType() == EffectManager::INTERNAL_MODULATOR) {
         Display::Draw_Wave(64+1, graph_y_offset + 1, 64-3-2, graph_height - 2, BUF1);

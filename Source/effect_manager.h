@@ -45,47 +45,43 @@ public:
 
     
     EffectManager() {
-        depth_ = 1.0f;
-        sync_ = false;
-        oscillator_shape_ = SINE_SHAPE;
-        control_type_ = INTERNAL_MODULATOR;
+//        depth_ = 1.0f;
+//        sync_ = false;
+//        oscillator_shape_ = SINE_SHAPE;
+//        control_type_ = INTERNAL_MODULATOR;
     }
     ~EffectManager() {}
     void Init();
     void Reset();
-    inline void setEffect(Effect* newEffect) { effect_ = newEffect; effect_->triggerUpdate(); }
-    inline Effect* getEffect() { return effect_; }
+    
+    void setEffect(uint8_t effect_type);
+    Effect* getEffect();
 
     float RenderSampleEffect(float sample, float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false, bool downsampling=false);
     float RenderPhaseEffect(float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscillcope=false, bool downsampling=false);
     float GetSample(float phase);
     
-    inline int8_t getControlType() { return control_type_; }
-    inline void setControlType(int8_t control_type) { control_type_ = control_type; }
-    
-    inline int8_t getOscillatorShape() { return oscillator_shape_; }
-    inline void setOscillatorShape(int8_t oscillator_shape) { oscillator_shape_ = oscillator_shape; }
-
-    inline bool getSync() { return sync_; }
-    inline void setSync(bool sync) { sync_ = sync; }
-
-    inline float getDepth() { return depth_; }
-    inline void setDepth(float depth) { depth_ = std::clamp(depth, 0.0f, 1.0f); }
-
-    inline int getScale() { return scale_; }
-    inline void setScale(int scale) { scale_ = std::clamp<int>(scale, 0, 100); }
-
-    inline int getRange() { return range_; }
-    inline void setRange(int range) { range_ = std::clamp<int>(range, 1, 10); }
+    int8_t getControlType();
+    void setControlType(int8_t control_type);
+    int8_t getOscillatorShape();
+    void setOscillatorShape(int8_t oscillator_shape);
+    bool getSync();
+    void setSync(bool sync);
+    float getDepth();
+    void setDepth(float depth);
+    int getScale();
+    void setScale(int scale);
+    int getRange();
+    void setRange(int range);
 
 protected:
-    float depth_;
-    bool sync_;
-    int scale_;
-    int range_;
-    int8_t oscillator_shape_;
-    int8_t control_type_;
-    Effect* effect_;
+//    float depth_;
+//    bool sync_;
+//    int scale_;
+//    int range_;
+//    int8_t oscillator_shape_;
+//    int8_t control_type_;
+//    Effect* effect_;
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EffectManager);
 };
