@@ -47,11 +47,9 @@ public:
     int8_t GetX2();
     int8_t GetY2();
     
-    inline void SetWavelistOffset(int8_t offset) { wavelist_offset_ = offset; }
-    inline int8_t GetWavelistOffset() { return wavelist_offset_; }
+    void SetWavelistOffset(int8_t offset);
+    int8_t GetWavelistOffset();
 
 private:
-    int8_t wavelist_offset_;
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MatrixEngine);
 };

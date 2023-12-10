@@ -32,20 +32,16 @@ public:
     float GetSampleNoFX(float phase, float fx, float morph);
     void triggerUpdate();
     
-    inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
-    inline int GetWavetable() { return wavetable_; }
-    
-    inline void SetAmpDecay(float value) { amp_decay_ = std::clamp(value, 0.0f, 1.0f); }
-    inline float GetAmpDecay() { return amp_decay_; }
-    
-    inline void SetFMDecay(float value) { fm_decay_ = std::clamp(value, 0.0f, 1.0f); }
-    inline float GetFMDecay() { return fm_decay_; }
-
-    inline void SetFMShape(float value) { fm_shape_ = std::clamp(value, 0.0f, 1.0f); }
-    inline float GetFMShape() { return fm_shape_; }
-
-    inline void SetFMDepth(float value) { fm_depth_ = std::clamp(value, 0.0f, 1.0f); }
-    inline float GetFMDepth() { return fm_depth_; }
+    void SetWavetable(int wavetable);
+    int GetWavetable();
+    void SetAmpDecay(float value);
+    float GetAmpDecay();
+    void SetFMDecay(float value);
+    float GetFMDecay();
+    void SetFMShape(float value);
+    float GetFMShape();
+    void SetFMDepth(float value);
+    float GetFMDepth();
 
 private:
     // depth -50 to 50
@@ -53,11 +49,5 @@ private:
     // shape -50 to 50
     float amp_decay_trigger_;
     float fm_decay_trigger_;
-    float amp_decay_;
-    float fm_decay_;
-    float fm_shape_;
-    float fm_depth_;
-
-    int wavetable_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DrumEngine);
 };

@@ -32,9 +32,9 @@ public:
     float GetSampleNoFX(float phase, float fx, float morph);
     void triggerUpdate();
     
-    inline void SetWavetable(int wavetable) { wavetable_ = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
-    inline int GetWavetable() { return wavetable_; }
+    void SetWavetable(int wavetable);
+    int GetWavetable();
 private:
-    int wavetable_;
+//    int wavetable_;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavetableEngine);
 };

@@ -151,9 +151,9 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
     snapshot_ptr->drum_engine_wavetable = 0;
 
     // pot settings
-    snapshot_ptr->pot_fx_amount = 2048;
-    snapshot_ptr->pot_fx = 2048;
-    snapshot_ptr->pot_morph = 2048;
+    snapshot_ptr->pot_fx_amount = adc.getChannel(1);
+    snapshot_ptr->pot_fx = adc.getChannel(2);
+    snapshot_ptr->pot_morph = adc.getChannel(3);
     
     // calibration settings
     for(int i = 0; i < 4; i++) {

@@ -16,7 +16,6 @@
 
 WavetableEngine::WavetableEngine() {
     phase_ = 0.0f;
-    wavetable_ = 0;
 }
 
 WavetableEngine::~WavetableEngine() {
@@ -25,7 +24,6 @@ WavetableEngine::~WavetableEngine() {
 
 void WavetableEngine::Init() {
     phase_ = 0.0f;
-    wavetable_ = 0;
 }
 
 
@@ -52,8 +50,8 @@ float WavetableEngine::GetSampleBetweenFrames(float phase, float morph) {
     
     uint16_t next_frame_integral = (frame_integral + 1) % 16;
 
-    float frame1sample = GetSample(wavetable_, frame_integral, phase);
-    float frame2sample = GetSample(wavetable_, next_frame_integral, phase);
+    float frame1sample = GetSample(GetWavetable(), frame_integral, phase);
+    float frame2sample = GetSample(GetWavetable(), next_frame_integral, phase);
     
     float sample = frame1sample * (1.0f - frame_fractional) + frame2sample * frame_fractional;
     return sample;
@@ -147,3 +145,7 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
     }
 }
 
+void WavetableEngine::SetWavetable(int wavetable) {
+    user_settings.settings_ptr()->wavetable_engine_wavetable = std::clamp(wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+}
+int WavetableEngine::GetWavetable() { return user_settings.settings_ptr()->wavetable_engine_wavetable; }

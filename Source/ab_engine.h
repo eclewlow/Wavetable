@@ -35,34 +35,31 @@ public:
     float GetSample(float phase);
     float GetSampleNoFX(float phase, float fx, float morph);
     
-    inline void SetLeftWavetable(int left_wavetable) { left_wavetable_ = std::clamp(left_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
-    inline void SetLeftFrame(int left_frame) { left_frame_ = std::clamp(left_frame, 0, 15); }
-    inline int GetLeftWavetable() { return left_wavetable_; }
-    inline int GetLeftFrame() { return left_frame_; }
-
-    inline void SetRightWavetable(int right_wavetable) { right_wavetable_ = std::clamp(right_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1); }
-    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
-    inline int GetRightWavetable() { return right_wavetable_; }
-    inline int GetRightFrame() { return right_frame_; }
-
+    void SetLeftWavetable(int left_wavetable);
+    void SetLeftFrame(int left_frame);
+    int GetLeftWavetable();
+    int GetLeftFrame();
+    void SetRightWavetable(int right_wavetable);
+    void SetRightFrame(int right_frame);
+    int GetRightWavetable();
+    int GetRightFrame();
+    bool IsEditingLeft();
+    bool IsEditingRight();
+    void SetIsEditingLeft(bool is_editing_left);
+    void SetIsEditingRight(bool is_editing_right);
     bool SetLeftWave(int table, int frame);
     bool SetRightWave(int table, int frame);
 
-    inline bool IsEditingLeft() { return is_editing_left_; }
-    inline bool IsEditingRight() { return is_editing_right_; }
-    inline void SetIsEditingLeft(bool is_editing_left) { is_editing_left_ = is_editing_left; }
-    inline void SetIsEditingRight(bool is_editing_right) { is_editing_right_ = is_editing_right; }
-
     void triggerUpdate();
 private:
-    int left_wavetable_;
-    int left_frame_;
-    
-    int right_wavetable_;
-    int right_frame_;
-    
-    bool is_editing_left_;
-    bool is_editing_right_;
+//    int left_wavetable_;
+//    int left_frame_;
+//    
+//    int right_wavetable_;
+//    int right_frame_;
+//    
+//    bool is_editing_left_;
+//    bool is_editing_right_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ABEngine);
 };

@@ -16,7 +16,6 @@
 
 MatrixEngine::MatrixEngine() {
     phase_ = 0;
-    wavelist_offset_ = 0;
 }
 
 MatrixEngine::~MatrixEngine() {
@@ -25,7 +24,6 @@ MatrixEngine::~MatrixEngine() {
 
 void MatrixEngine::Init() {
     phase_ = 0.0f;
-    wavelist_offset_ = 0;
 }
 
 
@@ -36,8 +34,8 @@ float MatrixEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {
     
     uint16_t nextIntegral = (integral + 1) % 2048;
     
-    float sample = storage.LoadWaveSample(wavelist_offset_ + wavetable, frame, integral);
-    float next_sample = storage.LoadWaveSample(wavelist_offset_ + wavetable, frame, nextIntegral);
+    float sample = storage.LoadWaveSample(GetWavelistOffset() + wavetable, frame, integral);
+    float next_sample = storage.LoadWaveSample(GetWavelistOffset() + wavetable, frame, nextIntegral);
     float interpolated16 = sample + (next_sample - sample) * fractional;
     
     float interpolatedFloat = interpolated16 / 32768.0f;
@@ -180,3 +178,6 @@ int8_t MatrixEngine::GetX1() { return user_settings.settings_ptr()->matrix_engin
 int8_t MatrixEngine::GetY1() { return user_settings.settings_ptr()->matrix_engine_y1; }
 int8_t MatrixEngine::GetX2() { return user_settings.settings_ptr()->matrix_engine_x2; }
 int8_t MatrixEngine::GetY2() { return user_settings.settings_ptr()->matrix_engine_y2; }
+
+void MatrixEngine::SetWavelistOffset(int8_t offset) { user_settings.settings_ptr()->matrix_engine_wavelist_offset = offset; }
+int8_t MatrixEngine::GetWavelistOffset() { return user_settings.settings_ptr()->matrix_engine_wavelist_offset; }

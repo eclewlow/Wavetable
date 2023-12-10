@@ -16,12 +16,6 @@
 
 ABEngine::ABEngine() {
     phase_ = 0.0f;
-    is_editing_left_ = false;
-    is_editing_right_ = false;
-    left_wavetable_ = 0;
-    left_frame_ = 0;
-    right_wavetable_ = 1;
-    right_frame_ = 5;
 }
 
 ABEngine::~ABEngine() {
@@ -30,12 +24,6 @@ ABEngine::~ABEngine() {
 
 void ABEngine::Init() {
     phase_ = 0.0f;
-    is_editing_left_ = false;
-    is_editing_right_ = false;
-    left_wavetable_ = 0;
-    left_frame_ = 0;
-    right_wavetable_ = 1;
-    right_frame_ = 5;
 }
 
 float ABEngine::GetSample(int16_t wavetable, int16_t frame, float phase) {
@@ -83,8 +71,8 @@ float ABEngine::GetSample(int16_t wavetable, int16_t frame, float phase, bool is
 }
 
 float ABEngine::GetSampleBetweenFrames(float phase, float morph) {
-    float frame1sample = GetSample(left_wavetable_, left_frame_, phase, true);
-    float frame2sample = GetSample(right_wavetable_, right_frame_, phase, false);
+    float frame1sample = GetSample(GetLeftWavetable(), GetLeftFrame(), phase, true);
+    float frame2sample = GetSample(GetRightWavetable(), GetRightFrame(), phase, false);
     
     float sample = frame1sample * (1.0f - morph) + frame2sample * morph;
     return sample;
@@ -189,13 +177,34 @@ void ABEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint
 }
 
 bool ABEngine::SetLeftWave(int table, int frame) {
-    left_wavetable_ = table;
-    left_frame_ = frame;
+    SetLeftWavetable(table);
+    SetLeftFrame(frame);
     return true;
 }
 
 bool ABEngine::SetRightWave(int table, int frame) {
-    right_wavetable_ = table;
-    right_frame_ = frame;
+    SetRightWavetable(table);
+    SetRightFrame(frame);
     return true;
 }
+
+void ABEngine::SetLeftWavetable(int left_wavetable)
+{ 
+    user_settings.settings_ptr()->ab_engine_left_wavetable = std::clamp(left_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+}
+void ABEngine::SetLeftFrame(int left_frame) {
+    user_settings.settings_ptr()->ab_engine_left_frame = std::clamp(left_frame, 0, 15);
+}
+int ABEngine::GetLeftWavetable() { return user_settings.settings_ptr()->ab_engine_left_wavetable; }
+int ABEngine::GetLeftFrame() { return user_settings.settings_ptr()->ab_engine_left_frame; }
+void ABEngine::SetRightWavetable(int right_wavetable)
+{
+    user_settings.settings_ptr()->ab_engine_right_wavetable = std::clamp(right_wavetable, 0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+}
+void ABEngine::SetRightFrame(int right_frame) { user_settings.settings_ptr()->ab_engine_right_frame = std::clamp(right_frame, 0, 15); }
+int ABEngine::GetRightWavetable() { return user_settings.settings_ptr()->ab_engine_right_wavetable; }
+int ABEngine::GetRightFrame() { return user_settings.settings_ptr()->ab_engine_right_frame; }
+bool ABEngine::IsEditingLeft() { return user_settings.settings_ptr()->ab_engine_is_editing_left; }
+bool ABEngine::IsEditingRight() { return user_settings.settings_ptr()->ab_engine_is_editing_right; }
+void ABEngine::SetIsEditingLeft(bool is_editing_left) { user_settings.settings_ptr()->ab_engine_is_editing_left = is_editing_left; }
+void ABEngine::SetIsEditingRight(bool is_editing_right) { user_settings.settings_ptr()->ab_engine_is_editing_right = is_editing_right; }
