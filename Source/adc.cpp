@@ -89,3 +89,18 @@ uint16_t Adc::getChannelProcessed(int channel) {
     }
 }
 
+uint16_t Adc::getChannel(int channel) {
+    return values_[channel];
+}
+
+void Adc::setChannel(int channel, uint16_t value) {
+    int16_t threshold = 100;
+    if(channel < 4 && freeze_[channel]) {
+        if(abs(static_cast<int16_t>(value) - static_cast<int16_t>(values_[channel])) > threshold) {
+            freeze_[channel] = false;
+            values_[channel] = value;
+        }
+    } else {
+        values_[channel] = value;
+    }
+}

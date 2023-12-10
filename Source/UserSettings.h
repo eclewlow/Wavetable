@@ -88,26 +88,17 @@ public:
 
     inline Storage::SNAPSHOT * settings_ptr() { return &settings_; }
     
+    float RandomFloat(float min, float max);
+    int32_t RandomInt(int32_t min, int32_t max);
+
+    bool ResetSettings();
+    bool RandomizeSettings();
+    bool SaveSnapshot(const char * name, uint8_t index);
+    bool LoadSnapshot(int8_t snapshot);
+        
 private:
-//    int8_t brightness_;
-//    int8_t contrast_;
-//    bool invert_;
-//    int8_t scope_setting_;
-//    int8_t morph_setting_;
-//    
-//    int8_t suboscOffset_;
-//    int8_t suboscDetune_;
-//    int8_t suboscMix_;
-//    int8_t suboscWave_;
     uint32_t app_start_time_;
-//    
-//    float io_gain_[4];
-//    float io_bias_[4];
-//
-//    float calibration_x_;
-//    float calibration_y_;
-    
     Storage::SNAPSHOT settings_;
-    
+       
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserSettings);
 };

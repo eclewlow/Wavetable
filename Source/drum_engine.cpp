@@ -104,6 +104,32 @@ void DrumEngine::triggerUpdate() {
     phase_ = 0.0f;
 }
 
+float DrumEngine::GetY() {
+    float curve = GetFMShape();
+    float x;
+    float y;
+    
+    x = fm_decay_trigger_;
+
+    float r;
+    if(curve > 0.5) {
+        r = (1.0f - curve) * 10.0f + 1.0f;
+    } else {
+        r = (curve) * 10.0f + 1.0f;
+    }
+    
+    float angle = acos(1.0f - 2.0f / (2.0f * r * r));
+    float new_angle = angle + (M_PI_2 - angle) / 2.0f;
+    float p = r * sin(new_angle) - 1.0f;
+    float q = r * cos(new_angle);
+
+    if(curve > 0.5)
+        y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
+    else
+        y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
+    return y;
+}
+
 void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, uint16_t fx_amount, uint16_t fx, uint16_t morph)
 {
     //    float target = morph;
@@ -129,28 +155,7 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         float amp_decay_trigger_increment = (1.0f / (6.0f * (GetAmpDecay() + 0.001f))) / 48000.0f;
         float fm_decay_trigger_increment = (1.0f / (6.0f * (GetFMDecay() + 0.001f))) / 48000.0f;
 
-        float curve = GetFMShape();
-        float x;
-        float y;
-        
-        x = fm_decay_trigger_;
 
-        float r;
-        if(curve > 0.5) {
-            r = (1.0f - curve) * 10.0f + 1.0f;
-        } else {
-            r = (curve) * 10.0f + 1.0f;
-        }
-        
-        float angle = acos(1.0f - 2.0f / (2.0f * r * r));
-        float new_angle = angle + (M_PI_2 - angle) / 2.0f;
-        float p = r * sin(new_angle) - 1.0f;
-        float q = r * cos(new_angle);
-
-        if(curve > 0.5)
-            y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
-        else
-            y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
 
 //        if(curve > 0.5)
 //           y = (1 - x) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
@@ -166,7 +171,7 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
 
         note = quantizer.Quantize(note);
 
-        note += 12 * y * (GetFMDepth() * 2.0f - 1.0f);
+        note += 12 * GetY() * (GetFMDepth() * 2.0f - 1.0f);
         note = clamp(note, 0.0f, 120.0f);
 
 

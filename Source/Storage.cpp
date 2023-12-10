@@ -102,10 +102,17 @@ bool Storage::EraseAll() {
 }
 
 bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
+    char* lines[4] = {
+        (char*)"WHOOPSIE\0",
+        (char*)"TEST\0",
+        (char*)"TESTICL\0",
+        (char*)"RIGHTO\0",
+    };
+
     SNAPSHOT * snapshot_ptr = snapshot;
     snapshot_ptr->factory_preset = index < FACTORY_SNAPSHOT_COUNT;
     snapshot_ptr->is_empty = !snapshot_ptr->factory_preset;
-    strncpy(snapshot_ptr->name, "INIT", 9);
+    strncpy(snapshot_ptr->name, lines[index % 4], 9);
     snapshot_ptr->brightness = 100;
     snapshot_ptr->contrast = 100;
     snapshot_ptr->invert = false;
@@ -125,6 +132,7 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
     snapshot_ptr->fx_control_type = EffectManager::INTERNAL_MODULATOR;
     snapshot_ptr->fx_effect = EffectManager::EFFECT_TYPE_BYPASS;
 
+    snapshot_ptr->engine = Context::ENGINE_TYPE_AB;
     // ab engine parameters
     snapshot_ptr->ab_engine_left_wavetable = 0;
     snapshot_ptr->ab_engine_left_frame = 0;
@@ -161,9 +169,28 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
         snapshot_ptr->io_bias[i] = 0.0f;   // don't randomize this, but save in snapshot
     }
 
-    snapshot_ptr->calibration_x = 0.023443223443223;    // don't randomize this, but save in snapshot
-    snapshot_ptr->calibration_y = 12;    // don't randomize this, but save in snapshot
+//    snapshot_ptr->calibration_x = 0.029304029304029;
+//    snapshot_ptr->calibration_y = 0;
+    snapshot_ptr->calibration_x = 0.023443223443223f;    // don't randomize this, but save in snapshot
+    snapshot_ptr->calibration_y = 12.0f;    // don't randomize this, but save in snapshot
     
+    return true;
+}
+
+bool Storage::SaveSnapshot(const char * name, uint8_t index, SNAPSHOT * snapshot)
+{
+    if(GetSnapshot(index)->factory_preset)
+        return false;
+    
+    char temp_name[9];
+    
+    strncpy(temp_name, name, 9);
+
+    memcpy(GetSnapshot(index), snapshot, sizeof(SNAPSHOT));
+    strncpy(GetSnapshot(index)->name, temp_name, 9);
+    
+    GetSnapshot(index)->factory_preset = false;
+    GetSnapshot(index)->is_empty = false;
     return true;
 }
 

@@ -19,8 +19,9 @@ class SnapshotMenu: public State
 {
 public:
     enum SnapshotMenuState {
-        SNAPSHOT_MENU_NONE,
-        SNAPSHOT_MENU_OPTIONS,
+        SNAPSHOT_MENU_NONE      = 0,
+        SNAPSHOT_MENU_OPTIONS   = 1,
+        SNAPSHOT_MENU_CONFIRM   = 2,
     };
     enum SnapshotMenuOptions {
         SNAPSHOT_MENU_SAVE              = 0,
@@ -35,22 +36,37 @@ public:
         SNAPSHOT_MENU_DICE              = 0,
         SNAPSHOT_MENU_HOME              = 1,
     };
+    
+    enum SnapshotMenuCopyState {
+        SNAPSHOT_MENU_COPY_STATE_NONE           = 0,
+        SNAPSHOT_MENU_COPY_STATE_SNAPSHOT       = 1,
+    };
+
 
 
     SnapshotMenu();
     ~SnapshotMenu();
-    virtual bool handleKeyPress(int key) { return false; }
+    virtual bool handleKeyPress(int key);
     virtual bool handleKeyRelease(int key);
-    virtual bool handleKeyLongPress(int key) { return false; }
+    virtual bool handleKeyLongPress(int key);
     virtual void paint(juce::Graphics& g);
     void triggerUpdate(bool back_pressed);
     inline void setState(int8_t state) { state_ = state; }
     inline void setOptionSelected(int8_t option_selected) { option_selected_ = option_selected; }
-//    static void SaveWavetable(char* param);
-//    static void SaveWave(char* param);
-
-//    inline void setWavedata(int16_t * data) { wavedata_ = data; }
     void ResetTicker();
+
+    inline void setConfirmFunc(void (SnapshotMenu::*f)()) { confirm_func_ = f;}
+    inline void setCancelFunc(void (SnapshotMenu::*f)()) { cancel_func_ = f;}
+
+    static void Save(char* param);
+    static void Rename(char* param);
+
+    void ConfirmDelete();
+    void CancelDelete();
+    void ConfirmCopy();
+    void CancelCopy();
+
+    void SetLine(int line_no, char* str);
 
 private:
 
@@ -61,11 +77,24 @@ private:
 
     int8_t option_selected_;
     int8_t option_offset_;
-    
+
+    int16_t selected_snapshot_;
+
+    uint32_t press_timer_;
+    bool absorb_keypress_;
+
     int8_t function_selected_;
 
     uint32_t ticker_timer_ = 0;
     uint8_t ticker_ = 0;
 
+    int8_t copy_state_;
+    uint32_t blink_timer_;
+
+    void (SnapshotMenu::*confirm_func_)();
+    void (SnapshotMenu::*cancel_func_)();
+    char confirm_lines_[3][20];
+
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SnapshotMenu);
 };

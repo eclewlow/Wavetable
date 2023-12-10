@@ -19,7 +19,7 @@ MainComponent::MainComponent()
     drumEngine.Init();
 
     context.setState(&snapshotMenu);
-    context.setEngine(&abEngine);
+    context.setEngine(Context::ENGINE_TYPE_AB);
 
     
     // Some platforms require permissions to open input channels so request that here
@@ -119,7 +119,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
             out[i] = fraction * out[i] + (1.0f - fraction) * last_engine_out[i];
         }
         
-        context.setLastEngine(NULL);
+        context.setLastEngine(-1);
     }
     suboscillator.Render(subosc_out, subosc_out, size, tune, fx_amount, fx, morph);
     
@@ -220,7 +220,7 @@ void MainComponent::mouseDown(const juce::MouseEvent &event) {
 bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) {
 //    printf("%d\n", key.getKeyCode());
     if(key.getKeyCode() == FX_AMOUNT_CV_TRIGGER) {
-        printf("%d\n", adc.getChannel(0));
+//        printf("%d\n", adc.getChannel(0));
 //        if(adc.getChannelProcessed(Adc::ADC_CHANNEL_FX_AMOUNT_CV) == 2059) {
 //            adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 4022);
 //        } else {

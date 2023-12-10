@@ -28,10 +28,12 @@ public:
     };
     
     bool handleKeyPress();
-    inline uint16_t getChannel(int channel) { return values_[channel]; }
     uint16_t getChannelProcessed(int channel);
-    inline void setChannel(int channel, uint16_t value) { values_[channel] = value; }
+    uint16_t getChannel(int channel);
+    void setChannel(int channel, uint16_t value);
+    inline void Freeze() { memset(freeze_, 1, 4); }
 private:
     int16_t values_[8];
+    bool freeze_[4];
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Adc);
 };

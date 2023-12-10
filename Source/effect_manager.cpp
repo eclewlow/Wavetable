@@ -12,17 +12,9 @@
 #include "Globals.h"
 
 void EffectManager::Init() {
-//    depth_ = 1.0f;
-//    sync_ = false;
-//    oscillator_shape_ = SINE_SHAPE;
-//    control_type_ = INTERNAL_MODULATOR;
 }
 
 void EffectManager::Reset() {
-//    depth_ = 1.0f;
-//    sync_ = false;
-//    oscillator_shape_ = SINE_SHAPE;
-//    control_type_ = INTERNAL_MODULATOR;
 }
 
 float EffectManager::RenderSampleEffect(float sample, float phase, float frequency, uint16_t fx_amount, uint16_t fx, bool isOscilloscope, bool downsampling) {

@@ -713,9 +713,6 @@ void ManageMenu::paint(juce::Graphics& g) {
             Display::invert_rectangle(0, 0, 128, 15);
         else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
             Display::invert_rectangle(0, 0, 128, 15);
-        else{
-            
-        }
 
         x_offset = 64 - 5;
         y_offset += 15;
@@ -785,8 +782,6 @@ void ManageMenu::paint(juce::Graphics& g) {
             Display::invert_rectangle(0, 0, 128, 15);
         else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
             Display::invert_rectangle(0, 0, 128, 15);
-        else{
-        }
 
         x_offset = 64 - 5;
         y_offset += 15;

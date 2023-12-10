@@ -42,6 +42,9 @@ public:
     float GetFMShape();
     void SetFMDepth(float value);
     float GetFMDepth();
+    inline float GetAmpDecayTrigger() { return amp_decay_trigger_; }
+    inline float GetFMDecayTrigger() { return fm_decay_trigger_; }
+    float GetY();
 
 private:
     // depth -50 to 50

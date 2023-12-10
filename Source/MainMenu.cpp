@@ -44,6 +44,7 @@ bool MainMenu::handleKeyRelease(int key) {
                 break;
             case PLAYBACK_MONITORING:
                 context.setState(&oscilloscope);
+                oscilloscope.setBackMenu(this);
                 break;
             case FX_MANAGEMENT:
                 context.setState(&fxMenu);
@@ -67,7 +68,7 @@ bool MainMenu::handleKeyRelease(int key) {
                 context.setState(&subOscillatorMenu);
                 break;
             case SNAPSHOTS_LIST:
-//                setState(WAVETABLE_MANAGEMENT);
+                context.setState(&snapshotMenu);
                 break;
             case WAVETABLE_MANAGEMENT:
                 context.setState(&manageMenu);

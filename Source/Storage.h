@@ -49,7 +49,7 @@ public:
         int8_t subosc_wave;                      // (0, 5)
         
         // fx parameters
-        int8_t fx_depth;                        // (0, 0)
+        float fx_depth;                        // (0.0f, 1.0f)
         bool fx_sync;                           // (false, true)
         int8_t fx_scale;                        // (0, 100)
         int8_t fx_range;                        // (1, 10)
@@ -57,6 +57,7 @@ public:
         int8_t fx_control_type;                 // (0, 2)
         int8_t fx_effect;                       // (0, 8)
 
+        int8_t engine;                          // (0, 3)
         // ab engine parameters
         int8_t ab_engine_left_wavetable;        // (0, USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1)
         int8_t ab_engine_left_frame;            // (0, 15)
@@ -117,6 +118,7 @@ public:
     bool CopyWave(int table_dst, int frame_dst, int table_src, int frame_src);
     bool EraseAll();
     bool EraseSnapshot(SNAPSHOT * snapshot, uint8_t index);
+    bool SaveSnapshot(const char * name, uint8_t index, SNAPSHOT * snapshot);
     bool SaveAll();
     bool LoadAll();
 //    bool SaveAllData();

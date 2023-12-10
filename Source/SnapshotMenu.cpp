@@ -46,9 +46,58 @@ void SnapshotMenu::ResetTicker()
     ticker_ = 0;
 }
 
+
+bool SnapshotMenu::handleKeyLongPress(int key) {
+    if( key == LEFT_ENCODER_CLICK ) {
+        if(state_ == SNAPSHOT_MENU_NONE) {
+            if(system_clock.milliseconds() - press_timer_ > 1000) {
+                option_selected_ = SNAPSHOT_MENU_SAVE;
+                setState(SNAPSHOT_MENU_OPTIONS);
+                absorb_keypress_ = true;
+                
+                if(storage.GetSnapshot(snapshot_)->factory_preset) {
+                    option_selected_ = SNAPSHOT_MENU_COPY;
+                } else {
+                    option_selected_ = SNAPSHOT_MENU_SAVE;
+                }
+                
+                if(option_selected_ < option_offset_) {
+                    option_offset_ = option_selected_;
+                }
+                if(option_selected_ > option_offset_ + 1) {
+                    option_offset_ = option_selected_ - 1;
+                }
+
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool SnapshotMenu::handleKeyPress(int key) {
+    if( key == LEFT_ENCODER_CLICK ) {
+        press_timer_ = system_clock.milliseconds();
+    }
+    return false;
+}
+
 bool SnapshotMenu::handleKeyRelease(int key) {
     if(key == LEFT_ENCODER_CCW) {
         switch(state_) {
+            case SNAPSHOT_MENU_OPTIONS:
+                if(storage.GetSnapshot(snapshot_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, SNAPSHOT_MENU_SAVE, SNAPSHOT_MENU_DELETE));
+                
+                if(option_selected_ < option_offset_) {
+                    option_offset_ = option_selected_;
+                }
+
+                break;
             case SNAPSHOT_MENU_NONE:
                 snapshot_ = std::clamp<int16_t>(snapshot_ - 1, 0, USER_SNAPSHOT_COUNT - 1);
                 
@@ -58,12 +107,28 @@ bool SnapshotMenu::handleKeyRelease(int key) {
 
                 ResetTicker();
                 break;
+            case SNAPSHOT_MENU_CONFIRM:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ - 1, SNAPSHOT_MENU_NO, SNAPSHOT_MENU_YES));
+                break;
             default:
                 break;
         }
     }
     if(key == LEFT_ENCODER_CW) {
         switch(state_) {
+            case SNAPSHOT_MENU_OPTIONS:
+                if(storage.GetSnapshot(snapshot_)->factory_preset)
+                {
+                    
+                }
+                else
+                    setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, SNAPSHOT_MENU_SAVE, SNAPSHOT_MENU_DELETE));
+                
+                if(option_selected_ > option_offset_ + 1) {
+                    option_offset_ = option_selected_ - 1;
+                }
+
+                break;
             case SNAPSHOT_MENU_NONE:
                 snapshot_ = std::clamp<int16_t>(snapshot_ + 1, 0, USER_SNAPSHOT_COUNT - 1);
                 
@@ -72,6 +137,9 @@ bool SnapshotMenu::handleKeyRelease(int key) {
                 }
 
                 ResetTicker();
+                break;
+            case SNAPSHOT_MENU_CONFIRM:
+                setOptionSelected(std::clamp<int8_t>(option_selected_ + 1, SNAPSHOT_MENU_NO, SNAPSHOT_MENU_YES));
                 break;
             default:
                 break;
@@ -86,13 +154,99 @@ bool SnapshotMenu::handleKeyRelease(int key) {
             function_selected_ = SNAPSHOT_MENU_HOME;
     }
     if(key == RIGHT_ENCODER_CLICK) {
+        if(function_selected_ == SNAPSHOT_MENU_HOME) {
+            user_settings.ResetSettings();
+            popup.show();
+            popup.SetLine(0, (char*)"RESET!");
+            popup.SetLine(1, (char*)"\0");
+            popup.SetLine(2, (char*)"\0");
+        } else if(function_selected_ == SNAPSHOT_MENU_DICE) {
+            user_settings.RandomizeSettings();
+            popup.show();
+            popup.SetLine(0, (char*)"RANDOMIZED!");
+            popup.SetLine(1, (char*)"\0");
+            popup.SetLine(2, (char*)"\0");
+        }
     }
     if(key == LEFT_ENCODER_CLICK) {
+        if(absorb_keypress_) {
+            absorb_keypress_ = false;
+            return true;
+        }
+
         switch(state_) {
             case SNAPSHOT_MENU_NONE: {
                 // TODO: recall snapshot
+                if(copy_state_ == SNAPSHOT_MENU_COPY_STATE_SNAPSHOT && storage.GetSnapshot(snapshot_)->factory_preset) {
+                    popup.show();
+                    popup.SetLine(0, (char*)"CANNOT OVERWRITE");
+                    popup.SetLine(1, (char*)"FACTORY PRESETS!");
+                    popup.SetLine(2, (char*)"\0");
+                }
+                else if(copy_state_ == SNAPSHOT_MENU_COPY_STATE_SNAPSHOT) {
+                    SetLine(0, (char*)"OVERWRITE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&SnapshotMenu::CancelCopy);
+                    setConfirmFunc(&SnapshotMenu::ConfirmCopy);
+
+                    option_selected_ = SNAPSHOT_MENU_NO;
+                    setState(SNAPSHOT_MENU_CONFIRM);
+                }
+                else {
+                    ticker_timer_ = system_clock.milliseconds() - 2000;
+                    user_settings.LoadSnapshot(snapshot_);
+                    context.setState(&oscilloscope);
+                    oscilloscope.setBackMenu(this);
+//                    setState(MANAGE_MENU_SELECT_FRAME);
+//                    frame_ = 0;
+//                    frame_offset_ = 0;
+                }
                 break;
             }
+            case SNAPSHOT_MENU_OPTIONS:
+                if(option_selected_ == SNAPSHOT_MENU_SAVE) {
+                    ticker_timer_ = system_clock.milliseconds() - 2000;
+                    if(storage.GetSnapshot(snapshot_)->is_empty) {
+                        // TODO: open name menu save
+                        context.setState(&enterNameMenu);
+                        enterNameMenu.setBackMenu(this);
+                        enterNameMenu.setExecFunc(SnapshotMenu::Save);
+                        enterNameMenu.setNameChars(storage.GetSnapshot(snapshot_)->name);
+                    } else {
+                        // resave. no menu
+                        Save(storage.GetSnapshot(snapshot_)->name);
+                    }
+                } else if(option_selected_ == SNAPSHOT_MENU_COPY) {
+                    copy_state_ = SNAPSHOT_MENU_COPY_STATE_SNAPSHOT;
+                    blink_timer_ = system_clock.milliseconds();
+                    selected_snapshot_ = snapshot_;
+                    setState(SNAPSHOT_MENU_NONE);
+                } else if(option_selected_ == SNAPSHOT_MENU_RENAME) {
+                    context.setState(&enterNameMenu);
+                    enterNameMenu.setBackMenu(this);
+                    enterNameMenu.setExecFunc(SnapshotMenu::Rename);
+                    enterNameMenu.setNameChars(storage.GetSnapshot(snapshot_)->name);
+                } else if(option_selected_ == SNAPSHOT_MENU_DELETE) {
+                    option_selected_ = SNAPSHOT_MENU_NO;
+                    setState(SNAPSHOT_MENU_CONFIRM);
+                    // TODO:  set yes func and no func
+                    SetLine(0, (char*)"DELETE?");
+                    SetLine(1, (char*)"\0");
+                    SetLine(2, (char*)"\0");
+                    setCancelFunc(&SnapshotMenu::CancelDelete);
+                    setConfirmFunc(&SnapshotMenu::ConfirmDelete);
+                }
+                break;
+            case SNAPSHOT_MENU_CONFIRM:
+                if(option_selected_ == SNAPSHOT_MENU_NO) {
+                    if(cancel_func_)
+                        (this->*cancel_func_)();
+                } else if(option_selected_ == SNAPSHOT_MENU_YES) {
+                    if(confirm_func_)
+                        (this->*confirm_func_)();
+                }
+                break;
             default:
                 break;
         }
@@ -100,10 +254,21 @@ bool SnapshotMenu::handleKeyRelease(int key) {
     if(key == BACK_BUTTON) {
         switch(state_) {
             case SNAPSHOT_MENU_NONE:
+                if(copy_state_ == SNAPSHOT_MENU_COPY_STATE_SNAPSHOT) {
+                    copy_state_ = SNAPSHOT_MENU_COPY_STATE_NONE;
+                    break;
+                }
                 if(back_menu_)
                     context.setState(back_menu_, true);
                 else
                     context.setState(&mainMenu);
+                break;
+            case SNAPSHOT_MENU_OPTIONS:
+                setState(SNAPSHOT_MENU_NONE);
+                break;
+            case SNAPSHOT_MENU_CONFIRM:
+                if(cancel_func_)
+                    (this->*cancel_func_)();
                 break;
             default:
                 break;
@@ -130,12 +295,24 @@ void SnapshotMenu::paint(juce::Graphics& g) {
         int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
-        Display::put_string_5x5((18 + 11 * 7) / 2 - strlen(title) * 6 / 2, y_offset, strlen(title), title);
-        
         int func_width = 128 - 92;
-        Display::put_string_5x5(92 + func_width / 2 - strlen("FUNC") * 6 / 2, y_offset, strlen("FUNC"), "FUNC");
 
-        Display::invert_rectangle(0, 0, 128, 11);
+        if(copy_state_ == SNAPSHOT_MENU_COPY_STATE_SNAPSHOT) {
+            title = (char *) "COPY SNAPSHOT TO:";
+        
+            int x_offset = 1 + 2 * 4;
+
+            Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
+        } else {
+            Display::put_string_5x5((18 + 11 * 7) / 2 - strlen(title) * 6 / 2, y_offset, strlen(title), title);
+            
+            Display::put_string_5x5(92 + func_width / 2 - strlen("FUNC") * 6 / 2, y_offset, strlen("FUNC"), "FUNC");
+        }
+
+        if(copy_state_ != SNAPSHOT_MENU_COPY_STATE_SNAPSHOT)
+            Display::invert_rectangle(0, 0, 128, 11);
+        else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
+            Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 128 - 5;
         y_offset += 11;
@@ -150,18 +327,18 @@ void SnapshotMenu::paint(juce::Graphics& g) {
             snprintf(line, 20, "%*d", 2, i + snapshot_offset_ + 1);
             Display::put_string_3x5(2, y_offset + i * 12, strlen(line), line);
             
-            char line2[9];
+            char * line2;
             
-//            line2 = storage.GetSnapshot(i + snapshot_offset_)->name;
+            line2 = storage.GetSnapshot(i + snapshot_offset_)->name;
 //            line2 = (char*)"WHOOPSIE";
-            char* lines[4] = {
-                (char*)"WHOOPSIE\0",
-                (char*)"TEST\0",
-                (char*)"TESTICL\0",
-                (char*)"RIGHTO\0",
-            };
+//            char* lines[4] = {
+//                (char*)"WHOOPSIE\0",
+//                (char*)"TEST\0",
+//                (char*)"TESTICL\0",
+//                (char*)"RIGHTO\0",
+//            };
             
-            strncpy(line2, lines[i], 9);
+//            strncpy(line2, lines[i], 9);
 
             int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 
@@ -212,7 +389,7 @@ void SnapshotMenu::paint(juce::Graphics& g) {
         if(function_selected_ == SNAPSHOT_MENU_HOME)
             Display::invert_rectangle(center_x - 23 / 2 + 1, center_y - 22 / 2 + 1, 21, 20);
 
-    } else {
+    } else if(state_ == SNAPSHOT_MENU_OPTIONS) {
         char * title;
         title = (char *) storage.GetSnapshot(snapshot_)->name;
 
@@ -277,5 +454,76 @@ void SnapshotMenu::paint(juce::Graphics& g) {
 //            Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
 //            Display::put_string_9x9(x_offset + 16, y_offset + 1, strlen("DELETE"), "DELETE", option_selected_ == MANAGE_MENU_DELETE, 3);
         }
+    } else if(state_ == SNAPSHOT_MENU_CONFIRM) {
+        int y_offset = 16;
+        int x_offset = 0;
+        
+        int line_count = 0;
+        for(int i = 0; i < 3; i++) {
+            if(strlen(confirm_lines_[i]) > 0)
+                line_count++;
+        }
+        
+        y_offset -= line_count * 6 / 2;
+        
+        //        int y_offset = 32 - line_count * 3;
+        
+        for(int i = 0; i < 3; i++) {
+            if(strlen(confirm_lines_[i]) > 0) {
+                int x_offset = 64 - strlen(confirm_lines_[i]) * 6 / 2;
+                Display::put_string_5x5(x_offset, y_offset, strlen(confirm_lines_[i]), confirm_lines_[i]);
+            }
+            y_offset += 6;
+        }
+        //        Display::put_string_5x5(64 - strlen("DELETE?") * 6 / 2, y_offset, strlen("DELETE?"), "DELETE?");
+        
+        y_offset = 48 - 10 / 2;
+        x_offset = 32 - (16 + Display::get_string_9x9_width("NO", 3)) / 2;
+        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_cancel_11x11, 11);
+        Display::put_string_9x9(x_offset + 16, y_offset, strlen("NO"), "NO", option_selected_ == SNAPSHOT_MENU_NO, 3);
+        
+        x_offset = 96 - (16 + Display::get_string_9x9_width("YES", 3)) / 2;
+        Display::put_image_16bit(x_offset, y_offset, Graphic_icon_delete_11x11, 11);
+        Display::put_string_9x9(x_offset + 16, y_offset, strlen("YES"), "YES", option_selected_ == SNAPSHOT_MENU_YES, 3);
     }
+}
+
+void SnapshotMenu::ConfirmCopy() {
+    storage.SaveSnapshot(storage.GetSnapshot(selected_snapshot_)->name, snapshot_, storage.GetSnapshot(selected_snapshot_));
+    setState(SNAPSHOT_MENU_NONE);
+    copy_state_ = SNAPSHOT_MENU_COPY_STATE_NONE;
+    ResetTicker();
+}
+
+void SnapshotMenu::CancelCopy() {
+    setState(SNAPSHOT_MENU_NONE);
+    copy_state_ = SNAPSHOT_MENU_COPY_STATE_NONE;
+}
+
+void SnapshotMenu::ConfirmDelete() {
+    storage.EraseSnapshot(storage.GetSnapshot(snapshot_), snapshot_);
+    setState(SNAPSHOT_MENU_NONE);
+}
+
+void SnapshotMenu::CancelDelete() {
+    setState(SNAPSHOT_MENU_NONE);
+}
+
+void SnapshotMenu::Save(char* param) {
+    storage.SaveSnapshot(param, snapshotMenu.snapshot_, user_settings.settings_ptr());
+    snapshotMenu.setState(SNAPSHOT_MENU_NONE);
+    snapshotMenu.ResetTicker();
+}
+
+void SnapshotMenu::Rename(char* param) {
+    storage.SaveSnapshot(param, snapshotMenu.snapshot_, storage.GetSnapshot(snapshotMenu.snapshot_));
+    snapshotMenu.setState(SNAPSHOT_MENU_NONE);
+    snapshotMenu.ResetTicker();
+}
+
+
+void SnapshotMenu::SetLine(int line_no, char* str) {
+    char* line = confirm_lines_[line_no];
+    memset(line, 0, 20);
+    strncpy(line, str, strlen(str));
 }

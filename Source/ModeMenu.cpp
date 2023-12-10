@@ -36,22 +36,22 @@ bool ModeMenu::handleKeyRelease(int key) {
             case MODE_AB:
                 abModeMenu.setBackMenu(&modeMenu);
                 context.setState(&abModeMenu);
-                context.setEngine(&abEngine);
+                context.setEngine(Context::ENGINE_TYPE_AB);
                 break;
             case MODE_WAVETABLE:
                 wavetableModeMenu.setBackMenu(&modeMenu);
                 context.setState(&wavetableModeMenu);
-                context.setEngine(&wavetableEngine);
+                context.setEngine(Context::ENGINE_TYPE_WAVETABLE);
                 break;
             case MODE_MATRIX:
                 matrixMode.setBackMenu(&modeMenu);
                 context.setState(&matrixMode);
-                context.setEngine(&matrixEngine);
+                context.setEngine(Context::ENGINE_TYPE_MATRIX);
                 break;
             case MODE_DRUM:
                 drumMode.setBackMenu(&modeMenu);
                 context.setState(&drumMode);
-                context.setEngine(&drumEngine);
+                context.setEngine(Context::ENGINE_TYPE_DRUM);
                 break;
             default:
                 break;

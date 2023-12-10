@@ -46,7 +46,10 @@ bool Oscilloscope::handleKeyRelease(int key) {
     if(key == BACK_BUTTON) {
         switch(currentState) {
             case OSCILLOSCOPE_STATE_NONE:
-                context.setState(&mainMenu);
+                if(back_menu_)
+                    context.setState(back_menu_, true);
+                else
+                    context.setState(&mainMenu);
                 break;
             default:
                 break;

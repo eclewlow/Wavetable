@@ -12,7 +12,7 @@
 #define ONE_OCTAVE_12BIT (12.0f * 4095.0f / 120.0f)
 
 Quantizer::Quantizer() {
-    scale_ = QUANTIZER_SCALE_PENTATONIC;
+    scale_ = QUANTIZER_SCALE_OFF;
 }
 
 Quantizer::~Quantizer() {
@@ -20,7 +20,7 @@ Quantizer::~Quantizer() {
 }
 
 void Quantizer::Init() {
-    scale_ = QUANTIZER_SCALE_PENTATONIC;
+    scale_ = QUANTIZER_SCALE_OFF;
 }
 
 void Quantizer::triggerUpdate() {

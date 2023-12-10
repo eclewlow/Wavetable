@@ -65,6 +65,11 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
 
         note = quantizer.Quantize(note);
 
+        if(user_settings.settings_ptr()->engine == Context::ENGINE_TYPE_DRUM) {
+            note += 12 * drumEngine.GetY() * (drumEngine.GetFMDepth() * 2.0f - 1.0f);
+            note = clamp(note, 0.0f, 120.0f);
+        }
+
         note = note - 24.0f;
         float a = 440; //frequency of A (coomon value is 440Hz)
         float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
@@ -81,18 +86,27 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
 
         for (size_t j = 0; j < kOversampling; ++j) {
             float sample = 0.0f;
-            if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SINE)
+            if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SINE) {
                 sample = GetSine(phase_);
-            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_TRIANGLE)
+            }
+            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_TRIANGLE) {
                 sample = GetTriangle(phase_);
-            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SAWTOOTH)
+            }
+            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SAWTOOTH) {
                 sample = GetSawtooth(phase_, phase_increment);
-            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_RAMP)
+            }
+            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_RAMP) {
                 sample = GetRamp(phase_, phase_increment);
-            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SQUARE)
+            }
+            else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_SQUARE) {
                 sample = GetSquare(phase_, phase_increment);
+            }
             else if(user_settings.getSubOscWave() == UserSettings::SUBOSC_WAVE_COPY) {
                 sample = context.getEngine()->GetSampleNoFX(phase_, interpolated_fx, interpolated_morph);
+            }
+
+            if(user_settings.settings_ptr()->engine == Context::ENGINE_TYPE_DRUM) {
+                sample = (1 - drumEngine.GetAmpDecayTrigger()) * sample;
             }
 
             phase_ += phase_increment;
