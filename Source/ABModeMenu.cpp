@@ -388,7 +388,7 @@ void ABModeMenu::DrawSide(int side) {
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
-        int y_cursor_offset = ((bar_height-3) * wavetable_offset) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+        int y_cursor_offset = ((bar_height - 5) * wavetable_offset) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT - 1 - 2);
         
         Display::outline_rectangle(x_offset + 64 - 5 + 1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset + 64 - 5, y_offset - y_shift, 3, bar_height);
@@ -435,7 +435,7 @@ void ABModeMenu::DrawSide(int side) {
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
-        int y_cursor_offset = ((bar_height-3/2) * frame_offset) / 15;
+        int y_cursor_offset = ((bar_height - 5) * frame_offset) / (13);
         
         Display::outline_rectangle(x_offset + 64 - 5 + 1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset + 64 - 5, y_offset - y_shift, 3, bar_height);

@@ -77,6 +77,9 @@ void CalibrationMenu::paint(juce::Graphics& g) {
 
     
     float note = tune * user_settings.getCalibrationX() + user_settings.getCalibrationY();
+    
+    note = clamp(note, 0.0f, 120.0f);
+
     float a = 440; //frequency of A (coomon value is 440Hz)
     float frequency = (a / 32) * pow(2, ((note - 9) / 12.0));
     
@@ -85,7 +88,15 @@ void CalibrationMenu::paint(juce::Graphics& g) {
 
     int octave = static_cast<int16_t>(floor(note + 0.5)) / 12 - 1;
     const char * note_text = note_letter.substr(note_index * 2, 2).c_str();
+    
     y_offset = 10;
+    if(message_displayed_) {
+        note_text = "C ";
+        if(state_ == CALIBRATION_MENU_STATE_1V)
+            octave = 1;
+        else if(state_ == CALIBRATION_MENU_STATE_5V)
+            octave = 5;
+    }
     Display::put_string_9x9(64 - Display::get_string_9x9_width(note_text, 2) / 2, y_offset, strlen(note_text), note_text, false, 2);
     snprintf(line, 20, "OCT:%d", octave);
     y_offset += 10 + 2;
@@ -113,7 +124,12 @@ void CalibrationMenu::paint(juce::Graphics& g) {
     int note_integral = floor(note + 0.5); // round to nearest int
     float note_fractional = note - note_integral; // -0.5 to 0.4999
 
-    x_offset = 63 - line_width / 2 + line_width * (note_fractional + 0.5);
+    // draw note cursor
+    if(message_displayed_) {
+        x_offset = 63 - line_width / 2 + line_width * (0.5);
+    } else {
+        x_offset = 63 - line_width / 2 + line_width * (note_fractional + 0.5);
+    }
     Display::LCD_Line(x_offset-1, y_offset - 3, x_offset-1, y_offset + 3, true);
     Display::LCD_Line(x_offset, y_offset - 3, x_offset, y_offset + 3, true);
     Display::LCD_Line(x_offset+1, y_offset - 3, x_offset+1, y_offset + 3, true);

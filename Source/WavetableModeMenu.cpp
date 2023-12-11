@@ -90,7 +90,7 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
     
     int y_shift = 2;
     int bar_height = 3 * 7 + y_shift * 2;
-    int y_cursor_offset = ((bar_height-3) * wavetable_offset_) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT);
+    int y_cursor_offset = ((bar_height - 5) * wavetable_offset_) / (FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT - 1 - 2);
     
     Display::outline_rectangle(128 - 6 + 1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
     Display::invert_rectangle(128 - 6, y_offset - y_shift, 3, bar_height);

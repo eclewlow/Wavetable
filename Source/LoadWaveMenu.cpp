@@ -212,21 +212,21 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
 
         char * title = (char *) "SELECT WAVETABLE";
 
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
+        Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 64 - 5;
-        y_offset += 15;
+        y_offset += 11;
 
         for(int i = 0; i < 6; i++)
         {
             char line[20];
             snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(2, y_offset + i * 8, strlen(line), line);
             
             char * name = storage.GetWavetable(i + wavetable_offset_)->name;
 
@@ -251,15 +251,15 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
                     ticker_++;
                     ticker_timer_ = system_clock.milliseconds();
                 }
-                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
             } else {
-                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, 0);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, 0);
             }
         }
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+        int y_cursor_offset = ((bar_height - 5) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1 - 5);
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 
@@ -275,21 +275,21 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
         char * title = (char *) "SELECT WAVE";
         title = storage.GetWavetable(wavetable_)->name;
 
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
+        Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 64 - 5;
-        y_offset += 15;
+        y_offset += 11;
 
         for(int i = 0; i < 6; i++)
         {
             char line[20];
             snprintf(line, 20, "%*d", 2, i + frame_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(2, y_offset + i * 8, strlen(line), line);
             
             char * name = storage.GetWavetable(wavetable_)->waves[i + frame_offset_].name;
             
@@ -314,15 +314,15 @@ void LoadWaveMenu::paint(juce::Graphics& g) {
                     ticker_++;
                     ticker_timer_ = system_clock.milliseconds();
                 }
-                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
             } else {
-                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, 0);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, 0);
             }
         }
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * frame_offset_) / 11;
+        int y_cursor_offset = ((bar_height - 5) * frame_offset_) / 10;
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 

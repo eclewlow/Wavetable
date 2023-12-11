@@ -767,7 +767,7 @@ void ManageMenu::paint(juce::Graphics& g) {
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1);
+        int y_cursor_offset = ((bar_height - 5) * wavetable_offset_) / (USER_WAVETABLE_COUNT + FACTORY_WAVETABLE_COUNT - 1 - 5);
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 
@@ -841,7 +841,7 @@ void ManageMenu::paint(juce::Graphics& g) {
 
         int y_shift = 2;
         int bar_height = 64 - y_offset - 1;
-        int y_cursor_offset = ((bar_height-1) * frame_offset_) / 11;
+        int y_cursor_offset = ((bar_height - 5) * frame_offset_) / 10;
         Display::outline_rectangle(x_offset+1, y_offset + 1 - y_shift + y_cursor_offset, 1, 3);
         Display::invert_rectangle(x_offset, y_offset - y_shift, 3, bar_height);
 

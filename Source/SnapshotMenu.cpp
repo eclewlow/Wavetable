@@ -356,7 +356,7 @@ void SnapshotMenu::paint(juce::Graphics& g) {
 
         y_offset = 12;
         int bar_height = 50;
-        int y_cursor_offset = ((bar_height-2) * snapshot_offset_) / (USER_SNAPSHOT_COUNT + FACTORY_SNAPSHOT_COUNT - 1);
+        int y_cursor_offset = ((bar_height - 5) * snapshot_offset_) / (USER_SNAPSHOT_COUNT + FACTORY_SNAPSHOT_COUNT - 1 - 3);
         x_offset = 12 + 11 * 7;
         Display::outline_rectangle(x_offset+1, y_offset + 1 + y_cursor_offset, 1, 3);
         Display::outline_rectangle(x_offset, y_offset, 3, bar_height);
