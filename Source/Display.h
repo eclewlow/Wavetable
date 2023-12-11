@@ -86,6 +86,7 @@ public:
     static int16_t get_string_9x9_width(const char *input, int8_t gap);
     static void put_string_9x9(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted=false, int8_t gap=2);
     static void put_string_9x9_loop(uint8_t x, uint8_t y, uint8_t Field_Width, const char *input, bool inverted, int8_t gap, int8_t num_chars, int8_t position);
+    static void put_string_5x5_loop(uint8_t x, int8_t y, uint8_t Field_Width, const char *input, bool inverted, int8_t num_chars, int8_t position);
     static void clear_rectangle(uint8_t x,uint8_t y,uint8_t width,uint8_t height);
     static void clear_rectangle_simple(uint8_t x,uint8_t y,uint8_t width,uint8_t height, bool set = false);
     static void clear_rectangle_grey(uint8_t x,uint8_t y,uint8_t width,uint8_t height);

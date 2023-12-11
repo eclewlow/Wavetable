@@ -67,7 +67,7 @@ bool Storage::EraseAll() {
 
     for(int table = 0; table < FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
         if(table < FACTORY_WAVETABLE_COUNT) {
-            snprintf(GetWavetable(table)->name, 9, names[table], table);
+            strncpy(GetWavetable(table)->name, names[table], 9);
             GetWavetable(table)->factory_preset = true;
             GetWavetable(table)->is_empty = false;
         } else {
@@ -78,8 +78,9 @@ bool Storage::EraseAll() {
         for(int frame = 0; frame < 16; frame++) {
             GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
             if(table < FACTORY_WAVETABLE_COUNT) {
-                snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
-                GetWavetable(table)->waves[frame].factory_preset = true;
+//                snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
+                strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
+//                GetWavetable(table)->waves[frame].factory_preset = true;
                 GetWavetable(table)->waves[frame].is_empty = false;
             } else {
                 strncpy(GetWavetable(table)->waves[frame].name, "INIT", 9);

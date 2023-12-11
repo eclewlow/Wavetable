@@ -36,7 +36,7 @@ void SnapshotMenu::triggerUpdate(bool back_pressed) {
         snapshot_offset_ = snapshot_ - 3;
     }
     
-    ticker_timer_ = system_clock.milliseconds() - 2000;
+    ResetTicker();
 
 }
 
@@ -194,7 +194,6 @@ bool SnapshotMenu::handleKeyRelease(int key) {
                     setState(SNAPSHOT_MENU_CONFIRM);
                 }
                 else {
-                    ticker_timer_ = system_clock.milliseconds() - 2000;
                     user_settings.LoadSnapshot(snapshot_);
                     context.setState(&oscilloscope);
                     oscilloscope.setBackMenu(this);
@@ -206,7 +205,6 @@ bool SnapshotMenu::handleKeyRelease(int key) {
             }
             case SNAPSHOT_MENU_OPTIONS:
                 if(option_selected_ == SNAPSHOT_MENU_SAVE) {
-                    ticker_timer_ = system_clock.milliseconds() - 2000;
                     if(storage.GetSnapshot(snapshot_)->is_empty) {
                         // TODO: open name menu save
                         context.setState(&enterNameMenu);
@@ -330,15 +328,6 @@ void SnapshotMenu::paint(juce::Graphics& g) {
             char * line2;
             
             line2 = storage.GetSnapshot(i + snapshot_offset_)->name;
-//            line2 = (char*)"WHOOPSIE";
-//            char* lines[4] = {
-//                (char*)"WHOOPSIE\0",
-//                (char*)"TEST\0",
-//                (char*)"TESTICL\0",
-//                (char*)"RIGHTO\0",
-//            };
-            
-//            strncpy(line2, lines[i], 9);
 
             int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
 

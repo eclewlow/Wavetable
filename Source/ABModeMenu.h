@@ -52,6 +52,7 @@ public:
 //    inline void SetRightFrame(int right_frame) { right_frame_ = std::clamp(right_frame, 0, 15); }
 //    inline int GetRightWavetable() { return right_wavetable_; }
 //    inline int GetRightFrame() { return right_frame_; }
+    void ResetTicker(int8_t side);
 
 private:
     int16_t left_wavetable_offset_;
@@ -67,5 +68,8 @@ private:
     int right_frame_;
     uint32_t left_ticker_timer_ = 0;
     uint32_t right_ticker_timer_ = 0;
+    uint8_t left_ticker_ = 0;
+    uint8_t right_ticker_ = 0;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ABModeMenu);
 };

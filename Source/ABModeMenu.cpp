@@ -34,6 +34,15 @@ ABModeMenu::~ABModeMenu() {
 //AB_EDIT_HOVER,
 //AB_SELECT_WAVETABLE,
 //AB_SELECT_FRAME,
+void ABModeMenu::ResetTicker(int8_t side) {
+    if(side == 0) {
+        left_ticker_timer_ = system_clock.milliseconds();
+        left_ticker_ = 0;
+    } else {
+        right_ticker_timer_ = system_clock.milliseconds();
+        right_ticker_ = 0;
+    }
+}
 
 bool ABModeMenu::handleKeyRelease(int key) {
     if(key == LEFT_ENCODER_CCW) {
@@ -56,7 +65,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 else
                     left_frame_ = 0;
 
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ - 1, 0, 15);
@@ -65,7 +74,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                     left_frame_offset_ = left_frame_;
                 }
 
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
                 break;
             default:
                 break;
@@ -91,7 +100,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 else
                     left_frame_ = 0;
                 
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
                 break;
             case AB_SELECT_FRAME:
                 left_frame_ = std::clamp(left_frame_ + 1, 0, 15);
@@ -99,7 +108,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 if(left_frame_ > left_frame_offset_ + 2) {
                     left_frame_offset_ = left_frame_ - 2;
                 }
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
 
                 break;
             default:
@@ -111,7 +120,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
         switch(left_state_) {
             case AB_LOAD_HOVER:
                 left_state_ = AB_SELECT_WAVETABLE;
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingLeft()) {
@@ -123,7 +132,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 break;
             case AB_SELECT_WAVETABLE:
                 left_state_ = AB_SELECT_FRAME;
-                left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(0);
                 if(left_wavetable_ != abEngine.GetLeftWavetable()) {
                     left_frame_offset_ = 0;
                     left_frame_ = 0;
@@ -164,7 +173,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 else
                     right_frame_ = 0;
 
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
                 break;
             case AB_SELECT_FRAME:
                 right_frame_ = std::clamp(right_frame_ - 1, 0, 15);
@@ -173,7 +182,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                     right_frame_offset_ = right_frame_;
                 }
 
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
                 break;
             default:
                 break;
@@ -199,7 +208,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 else
                     right_frame_ = 0;
                 
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
                 break;
             case AB_SELECT_FRAME:
                 right_frame_ = std::clamp(right_frame_ + 1, 0, 15);
@@ -207,7 +216,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 if(right_frame_ > right_frame_offset_ + 2) {
                     right_frame_offset_ = right_frame_ - 2;
                 }
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
 
                 break;
             default:
@@ -219,7 +228,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
         switch(right_state_) {
             case AB_LOAD_HOVER:
                 right_state_ = AB_SELECT_WAVETABLE;
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
                 break;
             case AB_EDIT_HOVER:
                 if(!abEngine.IsEditingRight()) {
@@ -231,7 +240,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                 break;
             case AB_SELECT_WAVETABLE:
                 right_state_ = AB_SELECT_FRAME;
-                right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker(1);
                 if(right_wavetable_ != abEngine.GetRightWavetable()) {
                     right_frame_offset_ = 0;
                     right_frame_ = 0;
@@ -268,7 +277,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                     left_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
-                    left_ticker_timer_ = system_clock.milliseconds() - 2000;
+                    ResetTicker(0);
                     left_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
@@ -293,7 +302,7 @@ bool ABModeMenu::handleKeyRelease(int key) {
                     right_state_ = AB_LOAD_HOVER;
                     break;
                 case AB_SELECT_FRAME:
-                    right_ticker_timer_ = system_clock.milliseconds() - 2000;
+                    ResetTicker(1);
                     right_state_ = AB_SELECT_WAVETABLE;
                     break;
                 default:
@@ -315,6 +324,7 @@ void ABModeMenu::DrawSide(int side) {
     int16_t* wavebuffer = side == 0 ? BUF1 : BUF2;
     int16_t* alternate_wavebuffer = side == 0 ? BUF3 : BUF4;
     uint32_t* ticker_timer = side == 0 ? &left_ticker_timer_ : &right_ticker_timer_;
+    uint8_t* ticker = side == 0 ? &left_ticker_ : &right_ticker_;
     int wavetable = side == 0 ? left_wavetable_ : right_wavetable_;
     int frame = side == 0 ? left_frame_ : right_frame_;
     int16_t wavetable_offset = side == 0 ? left_wavetable_offset_ : right_wavetable_offset_;
@@ -387,26 +397,50 @@ void ABModeMenu::DrawSide(int side) {
 
             char * name = storage.GetWavetable(wavetable)->waves[i + frame_offset].name;
 
-            char line2[20];
-            memset(line2, 0, 20);
-            if(name[0] == '\0')
-                strncpy(line2, "-------", 7);
-            else {
-                int name_index = 0;
-                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
+            char * line2 = name;
 
-                if (elapsed_time > 4000) {
+//            if(name[0] == '\0')
+//                strncpy(line2, "-------", 7);
+//            else {
+//                int name_index = 0;
+//                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
+//
+//                if (elapsed_time > 4000) {
+//                    *ticker_timer = system_clock.milliseconds();
+//                }
+//                if(i + frame_offset == frame && strlen(name) > 7 && (elapsed_time) > 0) {
+//                    name_index = (elapsed_time) / 1000;
+//                    name_index = std::clamp(name_index, 0, 1);
+//                }
+//                // if timer is passed 2000, name_index = 1
+//                strncpy(line2, &name[name_index], 7);
+//            }
+            int32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
+
+            int8_t num_chars = 7;
+
+            if(i + frame_offset == frame) {
+                if(*ticker == 0) {
+                    if(elapsed_time > 1000) {
+                        (*ticker)++;
+                        *ticker_timer = system_clock.milliseconds();
+                    }
+                } else if(*ticker == (strlen(line2) - num_chars) * 6) {
+                    if(elapsed_time > 2000) {
+                        ResetTicker(side);
+                    }
+                }
+                else if (elapsed_time > 20) {
+                    (*ticker)++;
                     *ticker_timer = system_clock.milliseconds();
                 }
-                if(i + frame_offset == frame && strlen(name) > 7 && (elapsed_time) > 0) {
-                    name_index = (elapsed_time) / 1000;
-                    name_index = std::clamp(name_index, 0, 1);
-                }
-                // if timer is passed 2000, name_index = 1
-                strncpy(line2, &name[name_index], 7);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame, num_chars, strlen(line2) > num_chars ? *ticker : 0);
+            } else {
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame, num_chars, 0);
+
             }
 
-            Display::put_string_5x5(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame);
+//            Display::put_string_5x5(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame);
 
         }
         int y_shift = 2;
