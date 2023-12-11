@@ -351,12 +351,13 @@ void ABModeMenu::DrawSide(int side) {
 //    Display::Draw_Wave(graph_width + gap * 2 + 1, graph_y_offset + 1, graph_width-2, graph_height-2, BUF2);
 
     int y_offset = graph_y_offset + graph_height + 5;
+    x_offset -= 1;
     if(state == AB_SELECT_WAVETABLE) {
         for(int i = 0; i < 3; i++)
         {
             char line[20];
             snprintf(line, 20, "%*d", 2, i + wavetable_offset + 1);
-            Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(x_offset + 2, y_offset + i * 8, strlen(line), line);
             
             char * name = storage.GetWavetable(i + wavetable_offset)->name;
 
@@ -381,9 +382,9 @@ void ABModeMenu::DrawSide(int side) {
                     (*ticker)++;
                     *ticker_timer = system_clock.milliseconds();
                 }
-                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, strlen(line2) > num_chars ? *ticker : 0);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, strlen(line2) > num_chars ? *ticker : 0);
             } else {
-                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, 0);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, 0);
             }
         }
         int y_shift = 2;
@@ -399,7 +400,7 @@ void ABModeMenu::DrawSide(int side) {
             char line[20];
 
             snprintf(line, 20, "%*d", 2, i + frame_offset + 1);
-            Display::put_string_3x5(x_offset + 2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(x_offset + 2, y_offset + i * 8, strlen(line), line);
 
             char * name = storage.GetWavetable(wavetable)->waves[i + frame_offset].name;
 
@@ -424,9 +425,9 @@ void ABModeMenu::DrawSide(int side) {
                     (*ticker)++;
                     *ticker_timer = system_clock.milliseconds();
                 }
-                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame, num_chars, strlen(line2) > num_chars ? *ticker : 0);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i + frame_offset == frame, num_chars, strlen(line2) > num_chars ? *ticker : 0);
             } else {
-                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + frame_offset == frame, num_chars, 0);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i + frame_offset == frame, num_chars, 0);
 
             }
 

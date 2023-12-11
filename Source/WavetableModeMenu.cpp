@@ -75,7 +75,7 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
 
     storage.LoadWaveSample(BUF1, wavetable_, morph * 1.0f / 4095.0f);
     
-    y_offset = 2;
+    y_offset = 0;
     
     Display::outline_rectangle(0, y_offset, 128, 32);
     Display::Draw_Wave(1, y_offset+1, 128-2, 32-2, BUF1);
@@ -101,7 +101,7 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
     {
         char line[20];
         snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
-        Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+        Display::put_string_3x5(2, y_offset + i * 8, strlen(line), line);
         
         char * name = storage.GetWavetable(i + wavetable_offset_)->name;
 
@@ -113,6 +113,6 @@ void WavetableModeMenu::paint(juce::Graphics& g) {
             strncpy(line2, name, 8);
         }
 
-        Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
+        Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
     }
 }
