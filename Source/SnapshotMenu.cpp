@@ -382,12 +382,12 @@ void SnapshotMenu::paint(juce::Graphics& g) {
         char * title;
         title = (char *) storage.GetSnapshot(snapshot_)->name;
 
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
+        Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 20;
         y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;

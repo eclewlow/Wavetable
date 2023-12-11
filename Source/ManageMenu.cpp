@@ -50,6 +50,11 @@ void ManageMenu::triggerUpdate(bool back_pressed) {
     }
 }
 
+void ManageMenu::ResetTicker() {
+    ticker_timer_ = system_clock.milliseconds();
+    ticker_ = 0;
+}
+
 bool ManageMenu::handleKeyLongPress(int key) {
     if( key == LEFT_ENCODER_CLICK ) {
         if(state_ == MANAGE_MENU_SELECT_WAVETABLE) {
@@ -104,7 +109,7 @@ bool ManageMenu::handleKeyRelease(int key) {
 
                 morph_ = 0.0f;
 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 break;
             case MANAGE_MENU_MOVE_WAVETABLE: {
@@ -121,7 +126,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                 
                 morph_ = 0.0f;
                 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 
                 break;
             }
@@ -132,7 +137,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     frame_offset_ = frame_;
                 }
 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 break;
             case MANAGE_MENU_MOVE_FRAME: {
@@ -146,7 +151,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     frame_offset_ = frame_;
                 }
 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 
                 break;
             }
@@ -191,7 +196,7 @@ bool ManageMenu::handleKeyRelease(int key) {
 
                 morph_ = 0.0f;
                 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 
                 break;
             case MANAGE_MENU_MOVE_WAVETABLE: {
@@ -208,7 +213,7 @@ bool ManageMenu::handleKeyRelease(int key) {
 
                 morph_ = 0.0f;
                 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 
                 break;
             }            
@@ -219,7 +224,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     frame_offset_ = frame_ - 5;
                 }
 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 break;
             case MANAGE_MENU_MOVE_FRAME: {
@@ -233,7 +238,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     frame_offset_ = frame_ - 5;
                 }
 
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 
                 break;
             }
@@ -328,7 +333,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     setState(MANAGE_MENU_CONFIRM);
                 }
                 else {
-                    ticker_timer_ = system_clock.milliseconds() - 2000;
+                    ResetTicker();
                     setState(MANAGE_MENU_SELECT_FRAME);
                     frame_ = 0;
                     frame_offset_ = 0;
@@ -363,7 +368,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                 break;
             case MANAGE_MENU_WAVETABLE_OPTIONS:
                 if(option_selected_ == MANAGE_MENU_EDIT) {
-                    ticker_timer_ = system_clock.milliseconds() - 2000;
+                    ResetTicker();
                     setState(MANAGE_MENU_SELECT_FRAME);
                     frame_ = 0;
                     frame_offset_ = 0;
@@ -467,7 +472,7 @@ bool ManageMenu::handleKeyRelease(int key) {
                     context.setState(&mainMenu);
                 break;
             case MANAGE_MENU_SELECT_FRAME:
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
                 setState(MANAGE_MENU_SELECT_WAVETABLE);
                 morph_ = 0.0f;
                 break;
@@ -520,39 +525,47 @@ void ManageMenu::ConfirmCopyWave() {
     storage.CopyWave(wavetable_, frame_, selected_wavetable_, selected_frame_);
     setState(MANAGE_MENU_SELECT_FRAME);
     copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+    ResetTicker();
 }
 
 void ManageMenu::CancelCopyWave() {
     setState(MANAGE_MENU_SELECT_FRAME);
     copy_state_ = MANAGE_MENU_COPY_STATE_NONE;
+    ResetTicker();
 }
 
 void ManageMenu::ConfirmDeleteWavetable() {
     storage.DeleteWavetable(wavetable_);
     setState(MANAGE_MENU_SELECT_WAVETABLE);
+    ResetTicker();
 }
 void ManageMenu::CancelDeleteWavetable() {
     setState(MANAGE_MENU_SELECT_WAVETABLE);
+    ResetTicker();
 }
 
 
 void ManageMenu::ConfirmDeleteFrame() {
     storage.DeleteWave(wavetable_, frame_);
     setState(MANAGE_MENU_SELECT_FRAME);
+    ResetTicker();
 }
 void ManageMenu::CancelDeleteFrame() {
     setState(MANAGE_MENU_SELECT_FRAME);
+    ResetTicker();
 }
 
 void ManageMenu::SaveWavetable(char* param) {
     storage.SaveWavetable(param, manageMenu.wavetable_);
     manageMenu.setState(MANAGE_MENU_SELECT_WAVETABLE);
+    manageMenu.ResetTicker();
 }
 
 void ManageMenu::SaveWave(char* param) {
     Storage::WAVETABLE * wt = storage.GetWavetable(manageMenu.wavetable_);
     strncpy(wt->waves[manageMenu.frame_].name, param, 9);
     manageMenu.setState(MANAGE_MENU_SELECT_FRAME);
+    manageMenu.ResetTicker();
 }
 
 
@@ -567,15 +580,15 @@ void ManageMenu::paint(juce::Graphics& g) {
         else
             title = (char *) storage.GetWavetable(wavetable_)->name;
 
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
+        Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 20;
-        y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
+        y_offset = 18;
         
         if(storage.GetWavetable(wavetable_)->factory_preset) {
             Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
@@ -601,15 +614,15 @@ void ManageMenu::paint(juce::Graphics& g) {
         else
             title = (char *) storage.GetWavetable(wavetable_)->waves[frame_].name;
 
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
-        Display::invert_rectangle(0, 0, 128, 15);
+        Display::invert_rectangle(0, 0, 128, 11);
         
         x_offset = 20;
-        y_offset = 20 + (64 - 20) / 2 - 14 * 3 / 2;
+        y_offset = 18;
         
         if(storage.GetWavetable(wavetable_)->factory_preset) {
             Display::put_image_16bit(x_offset, y_offset, Graphic_icon_edit_11x11, 11);
@@ -704,47 +717,52 @@ void ManageMenu::paint(juce::Graphics& g) {
         else
             title = (char *) "MANAGE WAVETABLE";
         
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
         if(copy_state_ != MANAGE_MENU_COPY_STATE_WAVETABLE && copy_state_ != MANAGE_MENU_COPY_STATE_FRAME)
-            Display::invert_rectangle(0, 0, 128, 15);
+            Display::invert_rectangle(0, 0, 128, 11);
         else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
-            Display::invert_rectangle(0, 0, 128, 15);
+            Display::invert_rectangle(0, 0, 128, 11);
 
         x_offset = 64 - 5;
-        y_offset += 15;
+        y_offset += 11;
 
         for(int i = 0; i < 6; i++)
         {
             char line[20];
             snprintf(line, 20, "%*d", 2, i + wavetable_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(2, y_offset + i * 8, strlen(line), line);
             
             char * name = storage.GetWavetable(i + wavetable_offset_)->name;
 
-            char line2[20];
-            memset(line2, 0, 20);
-            if(name[0] == '\0')
-                strncpy(line2, "-------", 7);
-            else {
-                int name_index = 0;
-                uint32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+            char * line2 = name;
 
-                if (elapsed_time > 4000) {
+            int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+
+            int8_t num_chars = 7;
+
+            if(i + wavetable_offset_ == wavetable_) {
+                if(ticker_ == 0) {
+                    if(elapsed_time > 1000) {
+                        ticker_++;
+                        ticker_timer_ = system_clock.milliseconds();
+                    }
+                } else if(ticker_ == (strlen(line2) - num_chars) * 6) {
+                    if(elapsed_time > 2000) {
+                        ResetTicker();
+                    }
+                }
+                else if (elapsed_time > 20) {
+                    ticker_++;
                     ticker_timer_ = system_clock.milliseconds();
                 }
-                if(i + wavetable_offset_ == wavetable_ && strlen(name) > 7 && (elapsed_time) > 0) {
-                    name_index = (elapsed_time) / 1000;
-                    name_index = std::clamp(name_index, 0, 1);
-                }
-                // if timer is passed 2000, name_index = 1
-                strncpy(line2, &name[name_index], 7);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
+            } else {
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+wavetable_offset_ == wavetable_, num_chars, 0);
             }
-
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+wavetable_offset_ == wavetable_);
         }
 
         int y_shift = 2;
@@ -771,49 +789,54 @@ void ManageMenu::paint(juce::Graphics& g) {
         else if(copy_state_ == MANAGE_MENU_COPY_STATE_FRAME)
             title = (char *) "COPY WAVE TO:";
         else
-            title = (char *) "MANAGE WAVE";
+            title = (char *) storage.GetWavetable(wavetable_)->name;
         
-        int y_offset = 5;
+        int y_offset = 3;
         int x_offset = 1 + 2 * 4;
 
         Display::put_string_5x5(x_offset, y_offset, strlen(title), title);
         
         if(copy_state_ != MANAGE_MENU_COPY_STATE_FRAME)
-            Display::invert_rectangle(0, 0, 128, 15);
+            Display::invert_rectangle(0, 0, 128, 11);
         else if((system_clock.milliseconds() - blink_timer_) % 1000 < 500)
-            Display::invert_rectangle(0, 0, 128, 15);
+            Display::invert_rectangle(0, 0, 128, 11);
 
         x_offset = 64 - 5;
-        y_offset += 15;
+        y_offset += 11;
 
         for(int i = 0; i < 6; i++)
         {
             char line[20];
             snprintf(line, 20, "%*d", 2, i + frame_offset_ + 1);
-            Display::put_string_3x5(2, y_offset + i * 7, strlen(line), line);
+            Display::put_string_3x5(2, y_offset + i * 8, strlen(line), line);
             
             char * name = storage.GetWavetable(wavetable_)->waves[i + frame_offset_].name;
 
-            char line2[20];
-            memset(line2, 0, 20);
-            if(name[0] == '\0')
-                strncpy(line2, "-------", 7);
-            else {
-                int name_index = 0;
-                int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+            char * line2 = name;
 
-                if (elapsed_time > 4000) {
+            int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+
+            int8_t num_chars = 7;
+
+            if(i + frame_offset_ == frame_) {
+                if(ticker_ == 0) {
+                    if(elapsed_time > 1000) {
+                        ticker_++;
+                        ticker_timer_ = system_clock.milliseconds();
+                    }
+                } else if(ticker_ == (strlen(line2) - num_chars) * 6) {
+                    if(elapsed_time > 2000) {
+                        ResetTicker();
+                    }
+                }
+                else if (elapsed_time > 20) {
+                    ticker_++;
                     ticker_timer_ = system_clock.milliseconds();
                 }
-                if(i + frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
-                    name_index = (elapsed_time) / 1000;
-                    name_index = std::clamp(name_index, 0, 1);
-                }
-                // if timer is passed 2000, name_index = 1
-                strncpy(line2, &name[name_index], 7);
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
+            } else {
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 8, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, 0);
             }
-            
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_);
         }
 
         int y_shift = 2;

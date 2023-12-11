@@ -360,25 +360,31 @@ void ABModeMenu::DrawSide(int side) {
             
             char * name = storage.GetWavetable(i + wavetable_offset)->name;
 
-            char line2[20];
-            memset(line2, 0, 20);
-            if(name[0] == '\0')
-                strncpy(line2, "-------", 7);
-            else {
-                int name_index = 0;
-                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
+            char * line2 = name;
 
-                if (elapsed_time > 4000) {
+            int32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
+
+            int8_t num_chars = 7;
+
+            if(i + wavetable_offset == wavetable) {
+                if(*ticker == 0) {
+                    if(elapsed_time > 1000) {
+                        (*ticker)++;
+                        *ticker_timer = system_clock.milliseconds();
+                    }
+                } else if(*ticker == (strlen(line2) - num_chars) * 6) {
+                    if(elapsed_time > 2000) {
+                        ResetTicker(side);
+                    }
+                }
+                else if (elapsed_time > 20) {
+                    (*ticker)++;
                     *ticker_timer = system_clock.milliseconds();
                 }
-                if(i + wavetable_offset == wavetable && strlen(name) > 7 && (elapsed_time) > 0) {
-                    name_index = (elapsed_time) / 1000;
-                    name_index = std::clamp(name_index, 0, 1);
-                }
-                // if timer is passed 2000, name_index = 1
-                strncpy(line2, &name[name_index], 7);
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, strlen(line2) > num_chars ? *ticker : 0);
+            } else {
+                Display::put_string_5x5_loop(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable, num_chars, 0);
             }
-            Display::put_string_5x5(x_offset + 2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i + wavetable_offset == wavetable);
         }
         int y_shift = 2;
         int bar_height = 3 * 7 + y_shift * 2;
@@ -399,22 +405,6 @@ void ABModeMenu::DrawSide(int side) {
 
             char * line2 = name;
 
-//            if(name[0] == '\0')
-//                strncpy(line2, "-------", 7);
-//            else {
-//                int name_index = 0;
-//                uint32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
-//
-//                if (elapsed_time > 4000) {
-//                    *ticker_timer = system_clock.milliseconds();
-//                }
-//                if(i + frame_offset == frame && strlen(name) > 7 && (elapsed_time) > 0) {
-//                    name_index = (elapsed_time) / 1000;
-//                    name_index = std::clamp(name_index, 0, 1);
-//                }
-//                // if timer is passed 2000, name_index = 1
-//                strncpy(line2, &name[name_index], 7);
-//            }
             int32_t elapsed_time = system_clock.milliseconds() - *ticker_timer;
 
             int8_t num_chars = 7;

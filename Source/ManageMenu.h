@@ -69,6 +69,7 @@ public:
     void ConfirmCopyWave();
     void CancelCopyWave();
     void SetLine(int line_no, char* str);
+    void ResetTicker();
 
 private:
     int8_t state_;
@@ -89,6 +90,7 @@ private:
     float morph_;
     int8_t target_;
     uint32_t ticker_timer_;
+    uint8_t ticker_ = 0;
     uint32_t press_timer_;
     uint32_t blink_timer_;
     bool absorb_keypress_;

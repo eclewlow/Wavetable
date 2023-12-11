@@ -113,7 +113,8 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
     SNAPSHOT * snapshot_ptr = snapshot;
     snapshot_ptr->factory_preset = index < FACTORY_SNAPSHOT_COUNT;
     snapshot_ptr->is_empty = !snapshot_ptr->factory_preset;
-    strncpy(snapshot_ptr->name, lines[index % 4], 9);
+    strncpy(snapshot_ptr->name, "INIT", 9);
+//    strncpy(snapshot_ptr->name, lines[index % 4], 9);
     snapshot_ptr->brightness = 100;
     snapshot_ptr->contrast = 100;
     snapshot_ptr->invert = false;
@@ -286,7 +287,7 @@ int8_t Storage::GetNumberOfWavesInTable(int16_t table) {
         return 16;
     
     for(int8_t i = 0; i < 16; i++) {
-        if(t->waves[i].is_empty)
+        if(!t->waves[i].is_empty)
             count++;
     }
     

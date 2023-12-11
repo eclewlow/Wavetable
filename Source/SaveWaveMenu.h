@@ -36,6 +36,8 @@ public:
 
     inline void setWavedata(int16_t * data) { wavedata_ = data; }
 
+    void ResetTicker();
+    
 private:
     int16_t * wavedata_;
     int8_t state_;
@@ -44,6 +46,7 @@ private:
     int16_t wavetable_;
     int16_t frame_;
     uint32_t ticker_timer_ = 0;
+    uint8_t ticker_ = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SaveWaveMenu);
 };

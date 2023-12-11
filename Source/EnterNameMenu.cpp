@@ -94,16 +94,17 @@ void EnterNameMenu::paint(juce::Graphics& g) {
     int y_offset;
     int x_offset;
         
-    y_offset = 5;
+    y_offset = 3;
     x_offset = 1 + 2 * 4;
 
     Display::put_string_5x5(x_offset, y_offset, strlen("ENTER NAME"), "ENTER NAME");
     
-    Display::invert_rectangle(0, 0, 128, 15);
+    Display::invert_rectangle(0, 0, 128, 11);
 
     x_offset = 5;
-    y_offset += 5 + 3 + 6;
+    y_offset += 14;
     
+    // draw input characters
     for(int i=0; i < 8; i++) {
         int y = y_offset + 9 + 2;
         int x = i * 12 + x_offset;
@@ -119,9 +120,9 @@ void EnterNameMenu::paint(juce::Graphics& g) {
     }
     
 
-    y_offset += 9 + 2 + 4;
+    y_offset += 17;
     
-    Display::outline_rectangle(x_offset, y_offset, 128-5-5, 7*3 + 4);
+    Display::outline_rectangle(x_offset, y_offset, 128-5-5, 8*3 + 4);
 
     y_offset += 3;
     x_offset += 3;
@@ -133,8 +134,8 @@ void EnterNameMenu::paint(juce::Graphics& g) {
         char theChar[2];
         snprintf(theChar, 2, "%c", char_list[i]);
         
-        Display::put_string_5x5(x_offset + col * 7, y_offset + row * 7, 1, theChar, i == char_index);
+        Display::put_string_5x5(x_offset + col * 7, y_offset + row * 8, 1, theChar, i == char_index);
     }
-    Display::put_string_5x5(x_offset + 8 * 7, y_offset + 2 * 7, 3, "CLR", (num_of_chars - 2) == char_index);
-    Display::put_string_5x5(x_offset + 8 * 7 + 5 * 5, y_offset + 2 * 7, 2, "OK", (num_of_chars - 1) == char_index);
+    Display::put_string_5x5(x_offset + 8 * 7, y_offset + 2 * 8, 3, "CLR", (num_of_chars - 2) == char_index);
+    Display::put_string_5x5(x_offset + 8 * 7 + 5 * 5, y_offset + 2 * 8, 2, "OK", (num_of_chars - 1) == char_index);
 }

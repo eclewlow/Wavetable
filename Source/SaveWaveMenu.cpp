@@ -46,8 +46,13 @@ void SaveWaveMenu::triggerUpdate(bool back_pressed) {
         frame_offset_ = frame_ - 5;
     }
     
-    ticker_timer_ = system_clock.milliseconds() - 2000;
+    ResetTicker();
 
+}
+
+void SaveWaveMenu::ResetTicker() {
+    ticker_timer_ = system_clock.milliseconds();
+    ticker_ = 0;
 }
 
 bool SaveWaveMenu::handleKeyRelease(int key) {
@@ -62,7 +67,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
 
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME:
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 frame_ = std::clamp<int16_t>(frame_ - 1, 0, 15);
 
@@ -86,7 +91,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
 
                 break;
             case SAVE_WAVE_MENU_SELECT_FRAME:
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 frame_ = std::clamp<int16_t>(frame_ + 1, 0, 15);
 
@@ -141,7 +146,7 @@ bool SaveWaveMenu::handleKeyRelease(int key) {
 //                    enterNameMenu.setBackMenu(&saveWaveMenu);
 //                    enterNameMenu.setExecFunc(SaveWaveMenu::SaveWavetable);
 //                } else {
-                ticker_timer_ = system_clock.milliseconds() - 2000;
+                ResetTicker();
 
                 setState(SAVE_WAVE_MENU_SELECT_FRAME);
                 frame_ = 0;
@@ -257,36 +262,32 @@ void SaveWaveMenu::paint(juce::Graphics& g) {
             
             
             char * name = storage.GetWavetable(wavetable_)->waves[i + frame_offset_].name;
-
-            char line2[20];
-            memset(line2, 0, 20);
-//            if(name[0] == '\0')
-//                strncpy(line2, "[EMPTY]", strlen("[EMPTY]"));
-//            else {
-            int name_index = 0;
-            int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
-
-            if (elapsed_time > 4000) {
-                ticker_timer_ = system_clock.milliseconds();
-            }
-            if(i+frame_offset_ == frame_ && strlen(name) > 7 && (elapsed_time) > 0) {
-                name_index = (elapsed_time) / 1000;
-                name_index = std::clamp(name_index, 0, 1);
-            }
-            // if timer is passed 2000, name_index = 1
-            strncpy(line2, &name[name_index], 7);
-//            }
-//
-//            char line2[20];
-//            memset(line2, 0, 20);
-//            if(storage.GetWavetable(wavetable_).waves[i + frame_offset_].name[0] == '\0') {
-//                strncpy(line2, "[EMPTY]", strlen("[EMPTY]"));
-//            }
-//            else {
-//                snprintf(line2, 20, "%-8s", storage.GetWavetable(wavetable_).waves[i + frame_offset_].name);
-//            }
             
-            Display::put_string_5x5(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_);
+            char * line2 = name;
+            
+            int32_t elapsed_time = system_clock.milliseconds() - ticker_timer_;
+            
+            int8_t num_chars = 7;
+            
+            if(i + frame_offset_ == frame_) {
+                if(ticker_ == 0) {
+                    if(elapsed_time > 1000) {
+                        ticker_++;
+                        ticker_timer_ = system_clock.milliseconds();
+                    }
+                } else if(ticker_ == (strlen(line2) - num_chars) * 6) {
+                    if(elapsed_time > 2000) {
+                        ResetTicker();
+                    }
+                }
+                else if (elapsed_time > 20) {
+                    ticker_++;
+                    ticker_timer_ = system_clock.milliseconds();
+                }
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, strlen(line2) > num_chars ? ticker_ : 0);
+            } else {
+                Display::put_string_5x5_loop(2 + 2 * 3 + 4, y_offset + i * 7, strlen(line2), line2, i+frame_offset_ == frame_, num_chars, 0);
+            }
         }
 
         int y_shift = 2;
