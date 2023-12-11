@@ -56,6 +56,7 @@ bool DeviceConfigurationMenu::handleKeyRelease(int key) {
                 context.setState(&quantizerMenu);
                 break;
             case DEVICE_MEMORY:
+                context.setState(&memoryClearMenu);
                 break;
             default:
                 break;

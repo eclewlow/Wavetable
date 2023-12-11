@@ -72,7 +72,7 @@ void CalibrationMenu::paint(juce::Graphics& g) {
     
     y_offset += 6;
     char line[20];
-    snprintf(line, 20, "%1.3fV", (tune * 2.0f / 4095.0f - 1.0f) * 5.0f);
+    snprintf(line, 20, "%1.3fV", (tune / 4095.0f) * 8.0f);
     Display::put_string_5x5(128 - strlen(line) * 6, y_offset, strlen(line), line);
 
     

@@ -490,7 +490,7 @@ void SnapshotMenu::CancelCopy() {
 }
 
 void SnapshotMenu::ConfirmDelete() {
-    storage.EraseSnapshot(storage.GetSnapshot(snapshot_), snapshot_);
+    storage.EraseSnapshot(storage.GetSnapshot(snapshot_), snapshot_, true);
     setState(SNAPSHOT_MENU_NONE);
 }
 

@@ -18,7 +18,7 @@ MainComponent::MainComponent()
     matrixEngine.Init();
     drumEngine.Init();
 
-    context.setState(&snapshotMenu);
+    context.setState(&mainMenu);
     context.setEngine(Context::ENGINE_TYPE_AB);
 
     

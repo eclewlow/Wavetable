@@ -117,7 +117,11 @@ public:
     bool CopyWavetable(int table_dst, int table_src);
     bool CopyWave(int table_dst, int frame_dst, int table_src, int frame_src);
     bool EraseAll();
-    bool EraseSnapshot(SNAPSHOT * snapshot, uint8_t index);
+    bool EraseAllWavetables();
+    bool EraseAllSnapshots();
+    bool ResetFactoryWavetables();
+    bool EraseAllUserWavetables();
+    bool EraseSnapshot(SNAPSHOT * snapshot, uint8_t index, bool save);
     bool SaveSnapshot(const char * name, uint8_t index, SNAPSHOT * snapshot);
     bool SaveAll();
     bool LoadAll();

@@ -38,6 +38,7 @@ CalibrationMenu calibrationMenu;
 QuantizerMenu quantizerMenu;
 ManageMenu manageMenu;
 SnapshotMenu snapshotMenu;
+MemoryClearMenu memoryClearMenu;
 
 ABEngine abEngine;
 WavetableEngine wavetableEngine;

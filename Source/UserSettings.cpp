@@ -34,7 +34,7 @@ void UserSettings::Calibrate(uint16_t c1, uint16_t c5) {
 }
 
 bool UserSettings::ResetSettings() {
-    storage.EraseSnapshot(&settings_, FACTORY_SNAPSHOT_COUNT);
+    storage.EraseSnapshot(&settings_, FACTORY_SNAPSHOT_COUNT, false);
     return true;
 }
 

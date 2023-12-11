@@ -44,8 +44,7 @@ bool Storage::LoadAll() {
     return true;
 }
 
-bool Storage::EraseAll() {
-    
+bool Storage::ResetFactoryWavetables() {
     char *names[16] = {
         (char*)"SQUISH",
         (char*)"HARMONIX",
@@ -65,44 +64,68 @@ bool Storage::EraseAll() {
         (char*)"VITAL 2",
     };
 
-    for(int table = 0; table < FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
-        if(table < FACTORY_WAVETABLE_COUNT) {
-            strncpy(GetWavetable(table)->name, names[table], 9);
-            GetWavetable(table)->factory_preset = true;
-            GetWavetable(table)->is_empty = false;
-        } else {
-            strncpy(GetWavetable(table)->name, "INIT", 9);
-            GetWavetable(table)->factory_preset = false;
-            GetWavetable(table)->is_empty = true;
-        }
+    for(int table = 0; table < FACTORY_WAVETABLE_COUNT; table++) {
+        strncpy(GetWavetable(table)->name, names[table], 9);
+        GetWavetable(table)->factory_preset = true;
+        GetWavetable(table)->is_empty = false;
         for(int frame = 0; frame < 16; frame++) {
             GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
-            if(table < FACTORY_WAVETABLE_COUNT) {
-//                snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
-                strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
-//                GetWavetable(table)->waves[frame].factory_preset = true;
-                GetWavetable(table)->waves[frame].is_empty = false;
-            } else {
-                strncpy(GetWavetable(table)->waves[frame].name, "INIT", 9);
-                GetWavetable(table)->waves[frame].factory_preset = false;
-                GetWavetable(table)->waves[frame].is_empty = true;
-            }
+            strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
+            GetWavetable(table)->waves[frame].is_empty = false;
         }
     }
-    for(int table = FACTORY_WAVETABLE_COUNT; table <  FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
-        for(int frame = 0; frame < 16; frame++)
-            memset(&ROM[GetWavetable(table)->waves[frame].memory_location], 0, 2048 * 2);
-
-    }
     
-    for(int snapshot = 0; snapshot < FACTORY_SNAPSHOT_COUNT + USER_SNAPSHOT_COUNT; snapshot++) {
-        SNAPSHOT * snapshot_ptr = GetSnapshot(snapshot);
-        EraseSnapshot(snapshot_ptr, snapshot);
+    SaveAll();
+
+    return true;
+}
+bool Storage::EraseAllUserWavetables() {
+    for(int table = FACTORY_WAVETABLE_COUNT; table <  FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT; table++) {
+        strncpy(GetWavetable(table)->name, "INIT", 9);
+        GetWavetable(table)->factory_preset = false;
+        GetWavetable(table)->is_empty = true;
+        for(int frame = 0; frame < 16; frame++) {
+            GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
+            strncpy(GetWavetable(table)->waves[frame].name, "INIT", 9);
+            GetWavetable(table)->waves[frame].factory_preset = false;
+            GetWavetable(table)->waves[frame].is_empty = true;
+            memset(&ROM[GetWavetable(table)->waves[frame].memory_location], 0, 2048 * 2);
+        }
     }
     return true;
 }
 
-bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
+bool Storage::EraseAllWavetables() {
+    ResetFactoryWavetables();
+    EraseAllUserWavetables();
+    
+    SaveAll();
+
+    return true;
+}
+
+bool Storage::EraseAllSnapshots() {
+    for(int snapshot = 0; snapshot < FACTORY_SNAPSHOT_COUNT + USER_SNAPSHOT_COUNT; snapshot++) {
+        SNAPSHOT * snapshot_ptr = GetSnapshot(snapshot);
+        EraseSnapshot(snapshot_ptr, snapshot, false);
+    }
+    
+    SaveAll();
+
+    return true;
+}
+
+
+bool Storage::EraseAll() {
+    EraseAllWavetables();
+    EraseAllSnapshots();
+    
+    SaveAll();
+
+    return true;
+}
+
+bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index, bool save) {
     char* lines[4] = {
         (char*)"WHOOPSIE\0",
         (char*)"TEST\0",
@@ -176,6 +199,8 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index) {
     snapshot_ptr->calibration_x = 0.023443223443223f;    // don't randomize this, but save in snapshot
     snapshot_ptr->calibration_y = 12.0f;    // don't randomize this, but save in snapshot
     
+    if(save)
+        SaveAll();
     return true;
 }
 
@@ -193,6 +218,8 @@ bool Storage::SaveSnapshot(const char * name, uint8_t index, SNAPSHOT * snapshot
     
     GetSnapshot(index)->factory_preset = false;
     GetSnapshot(index)->is_empty = false;
+
+    SaveAll();
     return true;
 }
 

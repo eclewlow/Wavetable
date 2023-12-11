@@ -98,6 +98,7 @@
 #include "QuantizerMenu.h"
 #include "ManageMenu.h"
 #include "SnapshotMenu.h"
+#include "MemoryClearMenu.h"
 
 #include "ab_engine.h"
 #include "wavetable_engine.h"
@@ -152,6 +153,7 @@ extern CalibrationMenu calibrationMenu;
 extern QuantizerMenu quantizerMenu;
 extern ManageMenu manageMenu;
 extern SnapshotMenu snapshotMenu;
+extern MemoryClearMenu memoryClearMenu;
 
 extern ABEngine abEngine;
 extern WavetableEngine wavetableEngine;
