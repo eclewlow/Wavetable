@@ -358,15 +358,16 @@ void FxMenu::paint(juce::Graphics& g) {
         
         if(effect_manager.getSync()) {
             float ratio;
-            if(fx * 25.0f / 4095 < 10.0f)
-                ratio = int(fx * 25.0f / 4095) / 10.0f;
-            else {
-                ratio = int(fx*25.0f/4095) - 9;
+
+            if(fx >= 2048) {
+                ratio = int(1.0f + (fx - 2048.0f) * 15.0f / 2047.0f);
+            } else {
+                ratio = int(1.0f + (2047 - fx) * 15.0f / 2047.0f);
             }
 
             Display::put_string_5x5(64, depth_y_offset, strlen("RATIO:"), "RATIO:");
-            if(ratio < 1.0f) {
-                snprintf(rs_strings, 5, "X%.2f", ratio);
+            if(fx < 2048) {
+                snprintf(rs_strings, 5, "/%.0f", ratio);
             }
             else
                 snprintf(rs_strings, 5, "X%.0f", ratio);

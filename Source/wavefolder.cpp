@@ -37,10 +37,10 @@ float Wavefolder::RenderPhaseEffect(float input_phase, float frequency, uint16_t
     if(!effect_manager.getSync())
         frequency = pow(2, ((15.0 * fx) / 4095.0) - 3.0f);
     else {
-        if(fx * 25.0f / 4095 < 10.0f)
-            frequency *= (int(fx * 25.0f / 4095) / 10.0f);
-        else {
-            frequency *= (int(fx*25.0f/4095) - 9);
+        if(fx >= 2048) {
+            frequency *= int(1.0f + (fx - 2048.0f) * 15.0f / 2047.0f);
+        } else {
+            frequency /= int(1.0f + (2047 - fx) * 15.0f / 2047.0f);
         }
     }
     
