@@ -20,14 +20,22 @@ void UserSettings::Calibrate(uint16_t c1, uint16_t c5) {
     settings_.calibration_x = 48.0f / (c5 - c1);
     // c1 2457 4095
     // perfect pitch
+    // 0v * 33k / 80.6k = 0
+    // 8V * 33k / 80.6k = 3.275434243176179 = x
+    // x / 3.3  = 0.992555831265509
+    // * 4095 = 4064.516129032259355
+    // 1 V -> 508.064516129032258
+    // 5 V -> 2540.32258064516129
+    // x = 0.023619047619048
+    // y = 12
     
-    // 0 4095   is 0-8 volts   c0 to c8
+    // 0 4095   is 0-8 volts   c0 to c8. 33k / 80k
     // c1 = 511.875
     // c5 2559.375
     // x = 0.023443223443223
     // y = 12
     
-    
+    // 0 4095 -5 to 5 volts
     // x = 0.029304029304029
     // y = -48
     settings_.calibration_y = 24.0f - c1 * settings_.calibration_x;
@@ -122,7 +130,7 @@ bool UserSettings::RandomizeSettings() {
         settings_.io_bias[i] = 0.0f;   // don't randomize this, but save in snapshot
     }
 
-    settings_.calibration_x = 0.023443223443223;    // don't randomize this, but save in snapshot
+    settings_.calibration_x = 0.023619047619048;    // don't randomize this, but save in snapshot
     settings_.calibration_y = 12;    // don't randomize this, but save in snapshot
     
     return true;

@@ -196,7 +196,7 @@ bool Storage::EraseSnapshot(SNAPSHOT *snapshot, uint8_t index, bool save) {
 
 //    snapshot_ptr->calibration_x = 0.029304029304029;
 //    snapshot_ptr->calibration_y = 0;
-    snapshot_ptr->calibration_x = 0.023443223443223f;    // don't randomize this, but save in snapshot
+    snapshot_ptr->calibration_x = 0.023619047619048;    // don't randomize this, but save in snapshot
     snapshot_ptr->calibration_y = 12.0f;    // don't randomize this, but save in snapshot
     
     if(save)

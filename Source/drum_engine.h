@@ -44,7 +44,7 @@ public:
     float GetFMDepth();
     inline float GetAmpDecayTrigger() { return amp_decay_trigger_; }
     inline float GetFMDecayTrigger() { return fm_decay_trigger_; }
-    float GetY();
+    float GetY(float x);
 
 private:
     // depth -50 to 50

@@ -181,50 +181,14 @@ void DrumMode::paint(juce::Graphics& g) {
     for (float i = 0.0f; i < 1.0; i += 0.01f) {
         float curve = drumEngine.GetFMShape();
         float x = i;
-        float y;
-        
-        float r;
-        if(curve > 0.5) {
-            r = (1.0f - curve) * 10.0f + 1.0f;
-        } else {
-            r = (curve) * 10.0f + 1.0f;
-        }
-        
-        float angle = acos(1.0f - 2.0f / (2.0f * r * r));
-        float new_angle = angle + (M_PI_2 - angle) / 2.0f;
-        float p = r * sin(new_angle) - 1.0f;
-        float q = r * cos(new_angle);
-
-        if(curve > 0.5)
-            y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
-        else
-            y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
+        float y = drumEngine.GetY(x);
         
         int ix = x_offset + 1 + x * (shape_width - 2);
-        
+
         if(last_x != ix)
             Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
         last_x = ix;
     }
-//    int last_x = -1;
-//    for (float i = 0.0f; i < 1.0; i += 0.01f) {
-//        float curve = drumEngine.GetFMShape();
-//        float x = i;
-//        float y;
-//
-//        if(curve > 0.5)
-//           y = (1 - i) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
-//        else if(curve == 0.5)
-//            y = (1 - i);
-//        else
-//            y = (1 - i) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
-//        
-//        int ix = x_offset + 1 + x * (shape_width - 2);
-//        
-//        if(last_x != ix)
-//            Display::Put_Pixel(x_offset + 1 + x * (shape_width - 2), (y_offset + 1 + shape_width - 2) - y * (shape_width - 2), true);
-//        last_x = ix;
-//    }
 
     if(edit_state_ == DRUM_MODE_EDIT_FM_SHAPE)
         Display::invert_rectangle(x_offset + 1, y_offset + 1, shape_width - 2, shape_width - 2);

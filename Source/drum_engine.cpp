@@ -104,13 +104,10 @@ void DrumEngine::triggerUpdate() {
     phase_ = 0.0f;
 }
 
-float DrumEngine::GetY() {
+float DrumEngine::GetY(float x) {
     float curve = GetFMShape();
-    float x;
     float y;
     
-    x = fm_decay_trigger_;
-
     float r;
     if(curve > 0.5) {
         r = (1.0f - curve) * 10.0f + 1.0f;
@@ -155,23 +152,12 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         float amp_decay_trigger_increment = (1.0f / (6.0f * (GetAmpDecay() + 0.001f))) / 48000.0f;
         float fm_decay_trigger_increment = (1.0f / (6.0f * (GetFMDecay() + 0.001f))) / 48000.0f;
 
-
-
-//        if(curve > 0.5)
-//           y = (1 - x) * ((1 - curve) * 2) + sqrt(1 - pow(x,2)) * ((curve - 0.5)*2);
-//        else if(curve == 0.5)
-//            y = (1 - x);
-//        else
-//            y = (1 - x) * (curve * 2) + (1 - sqrt(1 - pow(1-x,2))) * (1 - curve * 2);
-        
-        
-//        float note = (120.0f * tune_interpolator.Next()) / 4095.0;
         float note = tune_interpolator.Next() * user_settings.getCalibrationX() + user_settings.getCalibrationY();
         note = clamp(note, 0.0f, 120.0f);
 
         note = quantizer.Quantize(note);
 
-        note += 12 * GetY() * (GetFMDepth() * 2.0f - 1.0f);
+        note += 12 * GetY(GetFMDecayTrigger()) * (GetFMDepth() * 2.0f - 1.0f);
         note = clamp(note, 0.0f, 120.0f);
 
 

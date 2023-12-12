@@ -66,7 +66,7 @@ void Suboscillator::Render(float* out, float* aux, uint32_t size, uint16_t tune,
         note = quantizer.Quantize(note);
 
         if(user_settings.settings_ptr()->engine == Context::ENGINE_TYPE_DRUM) {
-            note += 12 * drumEngine.GetY() * (drumEngine.GetFMDepth() * 2.0f - 1.0f);
+            note += 12 * drumEngine.GetY(drumEngine.GetFMDecayTrigger()) * (drumEngine.GetFMDepth() * 2.0f - 1.0f);
             note = clamp(note, 0.0f, 120.0f);
         }
 
