@@ -70,7 +70,8 @@ bool Storage::ResetFactoryWavetables() {
         GetWavetable(table)->is_empty = false;
         for(int frame = 0; frame < 16; frame++) {
             GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
-            strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
+//            strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
+            snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
             GetWavetable(table)->waves[frame].is_empty = false;
         }
     }

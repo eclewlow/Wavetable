@@ -124,7 +124,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     suboscillator.Render(subosc_out, subosc_out, size, tune, fx_amount, fx, morph);
     
     int16_t sample_data = std::clamp<int16_t>(context.getEngine()->GetSine(phase) * 100.0f + 2048.0f, 0, 4095);
-    adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, sample_data);
+//    adc.setChannel(Adc::ADC_CHANNEL_PITCH_CV, sample_data);
 //    adc.setChannel(Adc::ADC_CHANNEL_FX_AMOUNT_CV, 2048);
 //    adc.setChannel(Adc::ADC_CHANNEL_FX_CV, 2048);
 //    adc.setChannel(Adc::ADC_CHANNEL_MORPH_CV, 2048);
