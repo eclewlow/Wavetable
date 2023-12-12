@@ -111,16 +111,16 @@ float DrumEngine::GetY(float x) {
     // curve is from 0.0 to 1.0
     float r, s;
 
-    float gain = 10.0f;
+    float gain = 40.0f;
 
-    if(abs(curve - 0.5) < 0.05) {
-        return 1 - x;
-    }
+//    if(abs(curve - 0.5) < 0.05) {
+//        return 1 - x;
+//    }
 
     if(curve > 0.5) {
-        r = (1.0f - curve) * (1.0f - curve) * gain + 1.0f;
+        r = pow((1.0f - curve), 3) * gain + 1.0f;
     } else {
-        r = (curve * curve) * gain + 1.0f;
+        r = pow(curve, 3) * gain + 1.0f;
     }
 
     s = sqrt(-4 + 8 * r * r);
