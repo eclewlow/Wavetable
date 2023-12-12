@@ -108,22 +108,47 @@ float DrumEngine::GetY(float x) {
     float curve = GetFMShape();
     float y;
     
-    float r;
+    // curve is from 0.0 to 1.0
+    float r, s;
+
+    float gain = 10.0f;
+
+    if(abs(curve - 0.5) < 0.05) {
+        return 1 - x;
+    }
+
     if(curve > 0.5) {
-        r = (1.0f - curve) * 10.0f + 1.0f;
+        r = (1.0f - curve) * (1.0f - curve) * gain + 1.0f;
     } else {
-        r = (curve) * 10.0f + 1.0f;
+        r = (curve * curve) * gain + 1.0f;
+    }
+
+    s = sqrt(-4 + 8 * r * r);
+
+    if(curve > 0.5) {
+        s = (-2 + s) / 4;
+    } else {
+        s = (-2 - s) / 4;
     }
     
-    float angle = acos(1.0f - 2.0f / (2.0f * r * r));
-    float new_angle = angle + (M_PI_2 - angle) / 2.0f;
-    float p = r * sin(new_angle) - 1.0f;
-    float q = r * cos(new_angle);
-
-    if(curve > 0.5)
-        y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
-    else
-        y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
+    y = (curve > 0.5 ? 1 : -1) * sqrt(r * r - (x + s) * (x + s)) - s;
+    
+//    float r;
+//    if(curve > 0.5) {
+//        r = (1.0f - curve) * 10.0f + 1.0f;
+//    } else {
+//        r = (curve) * 10.0f + 1.0f;
+//    }
+//    
+//    float angle = acos(1.0f - 2.0f / (2.0f * r * r));
+//    float new_angle = angle + (M_PI_2 - angle) / 2.0f;
+//    float p = r * sin(new_angle) - 1.0f;
+//    float q = r * cos(new_angle);
+//
+//    if(curve > 0.5)
+//        y = sqrt(pow(r, 2) - pow(-x - q, 2)) - p;
+//    else
+//        y = 1.0f - sqrt(pow(r, 2) - pow(1 - x + q, 2)) + p;
     return y;
 }
 
