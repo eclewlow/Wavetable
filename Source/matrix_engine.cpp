@@ -117,6 +117,13 @@ void MatrixEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, 
     
     float tuneTarget = static_cast<float>(tune);
     
+    if(!started_) {
+        started_ = true;
+        morph_ = morphTarget;
+        tune_ = tuneTarget;
+        fx_ = fxTarget;
+    }
+
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
     ParameterInterpolator fx_interpolator(&fx_, fxTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);

@@ -106,6 +106,12 @@ void WavetableEngine::Render(float* out, float* aux, uint32_t size, uint16_t tun
     //    float interpolatedFloat = interpolated16 / 32768.0f;
     float tuneTarget = static_cast<float>(tune);
     
+    if(!started_) {
+        started_ = true;
+        morph_ = morphTarget;
+        tune_ = tuneTarget;
+    }
+    
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);

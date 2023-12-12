@@ -169,6 +169,12 @@ void DrumEngine::Render(float* out, float* aux, uint32_t size, uint16_t tune, ui
         }
     }
     
+    if(!started_) {
+        started_ = true;
+        morph_ = morphTarget;
+        tune_ = tuneTarget;
+    }
+
     ParameterInterpolator morph_interpolator(&morph_, morphTarget, size);
     ParameterInterpolator tune_interpolator(&tune_, tuneTarget, size);
     Downsampler carrier_downsampler(&carrier_fir_);

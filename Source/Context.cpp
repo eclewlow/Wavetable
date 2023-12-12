@@ -49,20 +49,7 @@ void Context::setEngine(int8_t engine) {
 
     user_settings.settings_ptr()->engine = engine;
 
-    switch(engine) {
-        case Context::ENGINE_TYPE_AB:
-            abEngine.triggerUpdate();
-            break;
-        case Context::ENGINE_TYPE_WAVETABLE:
-            wavetableEngine.triggerUpdate();
-            break;
-        case Context::ENGINE_TYPE_MATRIX:
-            matrixEngine.triggerUpdate();
-            break;
-        case Context::ENGINE_TYPE_DRUM:
-            drumEngine.triggerUpdate();
-            break;
-    }
+    getEngine()->triggerUpdate();
 }
 Engine* Context::getEngine() {
     Engine * engine;

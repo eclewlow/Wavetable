@@ -34,6 +34,7 @@ public:
     inline float ThisBlepSample(float t) { return 0.5f * t * t; }
     inline float NextBlepSample(float t) { t = 1.0f - t; return -0.5f * t * t; }
     inline void reset_phase() { phase_ = 0; }
+    
 protected:
     float phase_;
     float morph_;
@@ -41,6 +42,7 @@ protected:
     float fx_;
     float tune_;
     float carrier_fir_;
-
+    bool started_ = false;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Engine);
 };
