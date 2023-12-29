@@ -31,6 +31,8 @@ void Storage::Init() {
     } else {
         LoadAll();
     }
+//    printf("size of = %d", sizeof(SNAPSHOT));
+//    printf("signed int=%d", static_cast<uint16_t>(static_cast<int16_t>(65535)));
 }
 
 bool Storage::SaveAll() {
@@ -72,6 +74,7 @@ bool Storage::ResetFactoryWavetables() {
             GetWavetable(table)->waves[frame].memory_location = table * 16 * 2048 + frame * 2048;
 //            strncpy(GetWavetable(table)->waves[frame].name, names[frame], 9);
             snprintf(GetWavetable(table)->waves[frame].name, 9, "%02d", frame);
+            GetWavetable(table)->waves[frame].factory_preset = true;
             GetWavetable(table)->waves[frame].is_empty = false;
         }
     }

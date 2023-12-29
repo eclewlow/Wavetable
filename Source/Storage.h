@@ -137,8 +137,6 @@ private:
     // 64 wavetables.  32 Factory, 32 User
     // 1024 waves.  512 Facotry, 512 User
     // 64 snapshots.  64 user.
-    int16_t USER_ROM[2048 * USER_WAVE_COUNT];
-    
 //    WAVETABLE WaveTables[FACTORY_WAVETABLE_COUNT + USER_WAVETABLE_COUNT];
     PERSISTENT_STORAGE persistent_storage_;
     
