@@ -4,6 +4,7 @@ This is programmed in JUCE.  Not as an AudioUnit, but as a standalone applicatio
 
 ## Keyboard Controls
 
+```
 Q - left encoder counter-clockwise
 W - left encoder click
 E - left encoder clockwise
@@ -27,3 +28,4 @@ K - "Morph" knob clockwise
 U - "FX Amount" CV trigger
 
 ESCAPE - back button
+```
